@@ -173,6 +173,118 @@
   .notes-close:hover{ color:var(--gold-soft); }
   .notes-close:focus-visible{ outline:2px solid var(--gold-soft); }
   @media (max-width:600px){ .notes-fab{ right:14px; bottom:14px; padding:11px 16px; font-size:13px; } }
+
+  .text-fab{
+    position:fixed; left:18px; bottom:18px; z-index:70;
+    background:linear-gradient(180deg, var(--gold-soft), var(--gold-dim));
+    border:1px solid var(--gold); color:#1a1408;
+    padding:13px 20px; border-radius:30px; cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif; font-size:14px; font-weight:600;
+    box-shadow:0 6px 22px rgba(0,0,0,0.45);
+    transition:transform .2s ease;
+  }
+  .text-fab:hover{ transform:translateY(-2px); }
+  .text-fab:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
+
+  .text-overlay{
+    position:fixed; inset:0; background:rgba(5,7,16,0.62); z-index:80;
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+  }
+  .text-overlay.show{ opacity:1; pointer-events:auto; }
+  .text-drawer{
+    position:fixed; top:0; left:0; bottom:0; width:440px; max-width:92vw;
+    background:linear-gradient(180deg, var(--panel), var(--night2));
+    border-right:1px solid var(--line-strong);
+    padding:28px 24px 40px; overflow-y:auto;
+    transform:translateX(-100%); transition:transform .35s ease;
+  }
+  .text-overlay.show .text-drawer{ transform:translateX(0); }
+  .text-header{ display:flex; justify-content:space-between; align-items:center; font-family:'Noto Serif KR',serif; font-size:18px; color:var(--gold-soft); margin-bottom:4px; }
+
+  .verse-block{ margin:18px 0; padding-left:14px; border-left:2px solid var(--line); }
+  .verse-block .vnum{ font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--gold); font-size:14px; display:block; margin-bottom:4px; }
+  .verse-block p{ margin:0; font-size:15px; line-height:1.8; }
+  .text-font-controls{ display:flex; gap:8px; align-items:center; margin-bottom:16px; }
+  .font-btn{ width:30px; height:30px; border-radius:50%; border:1px solid var(--line-strong); background:transparent; color:var(--gold-soft); cursor:pointer; font-size:13px; }
+  .font-btn:hover{ background:rgba(201,162,75,0.12); }
+  @media (max-width:600px){ .text-fab{ left:14px; bottom:14px; padding:11px 16px; font-size:13px; } }
+
+  .icon-btn{
+    background:transparent; border:1px solid var(--line-strong); color:var(--gold-soft);
+    border-radius:50%; width:34px; height:34px; cursor:pointer; font-size:15px;
+    display:flex; align-items:center; justify-content:center; transition:all .2s ease;
+  }
+  .icon-btn:hover{ background:rgba(201,162,75,0.1); border-color:var(--gold); }
+  .icon-btn:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; }
+
+  .history-overlay{
+    position:fixed; inset:0; background:rgba(5,7,16,0.68); z-index:90;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .history-overlay.show{ opacity:1; pointer-events:auto; }
+  .history-modal{
+    width:480px; max-width:100%; max-height:80vh; overflow-y:auto;
+    background:linear-gradient(180deg, var(--panel), var(--night2));
+    border:1px solid var(--line-strong); border-radius:6px; padding:26px 24px;
+  }
+  .history-item{
+    padding:14px 0; border-bottom:1px solid var(--line);
+  }
+  .history-item:last-child{ border-bottom:none; }
+  .history-date{ font-family:'Noto Serif KR',serif; font-size:14px; color:var(--parchment); margin-bottom:4px; }
+  .history-stats{ font-size:13px; color:var(--gold-soft); }
+
+  .continue-banner{ border-color:var(--gold); }
+  .continue-banner .btn-row{ margin-top:16px; }
+
+  .score-hud{ font-size:12px; color:var(--gold-soft); letter-spacing:0.03em; white-space:nowrap; }
+
+  .progress-map{ display:flex; align-items:center; margin:0 0 28px; }
+  .map-node{
+    display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; position:relative;
+    font-size:11px; color:var(--muted); letter-spacing:0.03em;
+  }
+  .map-node::before{
+    content:''; position:absolute; top:7px; right:50%; width:100%; height:2px; background:var(--line);
+    z-index:0;
+  }
+  .map-node:first-child::before{ display:none; }
+  .map-node .dot{ width:16px; height:16px; border-radius:50%; background:var(--panel2); border:2px solid var(--line-strong); z-index:1; }
+  .map-node.visited::before{ background:var(--gold-dim); }
+  .map-node.visited .dot{ background:var(--gold-dim); border-color:var(--gold); }
+  .map-node.current .dot{ background:var(--gold-soft); border-color:var(--gold-soft); box-shadow:0 0 8px var(--gold-soft); }
+  .map-node.current{ color:var(--gold-soft); }
+
+  .diff-row{ display:flex; gap:8px; }
+  .diff-btn{ flex:1; background:transparent; border:1px solid var(--line); color:var(--muted); padding:11px 8px; border-radius:3px; cursor:pointer; font-size:14px; transition:all .2s ease; }
+  .diff-btn:hover{ border-color:var(--gold-dim); color:var(--parchment-dim); }
+  .diff-btn.active{ border-color:var(--gold); color:var(--gold-soft); background:rgba(201,162,75,0.1); }
+  .name-input{ width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:3px; color:var(--parchment); padding:11px 14px; font-size:15px; font-family:'Noto Sans KR',sans-serif; margin-bottom:18px; }
+  .name-input:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; }
+
+  .celebration-modal{ position:relative; overflow:hidden; text-align:center; }
+  .confetti-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+  .confetti-piece{ position:absolute; top:-10px; width:8px; height:8px; border-radius:2px; animation-name:confettiFall; animation-timing-function:ease-in; animation-fill-mode:forwards; }
+  @keyframes confettiFall{ to{ transform:translateY(340px) rotate(360deg); opacity:0; } }
+  .badge-chip{ display:inline-block; background:rgba(201,162,75,0.12); border:1px solid var(--gold-dim); border-radius:20px; padding:6px 14px; margin:4px; font-size:13px; color:var(--gold-soft); }
+
+  .badge-row{ display:flex; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); }
+  .badge-row:last-child{ border-bottom:none; }
+  .badge-row.locked{ opacity:0.4; }
+  .badge-icon{ font-size:22px; }
+  .badge-name{ font-family:'Noto Serif KR',serif; color:var(--parchment); font-size:15px; }
+
+  .match-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px; }
+  .match-col{ display:flex; flex-direction:column; gap:8px; }
+  .match-card{ background:var(--panel2); border:1px solid var(--line); color:var(--parchment-dim); padding:10px 12px; border-radius:3px; cursor:pointer; font-size:13px; text-align:left; line-height:1.4; transition:all .15s ease; }
+  .match-card:hover{ border-color:var(--gold-dim); }
+  .match-card.selected{ border-color:var(--gold); background:rgba(201,162,75,0.12); }
+  .match-card.matched{ border-color:var(--gold); background:rgba(201,162,75,0.06); color:var(--gold-soft); opacity:0.7; cursor:default; }
+
+  details.meaning-details{ margin-top:12px; padding-top:12px; border-top:1px dashed var(--line-strong); }
+  details.meaning-details summary{ cursor:pointer; color:var(--gold-soft); font-weight:500; }
+  details.meaning-details .meaning-body{ margin-top:8px; color:var(--parchment-dim); }
   .app-preview{ display:none; margin-top:18px; padding:22px; background:#0e1224; border:1px solid var(--line-strong); border-radius:3px; white-space:pre-wrap; font-family:'Noto Sans KR', sans-serif; font-size:14px; line-height:1.9; color:var(--parchment-dim); }
   .app-preview.show{ display:block; animation:fadeUp .4s ease; }
   .copy-status{ font-size:13px; color:var(--gold-soft); margin-left:4px; }
@@ -292,13 +404,156 @@
   </aside>
 </div>
 
+<button id="textToggle" class="text-fab" onclick="toggleTextDrawer()">📖 본문 전체보기</button>
+
+<div id="textOverlay" class="text-overlay" onclick="closeTextOutside(event)">
+  <aside class="text-drawer" id="textDrawer" onclick="event.stopPropagation()">
+    <div class="text-header">
+      <span>출애굽기 11–12장 읽기</span>
+      <button class="notes-close" onclick="toggleTextDrawer()" aria-label="닫기">✕</button>
+    </div>
+    <p class="hint" style="margin:0 0 14px;">저작권이 있는 성경 번역을 그대로 옮기지 않고, 절별 내용을 풀어쓴 읽기용 정리입니다. 정확한 원문은 성경 앱과 함께 확인해보세요.</p>
+
+    <div class="text-font-controls">
+      <span class="hint" style="margin:0;">글자 크기</span>
+      <button class="font-btn" onclick="adjustTextFont(-1)">가−</button>
+      <button class="font-btn" onclick="adjustTextFont(1)">가+</button>
+    </div>
+
+    <div class="chap-tabs">
+      <button class="chap-tab active" id="rtab-11" onclick="switchTextChapter('11')">11장</button>
+      <button class="chap-tab" id="rtab-12" onclick="switchTextChapter('12')">12장</button>
+    </div>
+
+    <!-- ===== 11장 읽기 ===== -->
+    <div class="chap-pane active" id="rpane-11">
+      <div class="verse-block"><span class="vnum">1</span><p>여호와께서 모세에게 말씀하신다. 이제 한 가지 재앙을 애굽과 바로에게 더 내리면, 그 후에야 그가 이스라엘을 이 땅에서 내보낼 것이며, 완전히 내보낼 때는 오히려 재촉하여 쫓아낼 것이다.</p></div>
+      <div class="verse-block"><span class="vnum">2</span><p>백성에게 은밀히 명하여, 남자와 여자가 각각 이웃에게서 은 패물과 금 패물을 구하게 하라고 하신다.</p></div>
+      <div class="verse-block"><span class="vnum">3</span><p>여호와께서 백성이 애굽 사람들에게 호의를 얻게 하시고, 모세라는 사람도 애굽 땅에서 바로의 신하들과 백성 가운데 매우 존귀히 여김을 받는다.</p></div>
+      <div class="verse-block"><span class="vnum">4</span><p>모세가 바로에게 말한다 — 여호와께서 이렇게 말씀하셨다: 한밤중에 내가 친히 애굽 가운데로 들어가리라.</p></div>
+      <div class="verse-block"><span class="vnum">5</span><p>애굽 땅의 모든 처음 난 것이 죽으리니, 왕좌에 앉은 바로의 장자로부터 맷돌 뒤에 있는 여종의 장자까지, 그리고 가축의 처음 난 것까지 다 그러하리라.</p></div>
+      <div class="verse-block"><span class="vnum">6</span><p>애굽 온 땅에 전에도 없었고 다시도 없을 큰 부르짖음이 있으리라.</p></div>
+      <div class="verse-block"><span class="vnum">7</span><p>그러나 이스라엘 자손에게는 사람에게나 짐승에게나 개도 그 혀를 움직이지 아니하리니, 이는 여호와께서 애굽과 이스라엘을 구별하시는 줄을 너희가 알게 하려 하심이다.</p></div>
+      <div class="verse-block"><span class="vnum">8</span><p>바로의 이 모든 신하가 내게 내려와 절하며 "너와 너를 따르는 백성은 다 나가라" 할 것이라고 말한 뒤, 모세는 심히 노하여 바로 앞에서 나온다.</p></div>
+      <div class="verse-block"><span class="vnum">9</span><p>여호와께서 모세에게 말씀하신다 — 바로가 너희 말을 듣지 아니하리니, 이는 내 기적을 애굽 땅에서 더욱 많이 나타내려 하심이다.</p></div>
+      <div class="verse-block"><span class="vnum">10</span><p>모세와 아론이 이 모든 이적을 바로 앞에서 다 행하였으나, 여호와께서 바로의 마음을 완악하게 하셔서 그가 이스라엘 자손을 그 땅에서 내보내지 아니하였다.</p></div>
+    </div>
+
+    <!-- ===== 12장 읽기 ===== -->
+    <div class="chap-pane" id="rpane-12">
+      <div class="verse-block"><span class="vnum">1</span><p>여호와께서 애굽 땅에서 모세와 아론에게 말씀하신다.</p></div>
+      <div class="verse-block"><span class="vnum">2</span><p>이 달을 너희에게 달의 시작, 곧 한 해의 첫째 달이 되게 하라.</p></div>
+      <div class="verse-block"><span class="vnum">3</span><p>온 이스라엘 회중에게 말하라 — 이 달 열흘에 각자 그 조상의 집을 따라 어린양을 취하되, 한 가정에 한 마리씩 하라.</p></div>
+      <div class="verse-block"><span class="vnum">4</span><p>그 어린양이 한 가정이 먹기에 너무 적으면 가까운 이웃과 함께 사람 수를 헤아려 나누되, 각 사람이 먹을 만큼 계산하여 어린양을 정하라.</p></div>
+      <div class="verse-block"><span class="vnum">5</span><p>흠 없고 1년 된 수컷으로, 양이나 염소 중에서 취하라.</p></div>
+      <div class="verse-block"><span class="vnum">6</span><p>이 달 열나흗날까지 간직하였다가, 이스라엘 온 회중이 그날 해 질 때 함께 잡으라.</p></div>
+      <div class="verse-block"><span class="vnum">7</span><p>그 피를 가져다가, 먹을 그 집의 좌우 문설주와 인방에 바르라.</p></div>
+      <div class="verse-block"><span class="vnum">8</span><p>그 밤에 그 고기를 불에 구워, 무교병과 쓴 나물과 함께 먹으라.</p></div>
+      <div class="verse-block"><span class="vnum">9</span><p>날로 먹거나 물에 삶아 먹지 말고, 머리와 다리와 내장까지 다 불에 구워 먹으라.</p></div>
+      <div class="verse-block"><span class="vnum">10</span><p>아침까지 조금도 남기지 말고, 아침까지 남은 것은 불에 태우라.</p></div>
+      <div class="verse-block"><span class="vnum">11</span><p>너희는 이렇게 먹으라 — 허리에 띠를 띠고 발에 신을 신고 손에 지팡이를 잡고 급히 먹으라. 이것이 여호와의 유월절이다.</p></div>
+      <div class="verse-block"><span class="vnum">12</span><p>그 밤에 내가 애굽 땅에 두루 다니며 사람과 짐승을 막론하고 애굽 땅의 모든 처음 난 것을 다 치고, 애굽의 모든 신에게 벌을 내리리니, 나는 여호와다.</p></div>
+      <div class="verse-block"><span class="vnum">13</span><p>문에 있는 그 피가 너희가 사는 집의 표적이 되어, 내가 그 피를 볼 때 너희를 넘어가리니, 내가 애굽 땅을 칠 때 그 재앙이 너희를 멸하지 아니하리라.</p></div>
+      <div class="verse-block"><span class="vnum">14</span><p>너희는 이 날을 기념하여 여호와의 절기로 삼고, 대대로 영원한 규례로 지키라.</p></div>
+      <div class="verse-block"><span class="vnum">15</span><p>이레 동안 무교병을 먹되, 그 첫날에 누룩을 너희 집에서 제거하라. 첫날부터 일곱째 날까지 누룩 있는 것을 먹는 자는 이스라엘에서 끊어지리라.</p></div>
+      <div class="verse-block"><span class="vnum">16</span><p>첫날에는 성회로 모이고 일곱째 날에도 성회로 모이라. 이 두 날에는 아무 일도 하지 말되, 각자 먹을 것을 준비하는 일만은 할 수 있다.</p></div>
+      <div class="verse-block"><span class="vnum">17</span><p>너희는 무교절을 지키라. 이는 내가 바로 이 날에 너희 무리를 애굽 땅에서 인도하여 냈음이니, 그러므로 너희가 대대로 이 날을 영원한 규례로 지킬 것이다.</p></div>
+      <div class="verse-block"><span class="vnum">18</span><p>첫째 달 열나흗날 저녁부터 이십일일 저녁까지 무교병을 먹으라.</p></div>
+      <div class="verse-block"><span class="vnum">19</span><p>이레 동안 누룩이 너희 집에 있지 않게 하라. 누룩 있는 것을 먹는 자는 거류민이든 본토인이든 이스라엘 회중에서 끊어지리라.</p></div>
+      <div class="verse-block"><span class="vnum">20</span><p>누룩 있는 것은 아무것도 먹지 말고, 너희 모든 거처에서 무교병을 먹으라.</p></div>
+      <div class="verse-block"><span class="vnum">21</span><p>모세가 이스라엘 모든 장로를 불러 말한다 — 너희는 나가서 가족대로 어린양을 택하여 유월절 양으로 잡으라.</p></div>
+      <div class="verse-block"><span class="vnum">22</span><p>우슬초 묶음을 가져다가 그릇에 담은 피에 적셔 인방과 좌우 문설주에 뿌리고, 아침까지 아무도 자기 집 문밖에 나가지 말라.</p></div>
+      <div class="verse-block"><span class="vnum">23</span><p>여호와께서 애굽을 치러 지나가실 때, 인방과 좌우 문설주의 피를 보시면 그 문을 넘어가시고, 멸하는 자가 너희 집에 들어가 너희를 치지 못하게 하실 것이다.</p></div>
+      <div class="verse-block"><span class="vnum">24</span><p>너희는 이 일을 규례로 삼아 너희와 너희 자손이 영원히 지키라.</p></div>
+      <div class="verse-block"><span class="vnum">25</span><p>여호와께서 허락하신 대로 너희에게 주실 그 땅에 이른 후에도, 너희는 이 예식을 지키라.</p></div>
+      <div class="verse-block"><span class="vnum">26</span><p>훗날 너희 자녀가 "이 예식이 무슨 뜻이니이까" 물으면</p></div>
+      <div class="verse-block"><span class="vnum">27</span><p>너희는 이르라 — 이는 여호와의 유월절 제사다. 여호와께서 애굽 사람에게 재앙을 내리실 때, 애굽에 있는 이스라엘 자손의 집을 넘으사 우리 집을 구원하셨다. 백성이 머리 숙여 경배한다.</p></div>
+      <div class="verse-block"><span class="vnum">28</span><p>이스라엘 자손이 물러가서, 여호와께서 모세와 아론에게 명하신 그대로 행한다.</p></div>
+      <div class="verse-block"><span class="vnum">29</span><p>밤중에 여호와께서 애굽 땅에서 모든 처음 난 것을 치신다 — 왕좌에 앉은 바로의 장자로부터 옥에 갇힌 사람의 장자까지, 가축의 처음 난 것까지 이른다.</p></div>
+      <div class="verse-block"><span class="vnum">30</span><p>그 밤에 바로와 그 모든 신하와 애굽 모든 사람이 일어나고, 애굽에 큰 부르짖음이 있으니, 이는 죽은 자가 없는 집이 하나도 없었기 때문이다.</p></div>
+      <div class="verse-block"><span class="vnum">31</span><p>밤에 바로가 모세와 아론을 불러 말한다 — 너희와 이스라엘 자손은 일어나 내 백성 가운데에서 떠나, 너희 말대로 가서 여호와를 섬기라.</p></div>
+      <div class="verse-block"><span class="vnum">32</span><p>너희 양과 소도 몰아가고, 그리고 나를 위하여도 축복하라.</p></div>
+      <div class="verse-block"><span class="vnum">33</span><p>애굽 사람들이 "우리가 다 죽은 자가 되었다" 하며, 백성을 재촉하여 그 땅에서 속히 내보내려 한다.</p></div>
+      <div class="verse-block"><span class="vnum">34</span><p>백성이 발효되지 못한 반죽 담은 그릇을 옷에 싸서 어깨에 멘다.</p></div>
+      <div class="verse-block"><span class="vnum">35</span><p>이스라엘 자손이 모세의 말대로 애굽 사람에게 은금 패물과 의복을 구한다.</p></div>
+      <div class="verse-block"><span class="vnum">36</span><p>여호와께서 애굽 사람들이 백성에게 호의를 베풀게 하셔서 그들이 구하는 대로 주니, 이스라엘 자손이 애굽 사람의 물품을 그대로 취한다.</p></div>
+      <div class="verse-block"><span class="vnum">37</span><p>이스라엘 자손이 라암셋을 떠나 숙곳에 이르니, 어린아이 외에 걸어서 행하는 장정만 육십만 명가량이다.</p></div>
+      <div class="verse-block"><span class="vnum">38</span><p>수많은 다른 민족(중다한 잡족)과 양과 소, 심히 많은 가축이 그들과 함께한다.</p></div>
+      <div class="verse-block"><span class="vnum">39</span><p>그들이 애굽에서 가지고 나온 반죽으로 무교병을 굽는다. 이는 발효되지 못하였기 때문이니, 애굽에서 쫓겨나므로 지체할 수 없었고 아무 양식도 준비하지 못하였기 때문이다.</p></div>
+      <div class="verse-block"><span class="vnum">40</span><p>이스라엘 자손이 애굽에 거주한 기간은 사백삼십 년이다.</p></div>
+      <div class="verse-block"><span class="vnum">41</span><p>사백삼십 년이 끝나는 바로 그날, 여호와의 모든 군대가 애굽 땅에서 나온다.</p></div>
+      <div class="verse-block"><span class="vnum">42</span><p>이 밤은 여호와께서 그들을 애굽 땅에서 인도하여 내시려고 지키신 여호와의 밤이니, 이스라엘 모든 자손이 대대로 지킬 여호와의 밤이다.</p></div>
+      <div class="verse-block"><span class="vnum">43</span><p>여호와께서 모세와 아론에게 말씀하신다 — 유월절 규례는 이러하다: 이방인은 그것을 먹지 못한다.</p></div>
+      <div class="verse-block"><span class="vnum">44</span><p>각 사람이 돈으로 산 종이라도 할례를 받은 후에는 먹을 수 있다.</p></div>
+      <div class="verse-block"><span class="vnum">45</span><p>거류인과 품꾼은 먹지 못한다.</p></div>
+      <div class="verse-block"><span class="vnum">46</span><p>한 집에서 먹되, 그 고기를 조금도 집 밖으로 가지고 나가지 말고, 뼈도 하나를 꺾지 말라.</p></div>
+      <div class="verse-block"><span class="vnum">47</span><p>이스라엘 온 회중이 다 이것을 지킬 것이다.</p></div>
+      <div class="verse-block"><span class="vnum">48</span><p>너희와 함께 거류하는 타국인이 여호와의 유월절을 지키고자 하면, 그 모든 남자가 할례를 받은 후에야 가까이하여 지킬 수 있으니 그는 본토인과 같이 되려니와, 할례 받지 못한 자는 먹지 못한다.</p></div>
+      <div class="verse-block"><span class="vnum">49</span><p>본토인이나 너희 중에 거류하는 타국인에게나, 이 법은 동일하게 적용된다.</p></div>
+      <div class="verse-block"><span class="vnum">50</span><p>온 이스라엘 자손이 여호와께서 모세와 아론에게 명하신 그대로 행한다.</p></div>
+      <div class="verse-block"><span class="vnum">51</span><p>바로 그날, 여호와께서 이스라엘 자손을 그 무리대로 애굽 땅에서 인도하여 내신다.</p></div>
+    </div>
+  </aside>
+</div>
+
 <div class="wrap">
 
   <div class="top-nav">
     <div class="brand">그날 밤, 문설주에</div>
     <div style="display:flex; align-items:center; gap:14px;">
+      <span class="score-hud" id="scoreHud">⭐ 0점 · 🔥 0콤보</span>
       <button class="btn btn-small music-btn" id="musicBtn" onclick="toggleMusic()">♪ 배경음악 켜기</button>
+      <button class="icon-btn" onclick="toggleHistory()" aria-label="학습 기록" title="학습 기록">📊</button>
       <div class="stage-tag" id="stageTag">출애굽기 11–12장</div>
+    </div>
+  </div>
+
+  <div class="progress-map" id="progressMap">
+    <span class="map-node current" data-n="0"><span class="dot"></span>시작</span>
+    <span class="map-node" data-n="1"><span class="dot"></span>경고</span>
+    <span class="map-node" data-n="2"><span class="dot"></span>준비</span>
+    <span class="map-node" data-n="3"><span class="dot"></span>그 밤</span>
+    <span class="map-node" data-n="4"><span class="dot"></span>전승</span>
+  </div>
+
+  <div id="historyOverlay" class="history-overlay" onclick="closeHistoryOutside(event)">
+    <div class="history-modal" onclick="event.stopPropagation()">
+      <div class="text-header">
+        <span>학습 기록</span>
+        <button class="notes-close" onclick="toggleHistory()" aria-label="닫기">✕</button>
+      </div>
+      <p class="hint" id="rankLine" style="margin:0 0 14px;"></p>
+      <div class="chap-tabs">
+        <button class="chap-tab active" id="htab-log" onclick="switchHistTab('log')">기록</button>
+        <button class="chap-tab" id="htab-badges" onclick="switchHistTab('badges')">배지</button>
+        <button class="chap-tab" id="htab-board" onclick="switchHistTab('board')">리더보드</button>
+        <button class="chap-tab" id="htab-review" onclick="switchHistTab('review')">복습</button>
+      </div>
+      <div class="chap-pane active" id="histpane-log">
+        <p class="hint" style="margin:0 0 12px;">4막(전승)까지 도달할 때마다 완료 기록이 자동으로 남습니다.</p>
+        <div id="historyList"></div>
+      </div>
+      <div class="chap-pane" id="histpane-badges"><div id="badgeGallery"></div></div>
+      <div class="chap-pane" id="histpane-board"><div id="leaderboardList"></div></div>
+      <div class="chap-pane" id="histpane-review">
+        <p class="hint" style="margin:0 0 12px;">지난 한 세션에서 처음에 틀렸던 문제만 모아둔 목록입니다.</p>
+        <div id="reviewList"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="clearHistory()">기록 전체 지우기</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="celebrationOverlay" class="history-overlay" style="z-index:95;" onclick="closeCelebrationOutside(event)">
+    <div class="history-modal celebration-modal" onclick="event.stopPropagation()">
+      <div class="confetti-layer" id="confettiLayer"></div>
+      <h2 style="font-family:'Noto Serif KR',serif; color:var(--gold-soft); margin:6px 0 10px; font-size:22px;">🎉 여정을 마쳤습니다</h2>
+      <p id="celebrationStats" style="margin:0 0 16px; color:var(--parchment);"></p>
+      <div id="celebrationBadges"></div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn btn-primary" onclick="closeCelebration()">확인</button>
+      </div>
     </div>
   </div>
 
@@ -321,6 +576,23 @@
       본문은 성경 내용을 요약·재구성한 것이며 직접 인용이 아닌 이야기 형식으로 각색되었습니다.
       배경음악은 이 브라우저 안에서 실시간으로 생성되는 소리이며, 재생을 누르면 시작됩니다.
     </p>
+    <div class="panel">
+      <p style="margin:0 0 10px; color:var(--parchment);">플레이어 이름 (선택 — 같은 기기에서 여러 명이 기록을 남길 때 구분됩니다)</p>
+      <input type="text" id="playerNameInput" class="name-input" placeholder="이름을 입력하세요" maxlength="20">
+      <p style="margin:0 0 10px; color:var(--parchment);">난이도</p>
+      <div class="diff-row" id="diffRow">
+        <button class="diff-btn" data-d="easy" onclick="setDifficulty('easy')">쉬움 <span class="hint" style="margin:0;">· 선택지 힌트</span></button>
+        <button class="diff-btn active" data-d="normal" onclick="setDifficulty('normal')">보통</button>
+        <button class="diff-btn" data-d="hard" onclick="setDifficulty('hard')">어려움 <span class="hint" style="margin:0;">· 해설 접힘</span></button>
+      </div>
+    </div>
+    <div class="panel continue-banner" id="continueBanner" style="display:none;">
+      <p style="margin:0; color:var(--parchment);" id="continueText"></p>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="restoreProgress()">이어서 진행하기</button>
+        <button class="btn" onclick="dismissContinue()">새로 시작</button>
+      </div>
+    </div>
     <div class="btn-row"><button class="btn btn-primary" onclick="goTo(1)">시작하기</button></div>
   </section>
 
@@ -396,6 +668,8 @@
     <div class="step-dots" id="stepDots"></div>
 
     <div class="panel" id="prepPanel"></div>
+
+    <div class="panel" id="matchGamePanel" style="display:none;"></div>
 
     <div class="btn-row" id="s2continue" style="display:none;">
       <button class="btn btn-primary" onclick="goTo(3)">3막으로 — 그 밤</button>
@@ -499,8 +773,439 @@ function goTo(n){
   window.scrollTo({top:0, behavior:'smooth'});
   const tags = ['출애굽기 11-12장','1막 · 경고','2막 · 준비','3막 · 그 밤','4막 · 전승'];
   document.getElementById('stageTag').textContent = tags[n];
+  document.querySelectorAll('.map-node').forEach(el=>{
+    const nn = parseInt(el.dataset.n, 10);
+    el.classList.toggle('visited', nn <= n);
+    el.classList.toggle('current', nn === n);
+  });
   if(n===2) initPrep();
   if(n===3) initCinematic();
+  if(n===4) logHistoryIfNeeded();
+  if(typeof autosave === 'function') autosave();
+}
+
+/* ---------- SHARED AUDIO CONTEXT (used by both music and sound effects) ---------- */
+let audioCtx=null, masterGain=null, padGain=null;
+function ensureAudioContext(){
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return false;
+  if(!audioCtx){
+    audioCtx = new AC();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.8;
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 3200;
+    masterGain.connect(lp);
+    lp.connect(audioCtx.destination);
+    padGain = audioCtx.createGain();
+    padGain.gain.value = 1;
+    padGain.connect(lp);
+  }
+  if(audioCtx.state !== 'running'){ audioCtx.resume().catch(()=>{}); }
+  return true;
+}
+
+/* ---------- SOUND EFFECTS (short, subtle — always on) ---------- */
+function playTone(freq, startOffset, dur, type, vol){
+  if(!ensureAudioContext()) return;
+  const now = audioCtx.currentTime + startOffset;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.exponentialRampToValueAtTime(vol, now + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+  o.connect(g); g.connect(masterGain);
+  o.start(now); o.stop(now + dur + 0.05);
+  o.onended = () => { try{ o.disconnect(); g.disconnect(); }catch(e){} };
+}
+function playCorrectSfx(){
+  playTone(660, 0, 0.12, 'sine', 0.22);
+  playTone(880, 0.08, 0.18, 'sine', 0.2);
+}
+function playWrongSfx(){
+  playTone(170, 0, 0.22, 'sine', 0.18);
+}
+
+/* ---------- SCORE / COMBO ---------- */
+let score = 0, combo = 0, bestCombo = 0;
+function updateScoreHud(){
+  const el = document.getElementById('scoreHud');
+  if(el) el.textContent = `⭐ ${score}점 · 🔥 ${combo}콤보`;
+}
+function registerAnswer(isCorrect, points){
+  if(points === undefined) points = 10;
+  if(isCorrect){
+    score += points + combo*2;
+    combo++;
+    if(combo > bestCombo) bestCombo = combo;
+    playCorrectSfx();
+  } else {
+    combo = 0;
+    playWrongSfx();
+  }
+  updateScoreHud();
+  if(typeof autosave === 'function') autosave();
+}
+
+/* ---------- SHUFFLE UTILITY ---------- */
+function shuffleIndices(n){
+  const arr = Array.from({length:n}, (_,i)=>i);
+  for(let i=arr.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+function meaningBlock(text){
+  if(difficulty === 'hard'){
+    return `<details class="meaning-details"><summary>💡 의미 더 보기</summary><div class="meaning-body">${text}</div></details>`;
+  }
+  return `<span class="meaning"><b>💡 의미</b><br>${text}</span>`;
+}
+
+/* ---------- DIFFICULTY & PLAYER NAME ---------- */
+let difficulty = 'normal';
+function setDifficulty(d){
+  difficulty = d;
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.toggle('active', b.dataset.d===d));
+  try{ localStorage.setItem('exodusGame_difficulty_v1', d); }catch(e){}
+}
+let playerName = 'Player';
+function setPlayerName(name){
+  playerName = (name && name.trim()) ? name.trim() : 'Player';
+  try{ localStorage.setItem('exodusGame_playerName', playerName); }catch(e){}
+}
+
+/* ---------- PROGRESS AUTOSAVE & LEARNING HISTORY ----------
+   Falls back to an in-memory object when localStorage is unavailable
+   (e.g. inside a sandboxed preview), so the game never breaks — it just
+   won't persist across a real page reload in that case.               */
+const STORAGE_KEY = 'exodusGame_progress_v1';
+const HISTORY_KEY = 'exodusGame_history_v1';
+const BADGES_KEY = 'exodusGame_badges_v1';
+const REVIEW_KEY = 'exodusGame_review_v1';
+let storageAvailable = true;
+(function testStorage(){
+  try{ const k='__t__'; localStorage.setItem(k,'1'); localStorage.removeItem(k); }
+  catch(e){ storageAvailable = false; }
+})();
+let memoryProgress = null;
+let memoryHistory = [];
+let memoryBadges = [];
+let memoryReview = [];
+
+function saveJSON(key, obj, kind){
+  if(storageAvailable){
+    try{ localStorage.setItem(key, JSON.stringify(obj)); return; }
+    catch(e){ storageAvailable = false; }
+  }
+  if(kind === 'progress') memoryProgress = obj;
+  if(kind === 'history') memoryHistory = obj;
+  if(kind === 'badges') memoryBadges = obj;
+  if(kind === 'review') memoryReview = obj;
+}
+function loadJSON(key, kind){
+  if(storageAvailable){
+    try{
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ storageAvailable = false; }
+  }
+  if(kind === 'progress') return memoryProgress;
+  if(kind === 'history') return (memoryHistory && memoryHistory.length) ? memoryHistory : null;
+  if(kind === 'badges') return (memoryBadges && memoryBadges.length) ? memoryBadges : null;
+  if(kind === 'review') return (memoryReview && memoryReview.length) ? memoryReview : null;
+  return null;
+}
+
+let sessionStart = Date.now();
+let firstTryCorrect = {};   // e.g. { q0:true, q1:false, prep0:true, ..., cineQ:true }
+let sessionLogged = false;
+
+function recordFirstTry(key, isCorrect){
+  if(firstTryCorrect[key] === undefined) firstTryCorrect[key] = isCorrect;
+}
+function currentScore(){
+  const vals = Object.values(firstTryCorrect);
+  return { correct: vals.filter(Boolean).length, total: vals.length };
+}
+
+function snapshotProgress(){
+  const noteIds = ['summary11','paragraphs11','belief11','thanks11','repent11','petition11','action11',
+                    'summary12','paragraphs12','belief12','thanks12','repent12','petition12','action12'];
+  const notes = {};
+  noteIds.forEach(id=>{ const el=document.getElementById(id); if(el) notes[id]=el.value; });
+  const r3 = document.getElementById('reflect3'), r4 = document.getElementById('reflect4');
+  return {
+    stage: currentStage,
+    prepIndex, prepDone,
+    firstTryCorrect,
+    notes,
+    reflect3: r3 ? r3.value : '',
+    reflect4: r4 ? r4.value : '',
+    startedAt: sessionStart,
+    savedAt: Date.now()
+  };
+}
+function autosave(){
+  saveJSON(STORAGE_KEY, snapshotProgress(), 'progress');
+}
+
+function formatDuration(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return m>0 ? `${m}분 ${s}초` : `${s}초`;
+}
+function formatDate(ts){
+  return new Date(ts).toLocaleString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+
+function checkForSavedProgress(){
+  const saved = loadJSON(STORAGE_KEY, 'progress');
+  if(!saved || !saved.stage) return;
+  const stageNames = ['타이틀','1막 경고','2막 준비','3막 그 밤','4막 전승'];
+  document.getElementById('continueText').textContent =
+    `저장된 진행이 있습니다 — ${stageNames[saved.stage]}까지 (마지막 저장: ${formatDate(saved.savedAt)})`;
+  document.getElementById('continueBanner').style.display = 'block';
+}
+function dismissContinue(){
+  document.getElementById('continueBanner').style.display = 'none';
+}
+function restoreProgress(){
+  const saved = loadJSON(STORAGE_KEY, 'progress');
+  if(!saved) return;
+  sessionStart = saved.startedAt || Date.now();
+  firstTryCorrect = saved.firstTryCorrect || {};
+  Object.keys(saved.notes || {}).forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = saved.notes[id];
+  });
+  if(document.getElementById('reflect3')) document.getElementById('reflect3').value = saved.reflect3 || '';
+  if(document.getElementById('reflect4')) document.getElementById('reflect4').value = saved.reflect4 || '';
+  prepIndex = saved.prepIndex || 0;
+  prepDone = saved.prepDone || 0;
+  dismissContinue();
+  goTo(saved.stage || 0);
+  if(saved.stage >= 2){
+    initPrep();
+    renderPrepStep();
+    document.getElementById('prepFill').style.width = (prepDone/prepSteps.length*100)+'%';
+    document.getElementById('prepLabel').textContent = `준비 ${prepDone}/${prepSteps.length}`;
+    if(prepDone >= 4){ ['mark-lintel','mark-left','mark-right'].forEach(id=>document.getElementById(id).classList.add('show')); }
+    if(prepDone >= prepSteps.length){ document.getElementById('s2continue').style.display = 'flex'; }
+  }
+}
+
+/* ---------- BADGES ---------- */
+const BADGE_DEFS = [
+  { id:'perfect_door', name:'완벽한 문설주', desc:'2막의 아홉 규례를 모두 첫 시도에 맞혔어요',
+    check: (ftc)=> [0,1,2,3,4,5,6,7,8].every(i=>ftc['prep'+i]===true) },
+  { id:'fast_exit', name:'빠른 탈출', desc:'10분 안에 전체 여정을 마쳤어요',
+    check: (ftc, durationSec)=> durationSec < 600 },
+  { id:'perfect_score', name:'만점 순례자', desc:'모든 질문을 한 번에 맞혔어요',
+    check: (ftc)=>{ const vals = Object.values(ftc); return vals.length>0 && vals.every(Boolean); } },
+  { id:'devoted', name:'말씀 지킴이', desc:'세 번 이상 완주했어요',
+    check: (ftc, durationSec, histLenAfter)=> histLenAfter >= 3 }
+];
+
+function logHistoryIfNeeded(){
+  if(sessionLogged) return;
+  sessionLogged = true;
+  const {correct, total} = currentScore();
+  const durationSec = Math.max(0, Math.round((Date.now() - sessionStart) / 1000));
+  const hist = loadJSON(HISTORY_KEY, 'history') || [];
+  const newLen = hist.length + 1;
+  const earnedBadgeIds = BADGE_DEFS.filter(b=>b.check(firstTryCorrect, durationSec, newLen)).map(b=>b.id);
+  const entry = {
+    completedAt: Date.now(),
+    durationSec, correct, total,
+    score, bestCombo,
+    player: playerName,
+    badges: earnedBadgeIds
+  };
+  hist.push(entry);
+  saveJSON(HISTORY_KEY, hist, 'history');
+
+  const unlocked = loadJSON(BADGES_KEY, 'badges') || [];
+  earnedBadgeIds.forEach(id=>{ if(!unlocked.includes(id)) unlocked.push(id); });
+  saveJSON(BADGES_KEY, unlocked, 'badges');
+
+  buildReviewList();
+  showCelebration(entry, earnedBadgeIds);
+}
+
+/* ---------- REVIEW: items missed on first try, last session ---------- */
+function reviewLabelFor(key){
+  if(key === 'q0') return { label:'1막 · 은금 패물 질문', correct: q0.choices.find(c=>c.correct).t, meaning: q0.meaning };
+  if(key === 'q1') return { label:'1막 · 바로의 반응 질문', correct: q1.choices.find(c=>c.correct).t, meaning: '' };
+  if(key === 'cineQ') return { label:'3막 · 여호와의 밤 질문', correct: cineQ.choices.find(c=>c.correct).t, meaning: '' };
+  if(key.indexOf('prep') === 0){
+    const idx = parseInt(key.replace('prep',''), 10);
+    const step = prepSteps[idx];
+    if(step) return { label:'2막 · '+step.title, correct: step.choices.find(c=>c.correct).t, meaning: step.meaning };
+  }
+  return { label:key, correct:'', meaning:'' };
+}
+function buildReviewList(){
+  const items = Object.keys(firstTryCorrect)
+    .filter(key=>firstTryCorrect[key] === false)
+    .map(reviewLabelFor);
+  saveJSON(REVIEW_KEY, items, 'review');
+}
+function renderReview(){
+  const items = loadJSON(REVIEW_KEY, 'review') || [];
+  const box = document.getElementById('reviewList');
+  if(!box) return;
+  if(items.length === 0){
+    box.innerHTML = `<p class="hint" style="margin:0;">지난 세션에서 처음에 틀린 문제가 없습니다 🎉</p>`;
+    return;
+  }
+  box.innerHTML = items.map(it=>`
+    <div class="history-item">
+      <div class="history-date">${it.label}</div>
+      <div class="history-stats">정답: ${it.correct}</div>
+      ${it.meaning ? `<div class="hint" style="margin-top:6px;">${it.meaning}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+/* ---------- CELEBRATION ---------- */
+function spawnConfetti(){
+  const layer = document.getElementById('confettiLayer');
+  if(!layer) return;
+  layer.innerHTML = '';
+  const colors = ['#c9a24b','#e3c579','#a83244','#ece1c6'];
+  for(let i=0; i<24; i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = (Math.random()*100)+'%';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDelay = (Math.random()*0.4)+'s';
+    p.style.animationDuration = (1.2+Math.random()*0.8)+'s';
+    layer.appendChild(p);
+  }
+}
+function showCelebration(entry, earnedBadgeIds){
+  const stats = document.getElementById('celebrationStats');
+  if(stats) stats.textContent = `점수 ${entry.score}점 · 정답 ${entry.correct}/${entry.total} · 소요 ${formatDuration(entry.durationSec)} · 최고 콤보 ${entry.bestCombo}`;
+  const bBox = document.getElementById('celebrationBadges');
+  if(bBox){
+    if(earnedBadgeIds.length){
+      bBox.innerHTML = '<p style="color:var(--gold-soft); margin:0 0 8px;">새 배지 획득!</p>' +
+        earnedBadgeIds.map(id=>{
+          const def = BADGE_DEFS.find(b=>b.id===id);
+          return `<div class="badge-chip">🏅 ${def ? def.name : id}</div>`;
+        }).join('');
+    } else {
+      bBox.innerHTML = '';
+    }
+  }
+  spawnConfetti();
+  document.getElementById('celebrationOverlay').classList.add('show');
+}
+function closeCelebration(){
+  document.getElementById('celebrationOverlay').classList.remove('show');
+  const layer = document.getElementById('confettiLayer');
+  if(layer) layer.innerHTML = '';
+}
+function closeCelebrationOutside(e){
+  if(e.target.id === 'celebrationOverlay') closeCelebration();
+}
+
+/* ---------- HISTORY MODAL: tabs, badges gallery, leaderboard, rank ---------- */
+function computeRankTitle(){
+  const hist = loadJSON(HISTORY_KEY, 'history') || [];
+  const mine = hist.filter(h=>(h.player||'Player') === playerName);
+  const n = mine.length;
+  if(n === 0) return '아직 여정을 시작하지 않았습니다';
+  if(n < 2) return '초보 순례자';
+  if(n < 4) return '유월절의 증인';
+  return '언약의 증인';
+}
+function renderHistory(){
+  const hist = loadJSON(HISTORY_KEY, 'history') || [];
+  const box = document.getElementById('historyList');
+  if(hist.length === 0){
+    box.innerHTML = `<p class="hint" style="margin:0;">아직 완료 기록이 없습니다. 4막(전승)까지 진행하면 자동으로 기록됩니다.</p>`;
+    return;
+  }
+  box.innerHTML = hist.slice().reverse().map(h=>{
+    const pct = h.total ? Math.round(h.correct/h.total*100) : 0;
+    const badgeLine = (h.badges && h.badges.length)
+      ? h.badges.map(id=>{ const def=BADGE_DEFS.find(b=>b.id===id); return `🏅 ${def?def.name:id}`; }).join(' · ')
+      : '';
+    return `<div class="history-item">
+      <div class="history-date">${formatDate(h.completedAt)} — ${h.player||'Player'}</div>
+      <div class="history-stats">⭐ ${h.score||0}점 · 정답 ${h.correct}/${h.total} (${pct}%) · 소요 ${formatDuration(h.durationSec)}</div>
+      ${badgeLine ? `<div class="hint" style="margin-top:4px;">${badgeLine}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+function renderBadgeGallery(){
+  const unlocked = loadJSON(BADGES_KEY, 'badges') || [];
+  const box = document.getElementById('badgeGallery');
+  if(!box) return;
+  box.innerHTML = BADGE_DEFS.map(b=>{
+    const got = unlocked.includes(b.id);
+    return `<div class="badge-row ${got?'unlocked':'locked'}">
+      <span class="badge-icon">${got?'🏅':'🔒'}</span>
+      <div>
+        <div class="badge-name">${b.name}</div>
+        <div class="hint" style="margin:0;">${b.desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderLeaderboard(){
+  const hist = loadJSON(HISTORY_KEY, 'history') || [];
+  const box = document.getElementById('leaderboardList');
+  if(!box) return;
+  if(hist.length === 0){
+    box.innerHTML = `<p class="hint" style="margin:0;">아직 기록이 없습니다.</p>`;
+    return;
+  }
+  const byPlayer = {};
+  hist.forEach(h=>{
+    const name = h.player || 'Player';
+    if(!byPlayer[name]) byPlayer[name] = { sessions:0, totalScore:0, totalCorrect:0, totalQ:0 };
+    const p = byPlayer[name];
+    p.sessions++; p.totalScore += (h.score||0); p.totalCorrect += h.correct; p.totalQ += h.total;
+  });
+  const rows = Object.entries(byPlayer).map(([name,p])=>({
+    name, ...p, avgAcc: p.totalQ ? Math.round(p.totalCorrect/p.totalQ*100) : 0
+  })).sort((a,b)=>b.totalScore-a.totalScore);
+  box.innerHTML = rows.map((r,i)=>`
+    <div class="history-item">
+      <div class="history-date">${i+1}위 · ${r.name}</div>
+      <div class="history-stats">누적 점수 ${r.totalScore}점 · 완주 ${r.sessions}회 · 평균 정답률 ${r.avgAcc}%</div>
+    </div>
+  `).join('');
+}
+function switchHistTab(name){
+  ['log','badges','board','review'].forEach(k=>{
+    document.getElementById('htab-'+k).classList.toggle('active', k===name);
+    document.getElementById('histpane-'+k).classList.toggle('active', k===name);
+  });
+  if(name==='log') renderHistory();
+  if(name==='badges') renderBadgeGallery();
+  if(name==='board') renderLeaderboard();
+  if(name==='review') renderReview();
+}
+function toggleHistory(){
+  const ov = document.getElementById('historyOverlay');
+  ov.classList.toggle('show');
+  if(ov.classList.contains('show')){
+    document.getElementById('rankLine').textContent = '현재 칭호: ' + computeRankTitle();
+    switchHistTab('log');
+  }
+}
+function closeHistoryOutside(e){
+  if(e.target.id === 'historyOverlay') toggleHistory();
+}
+function clearHistory(){
+  saveJSON(HISTORY_KEY, [], 'history');
+  renderHistory();
 }
 
 /* ---------- MUSIC (plain Web Audio API — no external library) ----------
@@ -508,7 +1213,7 @@ function goTo(n){
    sustained pad. I-V-vi-IV in C major — one of the most familiar,
    uplifting progressions there is. No dissonance, no low pulsing,
    nothing tense — just a cheerful little game theme.               */
-let audioCtx=null, masterGain=null, padGain=null, padOscs=[];
+let padOscs=[];
 let musicOn=false, noteTimer=null, noteStep=0;
 
 const N = { C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
@@ -573,23 +1278,7 @@ function scheduleNote(){
 }
 
 function startMusic(){
-  const AC = window.AudioContext || window.webkitAudioContext;
-  if(!AC) return false;
-  if(!audioCtx){
-    audioCtx = new AC();
-    masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.8;
-    const lp = audioCtx.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.value = 3200; // keeps the bells sweet, not tinny
-    masterGain.connect(lp);
-    lp.connect(audioCtx.destination);
-
-    padGain = audioCtx.createGain();
-    padGain.gain.value = 1;
-    padGain.connect(lp);
-  }
-  return true;
+  return ensureAudioContext();
 }
 
 function toggleMusic(){
@@ -641,24 +1330,40 @@ const q0 = {
   fb:'창세기 15:13-14에서 여호와는 아브라함에게 이미 말씀하셨습니다 — 그의 후손이 사백 년 동안 종살이한 후, "큰 재물을 이끌고" 나오리라고. 11:2-3의 지시는 바로 그 오래된 약속이 실현되기 직전의 준비 단계입니다.',
   meaning:'이 짧은 구절은 출애굽 전체가 갑작스러운 사건이 아니라, 수백 년 전에 이미 하신 약속의 성취라는 것을 보여줍니다. 심판과 구원의 밤은 즉흥적인 개입이 아니라 오래 참고 지켜온 언약의 완성입니다.'
 };
+function pickRenderOrder(choices){
+  let order = shuffleIndices(choices.length);
+  if(difficulty === 'easy'){
+    const wrongPositions = order.filter(idx=>!choices[idx].correct);
+    if(wrongPositions.length > 1){
+      const remove = wrongPositions[Math.floor(Math.random()*wrongPositions.length)];
+      order = order.filter(idx=>idx!==remove);
+    }
+  }
+  return order;
+}
 function renderQ0(){
   const box = document.getElementById('q0choices'); box.innerHTML='';
-  q0.choices.forEach((c,i)=>{
-    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
-    b.onclick=()=>answerQ0(i); box.appendChild(b);
+  q0.order = pickRenderOrder(q0.choices);
+  q0.order.forEach((origIdx,pos)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=q0.choices[origIdx].t;
+    b.onclick=()=>answerQ0(pos); box.appendChild(b);
   });
 }
-function answerQ0(i){
+function answerQ0(pos){
+  const order = q0.order;
   document.querySelectorAll('#q0choices .choice').forEach((b,idx)=>{
     b.disabled=true;
-    if(q0.choices[idx].correct) b.classList.add('correct');
-    else if(idx===i) b.classList.add('wrong');
+    if(q0.choices[order[idx]].correct) b.classList.add('correct');
+    else if(idx===pos) b.classList.add('wrong');
   });
+  const chosen = q0.choices[order[pos]];
   const fb = document.getElementById('q0feedback');
-  fb.innerHTML = q0.fb + `<span class="meaning"><b>💡 의미</b><br>${q0.meaning}</span>`;
+  fb.innerHTML = q0.fb + meaningBlock(q0.meaning);
   fb.classList.add('show');
   document.getElementById('q0next').style.display='block';
   renderQ1();
+  recordFirstTry('q0', chosen.correct);
+  registerAnswer(chosen.correct);
 }
 const q1 = {
   choices:[
@@ -669,21 +1374,26 @@ const q1 = {
 };
 function renderQ1(){
   const box = document.getElementById('q1choices'); box.innerHTML='';
-  q1.choices.forEach((c,i)=>{
-    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
-    b.onclick=()=>answerQ1(i); box.appendChild(b);
+  q1.order = pickRenderOrder(q1.choices);
+  q1.order.forEach((origIdx,pos)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=q1.choices[origIdx].t;
+    b.onclick=()=>answerQ1(pos); box.appendChild(b);
   });
 }
-function answerQ1(i){
+function answerQ1(pos){
+  const order = q1.order;
   document.querySelectorAll('#q1choices .choice').forEach((b,idx)=>{
     b.disabled=true;
-    if(q1.choices[idx].correct) b.classList.add('correct');
-    else if(idx===i) b.classList.add('wrong');
+    if(q1.choices[order[idx]].correct) b.classList.add('correct');
+    else if(idx===pos) b.classList.add('wrong');
   });
+  const chosen = q1.choices[order[pos]];
   const fb = document.getElementById('q1feedback');
-  fb.textContent = q1.choices[i].fb;
+  fb.textContent = chosen.fb;
   fb.classList.add('show');
   document.getElementById('q1next').style.display='block';
+  recordFirstTry('q1', chosen.correct);
+  registerAnswer(chosen.correct);
 }
 const q2 = {
   choices:[
@@ -694,18 +1404,21 @@ const q2 = {
 };
 function renderQ2(){
   const box = document.getElementById('q2choices'); box.innerHTML='';
-  q2.choices.forEach((c,i)=>{
-    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
-    b.onclick=()=>answerQ2(i); box.appendChild(b);
+  q2.order = shuffleIndices(q2.choices.length); // no easy-mode elimination — open reflection, no wrong answer
+  q2.order.forEach((origIdx,pos)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=q2.choices[origIdx].t;
+    b.onclick=()=>answerQ2(pos); box.appendChild(b);
   });
 }
-function answerQ2(i){
+function answerQ2(pos){
+  const order = q2.order;
   document.querySelectorAll('#q2choices .choice').forEach(b=>b.disabled=true);
-  document.querySelectorAll('#q2choices .choice')[i].classList.add('correct');
+  document.querySelectorAll('#q2choices .choice')[pos].classList.add('correct');
   const fb=document.getElementById('q2feedback');
-  fb.textContent = q2.choices[i].fb;
+  fb.textContent = q2.choices[order[pos]].fb;
   fb.classList.add('show');
   document.getElementById('s1continue').style.display='flex';
+  autosave();
 }
 renderQ0(); renderQ2();
 
@@ -816,20 +1529,23 @@ function renderPrepStep(){
     <div class="feedback" id="prepFeedback"></div>
   `;
   const box = document.getElementById('prepChoices');
-  step.choices.forEach((c,i)=>{
-    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
-    b.onclick=()=>answerPrep(i); box.appendChild(b);
+  step.order = pickRenderOrder(step.choices);
+  step.order.forEach((origIdx,pos)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=step.choices[origIdx].t;
+    b.onclick=()=>answerPrep(pos); box.appendChild(b);
   });
 }
-function answerPrep(i){
+function answerPrep(pos){
   const step = prepSteps[prepIndex];
+  const order = step.order;
   document.querySelectorAll('#prepChoices .choice').forEach((b,idx)=>{
     b.disabled=true;
-    if(step.choices[idx].correct) b.classList.add('correct');
-    else if(idx===i) b.classList.add('wrong');
+    if(step.choices[order[idx]].correct) b.classList.add('correct');
+    else if(idx===pos) b.classList.add('wrong');
   });
+  const chosen = step.choices[order[pos]];
   const fb = document.getElementById('prepFeedback');
-  fb.innerHTML = step.choices[i].fb + `<span class="meaning"><b>💡 의미</b><br>${step.meaning}</span>`;
+  fb.innerHTML = chosen.fb + meaningBlock(step.meaning);
   fb.classList.add('show');
 
   prepDone = Math.min(prepDone + 1, prepSteps.length);
@@ -845,12 +1561,96 @@ function answerPrep(i){
   const nextBtn = document.createElement('div'); nextBtn.className='btn-row';
   if(prepIndex < prepSteps.length-1){
     nextBtn.innerHTML = `<button class="btn btn-primary">다음 단계</button>`;
-    nextBtn.querySelector('button').onclick = ()=>{ prepIndex++; renderPrepStep(); };
+    nextBtn.querySelector('button').onclick = ()=>{ prepIndex++; renderPrepStep(); autosave(); };
   } else {
     nextBtn.innerHTML = `<p style="color:var(--gold-soft); font-family:'Noto Serif KR',serif; font-size:16px;">이 집은 준비되었습니다. 규례를 다 갖추었습니다.</p>`;
     document.getElementById('s2continue').style.display='flex';
+    document.getElementById('matchGamePanel').style.display='block';
+    renderMatchGame();
   }
   document.getElementById('prepPanel').appendChild(nextBtn);
+  recordFirstTry('prep'+prepIndex, chosen.correct);
+  registerAnswer(chosen.correct);
+}
+
+/* ---------- BONUS MINI-GAME: 규례와 의미 짝맞추기 ---------- */
+const MATCH_PAIRS = [
+  {id:'lamb', left:'흠 없는 어린양', right:'완전한 것이 불완전한 것을 대신함'},
+  {id:'blood', left:'문설주에 바른 피', right:'순종과 신뢰의 공개적 표현'},
+  {id:'unleavened', left:'무교병', right:'떠날 시간조차 없었던 그 밤의 긴박함'},
+  {id:'travel', left:'지팡이와 신발', right:'언제든 순종할 준비가 된 자세'},
+  {id:'calendar', left:'새로운 달력', right:'구원받은 날을 기점으로 삼는 정체성'},
+  {id:'bones', left:'뼈를 꺾지 않음', right:'나누되 흩어버리지 않는 공동체적 온전함'}
+];
+let matchState = null;
+function renderMatchGame(){
+  matchState = { leftOrder: shuffleIndices(MATCH_PAIRS.length), rightOrder: shuffleIndices(MATCH_PAIRS.length), selectedLeft:null, selectedRight:null, matchedIds:new Set() };
+  const box = document.getElementById('matchGamePanel');
+  box.innerHTML = `
+    <p class="lede" style="margin:0 0 6px;">보너스 — 규례와 의미 짝맞추기</p>
+    <p class="hint" style="margin:0 0 14px;">왼쪽 항목과 오른쪽 의미를 하나씩 눌러 짝을 맞춰보세요. 맞히면 점수가 올라갑니다. 건너뛰어도 진행에는 지장이 없습니다.</p>
+    <div class="match-grid">
+      <div class="match-col" id="matchLeft"></div>
+      <div class="match-col" id="matchRight"></div>
+    </div>
+    <div class="btn-row"><button class="btn" onclick="skipMatchGame()">건너뛰기</button></div>
+  `;
+  paintMatchColumns();
+}
+function paintMatchColumns(){
+  if(!matchState) return;
+  const leftBox = document.getElementById('matchLeft');
+  const rightBox = document.getElementById('matchRight');
+  if(!leftBox || !rightBox) return;
+  leftBox.innerHTML=''; rightBox.innerHTML='';
+  matchState.leftOrder.forEach(idx=>{
+    const pair = MATCH_PAIRS[idx];
+    const b = document.createElement('button');
+    b.className='match-card'; b.textContent = pair.left;
+    if(matchState.matchedIds.has(pair.id)){ b.classList.add('matched'); b.disabled=true; }
+    if(matchState.selectedLeft===pair.id){ b.classList.add('selected'); }
+    b.onclick = ()=>selectMatch('left', pair.id);
+    leftBox.appendChild(b);
+  });
+  matchState.rightOrder.forEach(idx=>{
+    const pair = MATCH_PAIRS[idx];
+    const b = document.createElement('button');
+    b.className='match-card'; b.textContent = pair.right;
+    if(matchState.matchedIds.has(pair.id)){ b.classList.add('matched'); b.disabled=true; }
+    if(matchState.selectedRight===pair.id){ b.classList.add('selected'); }
+    b.onclick = ()=>selectMatch('right', pair.id);
+    rightBox.appendChild(b);
+  });
+}
+function selectMatch(side, id){
+  if(!matchState || matchState.matchedIds.has(id)) return;
+  if(side==='left') matchState.selectedLeft = id; else matchState.selectedRight = id;
+  paintMatchColumns();
+  if(matchState.selectedLeft && matchState.selectedRight){
+    if(matchState.selectedLeft === matchState.selectedRight){
+      matchState.matchedIds.add(matchState.selectedLeft);
+      score += 15; updateScoreHud(); playCorrectSfx(); autosave();
+      matchState.selectedLeft = null; matchState.selectedRight = null;
+      paintMatchColumns();
+      if(matchState.matchedIds.size === MATCH_PAIRS.length) finishMatchGame();
+    } else {
+      playWrongSfx();
+      const l = matchState.selectedLeft, r = matchState.selectedRight;
+      setTimeout(()=>{
+        if(matchState && matchState.selectedLeft===l && matchState.selectedRight===r){
+          matchState.selectedLeft=null; matchState.selectedRight=null; paintMatchColumns();
+        }
+      }, 500);
+    }
+  }
+}
+function finishMatchGame(){
+  const box = document.getElementById('matchGamePanel');
+  if(box) box.innerHTML = `<p style="color:var(--gold-soft); font-family:'Noto Serif KR',serif; font-size:16px; margin:0;">보너스 완료! 모든 규례와 의미를 짝지었습니다. (+${MATCH_PAIRS.length*15}점)</p>`;
+}
+function skipMatchGame(){
+  const box = document.getElementById('matchGamePanel');
+  if(box) box.innerHTML = '';
 }
 
 /* ---------- STAGE 3 ---------- */
@@ -876,20 +1676,25 @@ const cineQ = {
 };
 function renderCineQ(){
   const box = document.getElementById('cineQchoices'); box.innerHTML='';
-  cineQ.choices.forEach((c,i)=>{
-    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
-    b.onclick=()=>answerCineQ(i); box.appendChild(b);
+  cineQ.order = pickRenderOrder(cineQ.choices);
+  cineQ.order.forEach((origIdx,pos)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=cineQ.choices[origIdx].t;
+    b.onclick=()=>answerCineQ(pos); box.appendChild(b);
   });
 }
-function answerCineQ(i){
+function answerCineQ(pos){
+  const order = cineQ.order;
   document.querySelectorAll('#cineQchoices .choice').forEach((b,idx)=>{
     b.disabled=true;
-    if(cineQ.choices[idx].correct) b.classList.add('correct');
-    else if(idx===i) b.classList.add('wrong');
+    if(cineQ.choices[order[idx]].correct) b.classList.add('correct');
+    else if(idx===pos) b.classList.add('wrong');
   });
+  const chosen = cineQ.choices[order[pos]];
   const fb = document.getElementById('cineQfeedback');
-  fb.textContent = cineQ.choices[i].fb;
+  fb.textContent = chosen.fb;
   fb.classList.add('show');
+  recordFirstTry('cineQ', chosen.correct);
+  registerAnswer(chosen.correct);
 }
 
 /* ---------- NOTES DRAWER (accessible from any stage) ---------- */
@@ -903,6 +1708,28 @@ function switchChapter(ch){
   ['11','12'].forEach(c=>{
     document.getElementById('tab-'+c).classList.toggle('active', c===ch);
     document.getElementById('pane-'+c).classList.toggle('active', c===ch);
+  });
+}
+
+/* ---------- SCRIPTURE READING DRAWER (left side) ---------- */
+let textFontStep = 0; // -2..+3
+function toggleTextDrawer(){
+  document.getElementById('textOverlay').classList.toggle('show');
+}
+function closeTextOutside(e){
+  if(e.target.id === 'textOverlay') toggleTextDrawer();
+}
+function switchTextChapter(ch){
+  ['11','12'].forEach(c=>{
+    document.getElementById('rtab-'+c).classList.toggle('active', c===ch);
+    document.getElementById('rpane-'+c).classList.toggle('active', c===ch);
+  });
+}
+function adjustTextFont(dir){
+  textFontStep = Math.max(-2, Math.min(3, textFontStep + dir));
+  const size = 15 + textFontStep; // base 15px
+  document.querySelectorAll('#textDrawer .verse-block p').forEach(p=>{
+    p.style.fontSize = size + 'px';
   });
 }
 
@@ -997,6 +1824,7 @@ function restart(){
   document.getElementById('appPreview').classList.remove('show');
   document.getElementById('copyBtn').style.display='none';
   document.getElementById('notesOverlay').classList.remove('show');
+  document.getElementById('textOverlay').classList.remove('show');
   document.getElementById('q0next').style.display='none';
   document.getElementById('q1next').style.display='none';
   document.getElementById('s1continue').style.display='none';
@@ -1004,8 +1832,49 @@ function restart(){
   document.getElementById('q0feedback').classList.remove('show');
   document.getElementById('q1feedback').classList.remove('show');
   document.getElementById('q2feedback').classList.remove('show');
+
+  // Start a fresh session for scoring/history purposes; past history stays.
+  sessionStart = Date.now();
+  firstTryCorrect = {};
+  sessionLogged = false;
+  score = 0; combo = 0; bestCombo = 0;
+  updateScoreHud();
+  matchState = null;
+  document.getElementById('matchGamePanel').innerHTML = '';
+  document.getElementById('matchGamePanel').style.display = 'none';
+  closeCelebration();
+  saveJSON(STORAGE_KEY, null, 'progress');
+  dismissContinue();
+
   goTo(0);
 }
+
+/* ---------- INIT: autosave listeners, resume banner, name/difficulty restore ---------- */
+(function initPersistence(){
+  const debounced = (()=>{ let t; return ()=>{ clearTimeout(t); t=setTimeout(autosave, 600); }; })();
+  document.querySelectorAll('#notesOverlay textarea, #reflect3, #reflect4').forEach(t=>{
+    t.addEventListener('input', debounced);
+  });
+
+  try{
+    const savedName = localStorage.getItem('exodusGame_playerName');
+    if(savedName) playerName = savedName;
+  }catch(e){}
+  const nameInput = document.getElementById('playerNameInput');
+  if(nameInput){
+    nameInput.value = playerName === 'Player' ? '' : playerName;
+    nameInput.addEventListener('input', ()=>setPlayerName(nameInput.value));
+  }
+
+  try{
+    const savedDiff = localStorage.getItem('exodusGame_difficulty_v1');
+    if(savedDiff) difficulty = savedDiff;
+  }catch(e){}
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.toggle('active', b.dataset.d===difficulty));
+
+  updateScoreHud();
+  checkForSavedProgress();
+})();
 </script>
 </body>
 </html>
