@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>그날 밤, 문설주에 — 출애굽기 11-12장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0a0d18; --night2:#0f1324;
+    --panel:#141a30; --panel2:#1a2138;
+    --blood:#7c2430; --blood-bright:#a83244; --blood-glow:#c94a54;
+    --gold:#c9a24b; --gold-soft:#e3c579; --gold-dim:#8a723a;
+    --parchment:#ece1c6; --parchment-dim:#c9bfa3; --muted:#8891ab;
+    --line: rgba(201,162,75,0.22); --line-strong: rgba(201,162,75,0.45);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(ellipse at 50% -10%, #1a2140 0%, var(--night) 55%, #050710 100%);
+    color:var(--parchment); font-family:'Noto Sans KR', sans-serif;
+    min-height:100vh; overflow-x:hidden; position:relative;
+  }
+  body::before{
+    content:''; position:fixed; inset:0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.35), transparent),
+      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.25), transparent),
+      radial-gradient(1px 1px at 60% 70%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 30% 85%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 45% 35%, rgba(255,255,255,0.25), transparent);
+    pointer-events:none; opacity:0.5; z-index:0;
+  }
+  #lamp-glow{
+    position:fixed; top:-120px; left:50%; transform:translateX(-50%);
+    width:520px; height:520px; border-radius:50%;
+    background:radial-gradient(circle, rgba(201,162,75,0.16) 0%, rgba(201,162,75,0.05) 45%, transparent 70%);
+    pointer-events:none; z-index:0; animation: flicker 5s ease-in-out infinite;
+  }
+  @keyframes flicker{
+    0%,100%{opacity:1; transform:translateX(-50%) scale(1);}
+    45%{opacity:0.85; transform:translateX(-50%) scale(0.97);}
+    50%{opacity:1; transform:translateX(-50%) scale(1.02);}
+    78%{opacity:0.9; transform:translateX(-50%) scale(0.99);}
+  }
+  .wrap{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:32px 22px 90px;}
+  .stage{display:none; animation:fadeUp .7s ease both;}
+  .stage.active{display:block;}
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  .eyebrow{
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:500;
+    letter-spacing:0.14em; text-transform:uppercase; font-size:13px; color:var(--gold-soft);
+    display:flex; align-items:center; gap:10px; margin-bottom:10px;
+  }
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--gold-dim);}
+
+  h1.title{ font-family:'Noto Serif KR', serif; font-weight:900; font-size:40px; line-height:1.25; color:var(--parchment); margin:0 0 6px; letter-spacing:-0.01em; }
+  h2.section-title{ font-family:'Noto Serif KR', serif; font-weight:700; font-size:26px; color:var(--parchment); margin:0 0 14px; line-height:1.35; }
+  .verse-ref{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15px; color:var(--gold); letter-spacing:0.02em; }
+  p{ line-height:1.85; color:var(--parchment-dim); font-weight:300; font-size:16px; }
+  .lede{ color:var(--parchment); font-size:17px; font-weight:400; }
+
+  .panel{ background:linear-gradient(180deg, var(--panel) 0%, var(--panel2) 100%); border:1px solid var(--line); border-radius:4px; padding:26px 24px; margin:20px 0; position:relative; }
+  .panel::before{ content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(180deg, var(--gold), transparent); }
+
+  .btn{ font-family:'Noto Sans KR', sans-serif; font-weight:500; font-size:15px; background:transparent; color:var(--gold-soft); border:1px solid var(--line-strong); border-radius:2px; padding:13px 26px; cursor:pointer; letter-spacing:0.02em; transition:all .25s ease; }
+  .btn:hover{ background:rgba(201,162,75,0.1); border-color:var(--gold); }
+  .btn:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
+  .btn-primary{ background:linear-gradient(180deg, var(--blood-bright), var(--blood)); border:1px solid var(--blood-glow); color:var(--parchment); }
+  .btn-primary:hover{ filter:brightness(1.12); }
+  .btn-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; align-items:center; }
+  .btn-small{ padding:9px 16px; font-size:13px; }
+
+  .choice{ display:block; width:100%; text-align:left; background:var(--panel2); border:1px solid var(--line); color:var(--parchment-dim); padding:16px 18px; margin:10px 0; border-radius:3px; cursor:pointer; font-family:'Noto Sans KR', sans-serif; font-size:15px; line-height:1.6; transition:all .2s ease; }
+  .choice:hover{ border-color:var(--gold-dim); background:#1d2540; color:var(--parchment); }
+  .choice:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; }
+  .choice.correct{ border-color:var(--gold); background:rgba(201,162,75,0.1); color:var(--gold-soft); }
+  .choice.wrong{ border-color:var(--blood-bright); background:rgba(124,36,48,0.18); color:#e3a8ae; }
+  .choice[disabled]{ cursor:default; }
+
+  .feedback{ margin-top:16px; padding:16px 18px; border-left:2px solid var(--gold); background:rgba(201,162,75,0.06); font-size:15px; line-height:1.75; color:var(--parchment); display:none; }
+  .feedback.show{ display:block; animation:fadeUp .4s ease; }
+  .feedback .meaning{ display:block; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line-strong); color:var(--parchment-dim); font-style:normal; }
+  .feedback .meaning b{ color:var(--gold-soft); font-weight:500; }
+
+  .progress-track{ height:3px; background:var(--line); border-radius:2px; margin:26px 0 6px; overflow:hidden; }
+  .progress-fill{ height:100%; background:linear-gradient(90deg, var(--gold-dim), var(--gold-soft)); width:0%; transition:width .6s ease; }
+  .progress-label{ font-size:12px; color:var(--muted); letter-spacing:0.05em; }
+
+  .door-wrap{ display:flex; justify-content:center; margin:26px 0 10px; }
+  .door{ width:180px; height:230px; position:relative; }
+  .lintel{ position:absolute; top:0; left:-10px; right:-10px; height:16px; background:#3a2e1c; border-radius:2px; }
+  .post{ position:absolute; top:14px; bottom:0; width:14px; background:#3a2e1c; }
+  .post.left{ left:-10px; } .post.right{ right:-10px; }
+  .door-face{ position:absolute; top:14px; left:6px; right:6px; bottom:0; background:linear-gradient(180deg,#241a14,#1a130e); border:1px solid #3a2e1c; }
+  .daub{ position:absolute; width:26px; height:14px; border-radius:50% 50% 45% 45% / 60% 60% 40% 40%; background:radial-gradient(circle at 35% 30%, var(--blood-bright), var(--blood) 70%); box-shadow:0 0 14px rgba(169,50,68,0.55); opacity:0; transform:scale(0.6); transition:all .6s ease;}
+  .daub.show{ opacity:1; transform:scale(1); }
+  .daub.lintel-mark{ top:-14px; left:50%; margin-left:-13px; width:60px; height:12px; border-radius:8px; }
+  .daub.left-mark{ top:60px; left:-16px; }
+  .daub.right-mark{ top:60px; right:-16px; }
+
+  .step-dots{ display:flex; gap:6px; margin:18px 0 6px; flex-wrap:wrap; }
+  .dot{ width:8px; height:8px; border-radius:50%; background:var(--line-strong); }
+  .dot.done{ background:var(--gold); }
+  .dot.current{ background:var(--gold-soft); box-shadow:0 0 6px var(--gold-soft); }
+
+  .cine-line{ opacity:0; transform:translateY(8px); transition:all .8s ease; margin:14px 0; font-size:17px; color:var(--parchment); line-height:1.8; }
+  .cine-line.show{ opacity:1; transform:translateY(0); }
+  .cine-line .ref{ display:block; font-size:13px; color:var(--gold); margin-top:4px; }
+  .warn-box{ border:1px solid var(--line-strong); background:rgba(124,36,48,0.08); padding:18px 20px; margin:22px 0; font-size:14px; line-height:1.8; color:var(--parchment-dim); }
+  .warn-box b{ color:var(--gold-soft); }
+
+  textarea{ width:100%; min-height:100px; background:var(--panel2); border:1px solid var(--line); border-radius:3px; color:var(--parchment); font-family:'Noto Sans KR', sans-serif; font-size:15px; padding:14px 16px; line-height:1.7; resize:vertical; }
+  textarea:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; }
+
+  .legacy-card{ margin-top:22px; padding:24px; border:1px solid var(--gold-dim); background:linear-gradient(180deg, rgba(201,162,75,0.06), transparent); font-family:'Cormorant Garamond', serif; font-style:italic; font-size:19px; line-height:1.7; color:var(--gold-soft); display:none; }
+  .legacy-card.show{ display:block; animation:fadeUp .5s ease; }
+
+  .refs-summary{ display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+  .ref-chip{ font-size:12px; padding:6px 12px; border:1px solid var(--line-strong); border-radius:20px; color:var(--gold); }
+
+  .top-nav{ display:flex; justify-content:space-between; align-items:center; margin-bottom:34px; gap:12px; flex-wrap:wrap; }
+  .brand{ font-family:'Noto Serif KR', serif; font-weight:700; font-size:14px; color:var(--gold-soft); letter-spacing:0.05em;}
+  .stage-tag{ font-size:12px; color:var(--muted); letter-spacing:0.08em; }
+  .music-btn{ font-size:12px; padding:8px 14px; }
+
+  .app-field{ margin:22px 0; }
+  .app-field label{ display:block; font-family:'Noto Serif KR', serif; font-size:15px; color:var(--gold-soft); margin-bottom:8px; }
+  .app-field .hint{ display:block; font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:300; }
+  .notes-divider{ height:1px; background:linear-gradient(90deg, var(--gold-dim), transparent); margin:24px 0; }
+  .chap-tabs{ display:flex; gap:8px; margin-bottom:18px; }
+  .chap-tab{
+    flex:1; background:transparent; border:1px solid var(--line);
+    color:var(--muted); padding:11px 8px; border-radius:3px; cursor:pointer;
+    font-family:'Noto Serif KR', serif; font-size:14px; transition:all .2s ease;
+  }
+  .chap-tab:hover{ border-color:var(--gold-dim); color:var(--parchment-dim); }
+  .chap-tab.active{ border-color:var(--gold); color:var(--gold-soft); background:rgba(201,162,75,0.1); }
+  .chap-tab:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; }
+  .chap-pane{ display:none; }
+  .chap-pane.active{ display:block; }
+
+  .notes-fab{
+    position:fixed; right:18px; bottom:18px; z-index:70;
+    background:linear-gradient(180deg, var(--blood-bright), var(--blood));
+    border:1px solid var(--blood-glow); color:var(--parchment);
+    padding:13px 20px; border-radius:30px; cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif; font-size:14px; font-weight:500;
+    box-shadow:0 6px 22px rgba(0,0,0,0.45);
+    transition:transform .2s ease;
+  }
+  .notes-fab:hover{ transform:translateY(-2px); }
+  .notes-fab:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
+
+  .notes-overlay{
+    position:fixed; inset:0; background:rgba(5,7,16,0.62); z-index:80;
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+  }
+  .notes-overlay.show{ opacity:1; pointer-events:auto; }
+  .notes-drawer{
+    position:fixed; top:0; right:0; bottom:0; width:440px; max-width:92vw;
+    background:linear-gradient(180deg, var(--panel), var(--night2));
+    border-left:1px solid var(--line-strong);
+    padding:28px 24px 40px; overflow-y:auto;
+    transform:translateX(100%); transition:transform .35s ease;
+  }
+  .notes-overlay.show .notes-drawer{ transform:translateX(0); }
+  .notes-header{ display:flex; justify-content:space-between; align-items:center; font-family:'Noto Serif KR',serif; font-size:18px; color:var(--gold-soft); margin-bottom:4px; }
+  .notes-close{ background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; line-height:1; padding:4px; }
+  .notes-close:hover{ color:var(--gold-soft); }
+  .notes-close:focus-visible{ outline:2px solid var(--gold-soft); }
+  @media (max-width:600px){ .notes-fab{ right:14px; bottom:14px; padding:11px 16px; font-size:13px; } }
+  .app-preview{ display:none; margin-top:18px; padding:22px; background:#0e1224; border:1px solid var(--line-strong); border-radius:3px; white-space:pre-wrap; font-family:'Noto Sans KR', sans-serif; font-size:14px; line-height:1.9; color:var(--parchment-dim); }
+  .app-preview.show{ display:block; animation:fadeUp .4s ease; }
+  .copy-status{ font-size:13px; color:var(--gold-soft); margin-left:4px; }
+
+  @media (max-width:600px){
+    h1.title{ font-size:30px; } h2.section-title{ font-size:21px; } .wrap{ padding:22px 16px 70px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<div id="lamp-glow"></div>
+
+<button id="notesToggle" class="notes-fab" onclick="toggleNotes()">📝 적용노트</button>
+
+<div id="notesOverlay" class="notes-overlay" onclick="closeNotesOutside(event)">
+  <aside class="notes-drawer" onclick="event.stopPropagation()">
+    <div class="notes-header">
+      <span>오늘 말씀 적용노트</span>
+      <button class="notes-close" onclick="toggleNotes()" aria-label="닫기">✕</button>
+    </div>
+    <p class="hint" style="margin:0 0 14px;">게임 중 어느 장면에서든 떠오르는 생각을 바로 적어두세요. 11장과 12장을 따로 기록합니다.</p>
+
+    <div class="chap-tabs">
+      <button class="chap-tab active" id="tab-11" onclick="switchChapter('11')">출애굽기 11장</button>
+      <button class="chap-tab" id="tab-12" onclick="switchChapter('12')">출애굽기 12장</button>
+    </div>
+
+    <!-- ===== 11장 ===== -->
+    <div class="chap-pane active" id="pane-11">
+      <div class="app-field">
+        <label>본문 요약</label>
+        <span class="hint">출애굽기 11장의 흐름을 나만의 말로 짧게 요약해보세요.</span>
+        <textarea id="summary11" placeholder="예: 여호와께서 마지막 재앙을 예고하시고, 은금 패물을 구하라 명하신다. 모세가 장자의 죽음을 경고하지만 바로는 끝내 듣지 않는다..."></textarea>
+      </div>
+      <div class="notes-divider"></div>
+      <div class="app-field">
+        <label>문단 나누기</label>
+        <span class="hint">11장을 몇 개의 문단으로 나누어 정리해보세요.</span>
+        <textarea id="paragraphs11" placeholder="예: 1) 마지막 재앙 예고와 은금 패물 (1-3절)&#10;2) 장자의 죽음 선포 (4-8절)&#10;3) 바로의 완악함과 목적 (9-10절)"></textarea>
+      </div>
+      <div class="notes-divider"></div>
+      <div class="app-field">
+        <label>믿어야 할 것</label>
+        <span class="hint">11장이 하나님에 대해, 또는 나에 대해 다시 믿게 하는 것은 무엇입니까?</span>
+        <textarea id="belief11" placeholder="예: 하나님은 오래전 하신 약속을 잊지 않고 반드시 이루시는 분이심을 믿습니다..."></textarea>
+      </div>
+      <div class="app-field">
+        <label>감사와 찬양할 것</label>
+        <span class="hint">11장을 통해 하나님께 감사하고 찬양할 이유는 무엇입니까?</span>
+        <textarea id="thanks11" placeholder="예: 애굽과 이스라엘을 구별하여 지키시는 은혜에 감사합니다..."></textarea>
+      </div>
+      <div class="app-field">
+        <label>회개할 것</label>
+        <span class="hint">11장 앞에서 돌이켜야 할 나의 태도나 습관은 무엇입니까?</span>
+        <textarea id="repent11" placeholder="예: 반복해서 듣고도 마음을 굳혔던 완악함을 회개합니다..."></textarea>
+      </div>
+      <div class="app-field">
+        <label>간구할 것</label>
+        <span class="hint">11장을 붙들고 하나님께 무엇을 구하고 싶습니까?</span>
+        <textarea id="petition11" placeholder="예: 경고를 들을 때 무뎌지지 않는 부드러운 마음을 구합니다..."></textarea>
+      </div>
+      <div class="app-field">
+        <label>즉시 취해야 할 행동이나 기도</label>
+        <span class="hint">오늘, 지금 바로 옮길 수 있는 한 가지는 무엇입니까?</span>
+        <textarea id="action11" placeholder="예: 미뤄왔던 순종 한 가지를 오늘 안에 실행하겠습니다..."></textarea>
+      </div>
+    </div>
+
+    <!-- ===== 12장 ===== -->
+    <div class="chap-pane" id="pane-12">
+      <div class="app-field">
+        <label>본문 요약</label>
+        <span class="hint">출애굽기 12장의 흐름을 나만의 말로 짧게 요약해보세요.</span>
+        <textarea id="summary12" placeholder="예: 유월절 규례가 주어지고, 문설주의 피로 이스라엘이 구별된다. 장자의 죽음 후 430년 만에 애굽에서 나온다..."></textarea>
+      </div>
+      <div class="notes-divider"></div>
+      <div class="app-field">
+        <label>문단 나누기</label>
+        <span class="hint">12장을 몇 개의 문단으로 나누어 정리해보세요.</span>
+        <textarea id="paragraphs12" placeholder="예: 1) 새 달력과 유월절 규례 (1-13절)&#10;2) 무교절 규례 (14-20절)&#10;3) 백성의 순종 (21-28절)&#10;4) 심판의 밤과 탈출 (29-42절)&#10;5) 참여 자격 규례 (43-51절)"></textarea>
+      </div>
+      <div class="notes-divider"></div>
+      <div class="app-field">
+        <label>믿어야 할 것</label>
+        <span class="hint">12장이 하나님에 대해, 또는 나에 대해 다시 믿게 하는 것은 무엇입니까?</span>
+        <textarea id="belief12" placeholder="예: 하나님은 심판 중에도 피로 덮인 자를 반드시 살리시는 분이심을 믿습니다..."></textarea>
+      </div>
+      <div class="app-field">
+        <label>감사와 찬양할 것</label>
+        <span class="hint">12장을 통해 하나님께 감사하고 찬양할 이유는 무엇입니까?</span>
+        <textarea id="thanks12" placeholder="예: 아무 공로 없이 피로 덮여 살아난 것에 감사합니다..."></textarea>
+      </div>
+      <div class="app-field">
+        <label>회개할 것</label>
+        <span class="hint">12장 앞에서 돌이켜야 할 나의 태도나 습관은 무엇입니까?</span>
+        <textarea id="repent12" placeholder="예: 급히 순종해야 할 순간에 미루고 안주했던 것을 회개합니다..."></textarea>
+      </div>
+      <div class="app-field">
+        <label>간구할 것</label>
+        <span class="hint">12장을 붙들고 하나님께 무엇을 구하고 싶습니까?</span>
+        <textarea id="petition12" placeholder="예: 다음 세대에게 이 밤의 의미를 잘 전할 수 있도록 지혜를 구합니다..."></textarea>
+      </div>
+      <div class="app-field">
+        <label>즉시 취해야 할 행동이나 기도</label>
+        <span class="hint">오늘, 지금 바로 옮길 수 있는 한 가지는 무엇입니까?</span>
+        <textarea id="action12" placeholder="예: 오늘 저녁 가족과 이 본문을 나누고 함께 기도하겠습니다..."></textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="previewApplication()">정리해서 미리보기</button>
+      <button class="btn" id="copyBtn" style="display:none;" onclick="copyApplication()">📋 전체 복사하기</button>
+    </div>
+    <span class="copy-status" id="copyStatus"></span>
+    <div class="app-preview" id="appPreview"></div>
+  </aside>
+</div>
+
+<div class="wrap">
+
+  <div class="top-nav">
+    <div class="brand">그날 밤, 문설주에</div>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <button class="btn btn-small music-btn" id="musicBtn" onclick="toggleMusic()">♪ 배경음악 켜기</button>
+      <div class="stage-tag" id="stageTag">출애굽기 11–12장</div>
+    </div>
+  </div>
+
+  <!-- STAGE 0 -->
+  <section class="stage active" id="stage-0">
+    <div class="eyebrow">Interactive Scripture · 성인용 · 전체 본문</div>
+    <h1 class="title">그날 밤,<br>문설주에</h1>
+    <p class="lede">애굽 왕궁의 마지막 경고부터, 430년 만에 시작된 새벽까지.<br>
+    출애굽기 11장과 12장 전체를 본문의 흐름 그대로 따라가며, 각 규례가 무엇을 의미하는지 깊이 있게 살펴봅니다.</p>
+    <div class="panel">
+      <p style="margin:0;">네 장면, 그리고 그 안의 세부 본문들</p>
+      <p style="margin:8px 0 0; color:var(--muted); font-size:14px;">
+        1막 경고 — 11:1-10 (마지막 재앙의 예고, 애굽 신들에 대한 심판의 전조)<br>
+        2막 준비 — 12:1-20, 12:43-49 (달력 규례부터 무교절과 참여 자격법까지)<br>
+        3막 그 밤 — 12:21-42 (장자의 죽음, 탈출, 430년, 영원한 밤)<br>
+        4막 전승 — 12:24-27, 42 (다음 세대에게 전하는 말 + 적용노트)
+      </p>
+    </div>
+    <p style="font-size:13px; color:var(--muted);">
+      본문은 성경 내용을 요약·재구성한 것이며 직접 인용이 아닌 이야기 형식으로 각색되었습니다.
+      배경음악은 이 브라우저 안에서 실시간으로 생성되는 소리이며, 재생을 누르면 시작됩니다.
+    </p>
+    <div class="btn-row"><button class="btn btn-primary" onclick="goTo(1)">시작하기</button></div>
+  </section>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="stage-1">
+    <div class="eyebrow">1막 — 경고</div>
+    <h2 class="section-title">바로 앞에 선 모세</h2>
+    <span class="verse-ref">출애굽기 11:1–10</span>
+    <p style="margin-top:16px;">아홉 번의 재앙이 지나갔습니다. 그리고 여호와께서 모세에게 마지막 한 가지를 예고하십니다.
+    그런데 이 마지막 재앙을 예고하시기 직전, 본문은 뜻밖의 지시를 하나 끼워 넣습니다 —
+    백성에게 애굽 이웃들에게서 은금 패물을 구하라는 것입니다 (11:2-3).</p>
+
+    <div class="panel" id="q0panel">
+      <p class="lede" style="margin:0 0 4px;">이스라엘 백성이 애굽 사람들에게 은금 패물을 요구하도록 하신 이 지시는, 이 시점에 왜 등장할까요?</p>
+      <div id="q0choices"></div>
+      <div class="feedback" id="q0feedback"></div>
+    </div>
+
+    <div id="q0next" style="display:none;">
+      <p style="margin-top:6px;">이제 마지막 경고입니다. 모세가 바로에게 선포합니다 —
+      "밤중에 내가 애굽 가운데로 들어가리니, 처음 난 것은 왕위에 앉은 바로의 장자로부터 맷돌 뒤에 있는 여종의 장자까지,
+      가축의 처음 난 것까지 다 죽으리라. 그러나 이스라엘 자손에게는 사람에게나 짐승에게나 개도 그 혀를 움직이지 아니하리니,
+      이는 여호와께서 애굽과 이스라엘을 구별하시는 줄을 너희가 알게 하려 함이라." (11:4-7)</p>
+
+      <div class="panel" id="q1panel">
+        <p style="margin:0 0 4px; color:var(--parchment);">이 경고를 들은 바로는 어떻게 반응할까요?</p>
+        <div id="q1choices"></div>
+        <div class="feedback" id="q1feedback"></div>
+      </div>
+    </div>
+
+    <div id="q1next" style="display:none;">
+      <div class="panel">
+        <p class="lede" style="margin:0;">본문은 이 순간 결말을 미리 알려줍니다 (11:9-10) — 바로는 듣지 않을 것이고,
+        모세는 심히 노하여 바로 앞에서 나올 것입니다. 그런데 이 구절은 단순한 결말 예고가 아니라 목적절을 담고 있습니다 —
+        "이는 내 기적을 애굽 땅에 많이 행하게 하려 하심이니라." 재앙의 반복 자체가 하나의 계시 행위였다는 뜻입니다.</p>
+      </div>
+      <div class="panel">
+        <p style="margin:0 0 10px; color:var(--parchment);">잠시 생각해볼 질문 — 정답은 없습니다.</p>
+        <p style="margin:0;">바로의 "완악해진 마음"은 그 자신의 반복된 선택의 결과일까요, 아니면 하나님이 정하신 흐름일까요?
+        본문 안에서도 "바로가 자기 마음을 완악하게 하였다"(8:15, 8:32)와 "여호와께서 바로의 마음을 완악하게 하셨다"(9:12, 10:20, 11:10)는
+        표현이 함께 쓰입니다.</p>
+        <div id="q2choices" style="margin-top:14px;"></div>
+        <div class="feedback" id="q2feedback"></div>
+      </div>
+      <div class="btn-row" id="s1continue" style="display:none;">
+        <button class="btn btn-primary" onclick="goTo(2)">2막으로 — 준비</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="stage-2">
+    <div class="eyebrow">2막 — 준비</div>
+    <h2 class="section-title">달력에서 문설주까지</h2>
+    <span class="verse-ref">출애굽기 12:1–20, 43–49</span>
+    <p style="margin-top:16px;">여호와께서 모세와 아론에게 새로운 절기의 규례를 주십니다.
+    각 규례는 단순한 절차가 아니라, 그 자체로 의미를 담고 있습니다. 아홉 단계에 걸쳐 함께 짚어봅니다.</p>
+
+    <div class="door-wrap">
+      <div class="door">
+        <div class="lintel"></div>
+        <div class="post left"></div>
+        <div class="post right"></div>
+        <div class="door-face"></div>
+        <div class="daub lintel-mark" id="mark-lintel"></div>
+        <div class="daub left-mark" id="mark-left"></div>
+        <div class="daub right-mark" id="mark-right"></div>
+      </div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prepFill"></div></div>
+    <div class="progress-label" id="prepLabel">준비 0/9</div>
+    <div class="step-dots" id="stepDots"></div>
+
+    <div class="panel" id="prepPanel"></div>
+
+    <div class="btn-row" id="s2continue" style="display:none;">
+      <button class="btn btn-primary" onclick="goTo(3)">3막으로 — 그 밤</button>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="stage-3">
+    <div class="eyebrow">3막 — 그 밤</div>
+    <h2 class="section-title">한밤중, 그리고 새벽</h2>
+    <span class="verse-ref">출애굽기 12:21–42</span>
+    <div class="panel" style="margin-top:18px;">
+      <div class="cine-line" data-d="0">모세가 이스라엘 장로들을 불러 말합니다. "우슬초 묶음을 피에 적셔 문 인방과 좌우 설주에 뿌리고, 아침까지 아무도 집 문밖에 나가지 말라."
+        <span class="ref">출 12:21-22</span></div>
+      <div class="cine-line" data-d="1">"멸하는 자"가 그 땅을 지나갈 때, 문에 피가 없는 집은 그대로 지나가지 않습니다. 문에 피가 있는 집만, 그 문이 열리지 않은 채로 넘어갑니다.
+        <span class="ref">출 12:23</span></div>
+      <div class="cine-line" data-d="2">한밤중이 되었습니다. 여호와께서 애굽 땅의 모든 처음 난 것을 치셨습니다 — 왕좌의 바로의 장자로부터 옥에 갇힌 자의 장자까지, 가축의 첫 새끼까지.
+        <span class="ref">출 12:29</span></div>
+      <div class="cine-line" data-d="3">애굽 온 땅에 곡성이 울렸습니다. 죽임을 당한 자가 없는 집이 하나도 없었습니다. 그러나 문설주에 피가 발린 집 안에서는, 처음 난 것이 살아 있었습니다.
+        <span class="ref">출 12:30, 13</span></div>
+      <div class="cine-line" data-d="4">바로가 밤중에 모세와 아론을 불렀습니다. "일어나 떠나라. 너희 말대로 가서 여호와를 섬기라 ... 나를 위하여 축복하라." 애굽 사람들도 이스라엘 백성을 재촉하여 급히 내보냈습니다.
+        <span class="ref">출 12:31-33</span></div>
+      <div class="cine-line" data-d="5">백성은 반죽할 시간도 없이 누룩 없는 반죽 그릇을 옷에 싸서 어깨에 멨습니다. 애굽 사람들에게 구한 은금 패물과 의복도 그대로 가지고 나갔습니다.
+        <span class="ref">출 12:34-36, 39</span></div>
+      <div class="cine-line" data-d="6">라암셋을 떠나 숙곳까지, 걸어서 나온 장정만 육십만 명. 그들과 함께 수많은 다른 민족(중다한 잡족)과 양떼와 소떼가 따라나섰습니다.
+        <span class="ref">출 12:37-38</span></div>
+      <div class="cine-line" data-d="7">이스라엘 자손이 애굽에 거주한 지 사백삼십 년 — 그 세월이 다 차던 바로 그날, 여호와의 온 군대가 애굽 땅에서 나왔습니다.
+        <span class="ref">출 12:40-41</span></div>
+    </div>
+
+    <div class="panel" id="cineQpanel" style="display:none;">
+      <p class="lede" style="margin:0 0 10px;">12:42은 이 밤을 이렇게 부릅니다 — "여호와 앞에 지킬 밤이니, 이는 여호와께서 그들을 애굽 땅에서 인도하여 내셨음이라.
+      이 밤은 여호와의 밤이라 이스라엘 자손이 대대로 지킬 것이니라." 이 표현이 강조하는 것은 무엇일까요?</p>
+      <div id="cineQchoices"></div>
+      <div class="feedback" id="cineQfeedback"></div>
+    </div>
+
+    <div class="warn-box" id="warnBox">
+      이 장면은 성경에서 가장 무겁고, 지금도 많은 사람들이 씨름하는 본문 중 하나입니다.
+      한 민족의 모든 장자가 하룻밤 사이에 죽습니다. 어떤 이는 이를 압제자에 대한 정당한 심판으로,
+      어떤 이는 무고한 이들까지 포함된 참혹한 대가로 읽습니다. 이 게임은 어느 한쪽 해석을 정답으로 제시하지 않습니다.
+      <br><br>
+      <b>잠시 멈추어, 이 장면이 당신에게 남긴 것을 짧게 적어보세요.</b> 이 기록은 저장되지 않으며, 오직 이 순간을 위한 것입니다.
+    </div>
+    <textarea id="reflect3" placeholder="예: 이 심판의 무게 앞에서 나는..."></textarea>
+
+    <div class="btn-row"><button class="btn btn-primary" onclick="goTo(4)">4막으로 — 전승</button></div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="stage-4">
+    <div class="eyebrow">4막 — 전승</div>
+    <h2 class="section-title">자녀가 물을 때</h2>
+    <span class="verse-ref">출애굽기 12:14, 24–27, 42</span>
+    <p style="margin-top:16px;">여호와께서는 이 밤을 단 한 번의 사건으로 남기지 않으셨습니다.
+    "이 날을 대대로 지켜 영원한 규례를 삼으라." 그리고 12:26-27은 구체적인 장면 하나를 미리 그려줍니다 —
+    언젠가 자녀가 물을 것입니다. "이 예식이 아버지께 무슨 뜻이니이까?"</p>
+
+    <div class="panel">
+      <p class="lede" style="margin:0;">그날이 왔다고 상상해보세요. 당신의 아이, 혹은 다음 세대의 누군가가 묻습니다 —
+      "왜 우리는 아직도 이 밤을 기억해요?"</p>
+      <p style="margin:14px 0 0; color:var(--parchment);">당신이라면 뭐라고 답하시겠습니까? 한두 문장이면 충분합니다.</p>
+      <textarea id="reflect4" placeholder="답을 적어보세요..."></textarea>
+      <div class="btn-row"><button class="btn btn-primary" onclick="showLegacy()">다음 세대에게 전하기</button></div>
+      <div class="legacy-card" id="legacyCard"></div>
+    </div>
+
+    <div class="panel">
+      <p style="margin:0 0 6px; color:var(--parchment);">오늘 지나온 본문 전체</p>
+      <div class="refs-summary">
+        <span class="ref-chip">출 11:1-10</span>
+        <span class="ref-chip">출 12:1-13</span>
+        <span class="ref-chip">출 12:14-20</span>
+        <span class="ref-chip">출 12:21-28</span>
+        <span class="ref-chip">출 12:29-36</span>
+        <span class="ref-chip">출 12:37-42</span>
+        <span class="ref-chip">출 12:43-51</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p style="margin:0 0 4px; color:var(--parchment); font-family:'Noto Serif KR',serif; font-size:19px;">오늘 말씀 적용노트</p>
+      <p style="margin:0 0 16px; color:var(--muted); font-size:13px;">
+        본문 전체를 지나오며 느낀 것을 요약과 다섯 항목으로 정리해보세요. 우측 하단의 "📝 적용노트" 버튼을 누르면
+        게임 중 언제든 열어서 이어 쓸 수 있습니다. 작성 후 정리된 형태로 미리보기하고, 그대로 복사해서 QT 노트나 기도수첩에 붙여넣을 수 있습니다.
+      </p>
+      <div class="btn-row"><button class="btn btn-primary" onclick="toggleNotes()">📝 적용노트 열기</button></div>
+    </div>
+
+    <div class="btn-row"><button class="btn" onclick="restart()">처음부터 다시</button></div>
+  </section>
+
+</div>
+
+<script>
+let currentStage = 0;
+function goTo(n){
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
+  document.getElementById('stage-'+n).classList.add('active');
+  currentStage = n;
+  window.scrollTo({top:0, behavior:'smooth'});
+  const tags = ['출애굽기 11-12장','1막 · 경고','2막 · 준비','3막 · 그 밤','4막 · 전승'];
+  document.getElementById('stageTag').textContent = tags[n];
+  if(n===2) initPrep();
+  if(n===3) initCinematic();
+}
+
+/* ---------- MUSIC (plain Web Audio API — no external library) ----------
+   A bright, warm, major-key loop: a gentle bell arpeggio over a soft
+   sustained pad. I-V-vi-IV in C major — one of the most familiar,
+   uplifting progressions there is. No dissonance, no low pulsing,
+   nothing tense — just a cheerful little game theme.               */
+let audioCtx=null, masterGain=null, padGain=null, padOscs=[];
+let musicOn=false, noteTimer=null, noteStep=0;
+
+const N = { C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
+            C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88, C5:523.25 };
+
+// Four bars, each with a pad chord and a little rising bell arpeggio over it.
+const BARS = [
+  { pad:[N.C3, N.E3, N.G3], arp:[N.C4, N.E4, N.G4, N.C5] },  // C major
+  { pad:[N.G3, N.B3, N.D4], arp:[N.G3, N.D4, N.G4, N.B4] },  // G major
+  { pad:[N.A3, N.C4, N.E4], arp:[N.A3, N.E4, N.A4, N.C5] },  // A minor
+  { pad:[N.F3, N.A3, N.C4], arp:[N.F3, N.C4, N.F4, N.A4] }   // F major
+];
+const NOTE_MS = 380; // tempo of the bell arpeggio
+
+function playBell(freq, time, vol){
+  // A short, bright pluck: fundamental + a soft octave shimmer on top.
+  [ [freq, 1], [freq*2, 0.18] ].forEach(([f, mix])=>{
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine';
+    o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.exponentialRampToValueAtTime(vol * mix, time + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, time + 0.5);
+    o.connect(g); g.connect(masterGain);
+    o.start(time); o.stop(time + 0.55);
+    o.onended = () => { try{ o.disconnect(); g.disconnect(); }catch(e){} };
+  });
+}
+
+function setPadChord(freqs, time){
+  padOscs.forEach(o=>{
+    o.gain.gain.setValueAtTime(o.gain.gain.value, time);
+    o.gain.gain.linearRampToValueAtTime(0.0001, time + 0.8);
+    o.osc.stop(time + 0.85);
+  });
+  padOscs = freqs.map(f=>{
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'triangle';
+    o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.linearRampToValueAtTime(0.05, time + 1.0);
+    o.connect(g); g.connect(padGain);
+    o.start(time);
+    return { osc:o, gain:g };
+  });
+}
+
+function scheduleNote(){
+  if(!musicOn || !audioCtx) return;
+  const barIdx = Math.floor(noteStep / 4) % BARS.length;
+  const beatIdx = noteStep % 4;
+  const bar = BARS[barIdx];
+  const now = audioCtx.currentTime;
+
+  if(beatIdx === 0) setPadChord(bar.pad, now);
+  playBell(bar.arp[beatIdx], now + 0.01, 0.16);
+
+  noteStep++;
+  noteTimer = setTimeout(scheduleNote, NOTE_MS);
+}
+
+function startMusic(){
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return false;
+  if(!audioCtx){
+    audioCtx = new AC();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.8;
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 3200; // keeps the bells sweet, not tinny
+    masterGain.connect(lp);
+    lp.connect(audioCtx.destination);
+
+    padGain = audioCtx.createGain();
+    padGain.gain.value = 1;
+    padGain.connect(lp);
+  }
+  return true;
+}
+
+function toggleMusic(){
+  const btn = document.getElementById('musicBtn');
+  try{
+    if(!startMusic()){
+      btn.textContent = '♪ 이 브라우저는 음악 미지원';
+      return;
+    }
+    if(!musicOn){
+      audioCtx.resume().then(()=>{
+        musicOn = true;
+        noteStep = 0;
+        scheduleNote();
+        btn.textContent = '♪ 배경음악 끄기';
+        setTimeout(()=>{
+          if(audioCtx.state !== 'running'){
+            btn.textContent = '♪ 소리 안 남 · 무음모드 확인';
+          }
+        }, 700);
+      }).catch(()=>{
+        btn.textContent = '♪ 재생 실패 (다시 클릭)';
+      });
+    } else {
+      clearTimeout(noteTimer);
+      noteTimer = null;
+      const now = audioCtx.currentTime;
+      padOscs.forEach(o=>{
+        o.gain.gain.linearRampToValueAtTime(0.0001, now + 0.4);
+        o.osc.stop(now + 0.45);
+      });
+      padOscs = [];
+      audioCtx.suspend();
+      musicOn = false;
+      btn.textContent = '♪ 배경음악 켜기';
+    }
+  }catch(err){
+    btn.textContent = '♪ 재생 실패 (다시 클릭)';
+  }
+}
+
+/* ---------- STAGE 1 ---------- */
+const q0 = {
+  choices:[
+    {t:'애굽 경제에 타격을 주어 백성들을 심리적으로 굴복시키기 위해서다.', correct:false},
+    {t:'훗날 성막을 짓는 데 필요한 재료를 미리 마련해 두시려는 실용적 목적이다.', correct:false},
+    {t:'창세기 15:14에서 아브라함에게 하신 약속 — "그들이 큰 재물을 이끌고 나오리라" — 이 성취되는 순간이며, 이는 이후 12:35-36의 사건으로 실현된다.', correct:true}
+  ],
+  fb:'창세기 15:13-14에서 여호와는 아브라함에게 이미 말씀하셨습니다 — 그의 후손이 사백 년 동안 종살이한 후, "큰 재물을 이끌고" 나오리라고. 11:2-3의 지시는 바로 그 오래된 약속이 실현되기 직전의 준비 단계입니다.',
+  meaning:'이 짧은 구절은 출애굽 전체가 갑작스러운 사건이 아니라, 수백 년 전에 이미 하신 약속의 성취라는 것을 보여줍니다. 심판과 구원의 밤은 즉흥적인 개입이 아니라 오래 참고 지켜온 언약의 완성입니다.'
+};
+function renderQ0(){
+  const box = document.getElementById('q0choices'); box.innerHTML='';
+  q0.choices.forEach((c,i)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
+    b.onclick=()=>answerQ0(i); box.appendChild(b);
+  });
+}
+function answerQ0(i){
+  document.querySelectorAll('#q0choices .choice').forEach((b,idx)=>{
+    b.disabled=true;
+    if(q0.choices[idx].correct) b.classList.add('correct');
+    else if(idx===i) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('q0feedback');
+  fb.innerHTML = q0.fb + `<span class="meaning"><b>💡 의미</b><br>${q0.meaning}</span>`;
+  fb.classList.add('show');
+  document.getElementById('q0next').style.display='block';
+  renderQ1();
+}
+const q1 = {
+  choices:[
+    {t:'이번엔 백성을 완전히, 스스로 보내겠다고 결정할 것이다.', correct:false, fb:'아직입니다. 바로는 이 시점까지도 굴복하지 않습니다. 실제 전환점은 12:31, 장자의 죽음 이후에야 옵니다.'},
+    {t:'경고를 무시하고 오히려 모세를 쫓아내며 "다시는 내 얼굴을 보지 말라"고 할 것이다.', correct:true, fb:'맞습니다. 10:28에서 바로는 이미 그렇게 경고했고, 11:9-10은 이번에도 그가 듣지 않으리라는 것을 미리 알려줍니다.'},
+    {t:'애굽 신하들의 압박에 못 이겨 조건부로 협상을 시도할 것이다.', correct:false, fb:'신하들이 먼저 바로를 압박하는 장면은 이미 10:7에 나왔습니다. 그러나 바로 자신은 끝까지 협상이 아니라 거부를 택합니다.'}
+  ]
+};
+function renderQ1(){
+  const box = document.getElementById('q1choices'); box.innerHTML='';
+  q1.choices.forEach((c,i)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
+    b.onclick=()=>answerQ1(i); box.appendChild(b);
+  });
+}
+function answerQ1(i){
+  document.querySelectorAll('#q1choices .choice').forEach((b,idx)=>{
+    b.disabled=true;
+    if(q1.choices[idx].correct) b.classList.add('correct');
+    else if(idx===i) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('q1feedback');
+  fb.textContent = q1.choices[i].fb;
+  fb.classList.add('show');
+  document.getElementById('q1next').style.display='block';
+}
+const q2 = {
+  choices:[
+    {t:'스스로 선택한 결과다 — 반복된 거절이 습관이 되었다.', fb:'본문은 여러 번 "바로가 자기 마음을 완악하게 하였다"고 말합니다(8:15, 8:32). 인간의 반복된 거부가 스스로를 굳어지게 만드는 모습으로 읽을 수 있습니다.'},
+    {t:'하나님이 정하신 흐름이다 — 심판의 크기와 하나님의 능력을 드러내기 위함이다.', fb:'본문은 "여호와께서 바로의 마음을 완악하게 하셨다"고도 말합니다(9:12, 11:10). 이는 하나님의 주권과 심판의 목적(9:16, "내 이름이 온 천하에 전파되게 하려 하였음이니라")과 연결됩니다.'},
+    {t:'둘 다 본문 안에 있다 — 어느 한쪽으로 완전히 정리되지 않는다.', fb:'많은 독자들이 이 지점에서 멈춰 섭니다. 본문은 두 표현을 나란히 두며, 인간의 책임과 하나님의 주권이 함께 얽힌 긴장을 그대로 남겨둡니다.'}
+  ]
+};
+function renderQ2(){
+  const box = document.getElementById('q2choices'); box.innerHTML='';
+  q2.choices.forEach((c,i)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
+    b.onclick=()=>answerQ2(i); box.appendChild(b);
+  });
+}
+function answerQ2(i){
+  document.querySelectorAll('#q2choices .choice').forEach(b=>b.disabled=true);
+  document.querySelectorAll('#q2choices .choice')[i].classList.add('correct');
+  const fb=document.getElementById('q2feedback');
+  fb.textContent = q2.choices[i].fb;
+  fb.classList.add('show');
+  document.getElementById('s1continue').style.display='flex';
+}
+renderQ0(); renderQ2();
+
+/* ---------- STAGE 2 ---------- */
+const prepSteps = [
+  { title:'첫째 — 새로운 달력', ref:'출 12:1-2',
+    q:'여호와께서 "이 달을 너희에게 달의 시작, 곧 첫째 달이 되게 하라"고 명하신 것은 무엇을 뜻할까요?',
+    choices:[
+      {t:'단지 농사철에 맞춘 실용적인 달력 조정이다.', correct:false, fb:'실용적 목적이 전부가 아닙니다. 이 달은 이후 모든 시간의 기준점이 됩니다.'},
+      {t:'이스라엘의 시간 자체가 이 구원 사건을 기준으로 새로 시작된다는 선언이다.', correct:true, fb:'맞습니다. 애굽에서의 마지막 달이 이스라엘 달력의 첫째 달이 됩니다.'},
+      {t:'애굽의 달력 체계를 그대로 따르되 이름만 바꾸는 것이다.', correct:false, fb:'애굽 달력을 따르는 것이 아니라, 완전히 새로운 기준점을 세우는 것입니다.'}
+    ],
+    meaning:'한 민족의 정체성은 종종 "무엇을 기준으로 시간을 세는가"에서 드러납니다. 이스라엘은 이제부터 구원받은 그날을 기점으로 시간을 셉니다 — 노예의 역사가 아니라 해방의 역사로 자신을 정의하는 것입니다.'
+  },
+  { title:'둘째 — 어린양을 고르다', ref:'출 12:3-5',
+    q:'각 가정은 어떤 양(또는 염소)을 준비해야 할까요?',
+    choices:[
+      {t:'가장 크고 값비싼 것으로, 무리 중 최상급을 고른다.', correct:false, fb:'크기나 값이 기준이 아닙니다. 조건은 "흠 없고 1년 된 수컷"입니다.'},
+      {t:'흠 없고 1년 된 수컷으로, 가족의 수에 맞게 이웃과 나눈다.', correct:true, fb:'맞습니다. 한 가정이 다 먹기 어려우면 사람 수에 맞춰 나누도록 규정되어 있습니다.'},
+      {t:'상태와 관계없이 형편에 맞는 것으로, 값을 아낀다.', correct:false, fb:'형편이 아니라 규례가 기준입니다. "흠 없는" 상태가 명확히 요구됩니다.'}
+    ],
+    meaning:'"흠 없음"은 단순한 품질 기준이 아니라, 하나님께 바쳐지는 것의 온전함을 상징합니다. 완전한 것이 불완전한 것을 대신하는 구조가 여기서부터 시작됩니다.'
+  },
+  { title:'셋째 — 날짜와 시각', ref:'출 12:6',
+    q:'양은 언제까지 간직했다가, 언제 잡아야 할까요?',
+    choices:[
+      {t:'취한 즉시 잡아서 서둘러 먹는다.', correct:false, fb:'즉시가 아닙니다. 니산월 10일에 취하여 14일까지 나흘간 간직합니다.'},
+      {t:'니산월 10일부터 14일까지 간직했다가, 그날 해 질 때 온 회중이 잡는다.', correct:true, fb:'맞습니다. 나흘간의 기다림 뒤, "해 질 때"(twilight) 함께 잡습니다.'},
+      {t:'각 가정이 원하는 날짜를 자유롭게 정한다.', correct:false, fb:'자율이 아니라 온 회중이 같은 날, 같은 시각에 함께 행하는 규례입니다.'}
+    ],
+    meaning:'나흘간 어린양을 집에 두고 지켜본다는 것은 그 생명과 마주하는 시간을 갖는다는 뜻입니다. 온 회중이 같은 날 같은 시각에 행한다는 것은, 이 일이 개인의 신앙 행위가 아니라 공동체 전체의 사건임을 보여줍니다.'
+  },
+  { title:'넷째 — 피를 바르다', ref:'출 12:7',
+    q:'잡은 양의 피는 어떻게 사용해야 할까요?',
+    choices:[
+      {t:'집 안 제단에 뿌려 놓는다.', correct:false, fb:'집 안이 아니라 집 밖, 문에 발라야 합니다.'},
+      {t:'좌우 문설주와 인방(윗부분), 즉 문의 세 지점에 바른다.', correct:true, fb:'맞습니다. 양쪽 기둥과 위쪽 인방 — 문의 세 지점에 피를 발라 그 집을 표시합니다.'},
+      {t:'가족 각자의 이마와 손목에 바른다.', correct:false, fb:'사람이 아니라 문에 표시합니다. 표적은 "그 집"에 있는 것입니다.'}
+    ],
+    meaning:'피가 밖으로, 그것도 지나가는 이가 볼 수 있는 곳에 발린다는 점이 중요합니다. 이는 사적이고 은밀한 신앙이 아니라, 공개적으로 자신이 어느 편에 서 있는지를 드러내는 표지입니다.'
+  },
+  { title:'다섯째 — 피가 표적이 되는 이유', ref:'출 12:12-13',
+    q:'"내가 그 피를 볼 때에 너희를 넘어가리라"는 말씀에서, 피가 표적이 되는 목적은 정확히 누구를 위한 것일까요?',
+    choices:[
+      {t:'하나님이 어느 집인지 잊지 않도록 스스로 기억하기 위한 표시다.', correct:false, fb:'하나님이 기억을 못 해서 표적이 필요한 것이 아닙니다. 전능하신 분께 그런 보조 장치는 불필요합니다.'},
+      {t:'심판이 임하는 그 밤에, 순종하여 피를 바른 이스라엘 백성 스스로에게 구원의 확신과 안전을 주기 위한 것이다.', correct:true, fb:'맞습니다. 표적은 하나님을 위한 것이 아니라, 명령에 순종한 사람들이 그 순종의 결과를 눈으로 확인하고 안심할 수 있게 하는 것입니다.'},
+      {t:'애굽 사람들에게 누가 이스라엘 사람인지 구별해 보여주기 위함이다.', correct:false, fb:'애굽 사람들에게 보여주기 위한 것이 아니라, 재앙이 지나가는 그 밤 그 집 안에 있는 사람들의 안전을 위한 표적입니다.'}
+    ],
+    meaning:'12:12은 이 재앙이 단지 사람과 짐승만이 아니라 "애굽의 모든 신에게 벌을 내리는" 사건이라고 말합니다. 즉 이 밤은 애굽의 신들과 여호와 사이의 대결이기도 합니다. 그 한복판에서 피는 심판을 피하는 마법이 아니라, 순종과 신뢰의 가시적 표현입니다.'
+  },
+  { title:'여섯째 — 고기를 먹다', ref:'출 12:8-9',
+    q:'양고기는 어떻게 조리해서 먹어야 할까요?',
+    choices:[
+      {t:'물에 푹 삶아서 부드럽게 먹는다.', correct:false, fb:'삶는 것은 명확히 금지됩니다. "날로나 물에 삶아서 먹지 말라"고 되어 있습니다.'},
+      {t:'머리와 다리, 내장까지 통째로 불에 구워, 무교병과 쓴 나물과 함께 먹는다.', correct:true, fb:'맞습니다. 온전히 불에 굽고, 누룩 없는 빵과 쓴 나물을 곁들입니다.'},
+      {t:'말려서 다음 날 천천히 나누어 먹는다.', correct:false, fb:'말리는 것이 아니라 그 밤에 불에 구워 바로 먹습니다.'}
+    ],
+    meaning:'쓴 나물은 종살이의 쓰라림을 미각으로 기억하게 하고, 무교병(누룩 없는 빵)은 발효시킬 시간조차 없이 떠나야 했던 그 밤의 긴박함을 담고 있습니다. 이 식사는 회상이 아니라 몸으로 재현하는 기억입니다.'
+  },
+  { title:'일곱째 — 떠날 채비를 하다', ref:'출 12:10-11',
+    q:'이 식사를 어떤 자세로 먹어야 하며, 남은 음식은 어떻게 해야 할까요?',
+    choices:[
+      {t:'편안한 옷차림으로 여유롭게 앉아 먹고, 남은 것은 다음날 마저 먹는다.', correct:false, fb:'정반대입니다. 여유가 아니라 긴장과 준비의 자세이며, 아침까지 남기는 것도 금지됩니다.'},
+      {t:'허리띠를 묶고 신을 신고 지팡이를 손에 든 채 급히 먹으며, 아침 전에 남은 것은 불사른다.', correct:true, fb:'맞습니다. 이것이 "유월절"(넘어가는 절기)이라는 이름의 유래입니다 — 언제든 떠날 수 있는 여행자의 자세로 먹고, 그 밤에 속한 것은 그 밤에 끝냅니다.'},
+      {t:'맨발로 잠옷 차림으로 먹고, 남은 것은 이웃에게 나눈다.', correct:false, fb:'맨발이 아니라 신을 신고, 나눔이 아니라 완전히 태워 처리하는 것이 규례입니다.'}
+    ],
+    meaning:'몸의 자세가 곧 신앙의 태도를 표현합니다. 허리띠, 신발, 지팡이 — 이는 안주가 아니라 순종할 준비가 되어 있는 상태를 몸으로 선언하는 것입니다.'
+  },
+  { title:'여덟째 — 무교절 이레 동안', ref:'출 12:14-20',
+    q:'유월절 다음, 이레 동안 지켜야 할 무교절 규례의 핵심은 무엇일까요?',
+    choices:[
+      {t:'이레 동안 매일 새로운 어린양을 잡아 반복해서 바친다.', correct:false, fb:'양을 반복해서 잡는 것이 아니라, 누룩을 완전히 제거하는 것이 핵심입니다.'},
+      {t:'이레 동안 집 안에서 누룩을 완전히 제거하고 무교병만 먹으며, 첫날과 일곱째 날은 일하지 않는 성회로 지킨다.', correct:true, fb:'맞습니다. 누룩을 먹거나 집에 두는 자는 "이스라엘에서 끊어지리라"는 엄중한 경고까지 붙습니다(12:15, 19).'},
+      {t:'이레 동안 애굽 땅을 떠나지 않고 머물며 애곡한다.', correct:false, fb:'애곡이 아니라, 오히려 성회로 모여 지키는 절기입니다.'}
+    ],
+    meaning:'누룩은 성경에서 자주 부패와 확산되는 죄를 상징합니다(고전 5:6-8과 같은 후대 본문에서도 이어지는 이미지). 하룻밤의 구원 이후 이레 동안 이어지는 이 규례는, 구원이 한순간의 사건일 뿐 아니라 그 뒤로 삶 전체에서 지속되어야 할 정결함이라는 것을 보여줍니다.'
+  },
+  { title:'아홉째 — 누가 이 식사에 참여할 수 있는가', ref:'출 12:43-49',
+    q:'유월절 식사에 참여할 자격에 대한 규례로 옳은 것은 무엇일까요?',
+    choices:[
+      {t:'이스라엘 혈통이면 누구나, 이방인은 어떤 경우에도 절대 참여할 수 없다.', correct:false, fb:'혈통만이 절대 기준은 아닙니다. 돈으로 산 종이라도 할례를 받으면 참여할 수 있다고 명시되어 있습니다(12:44).'},
+      {t:'이방 나그네나 품꾼은 원칙적으로 먹을 수 없지만, 할례를 받은 이라면 본토인과 동일한 법 아래 참여할 수 있다. 다만 함께 먹는 고기는 한 집 안에서 먹어야 하고 뼈를 꺾지 말아야 한다.', correct:true, fb:'맞습니다. 할례는 언약 공동체로 들어오는 관문이며, 그 관문을 통과한 이에게는 "본토인과 거류민에게 동일한 법"이 적용됩니다(12:49). 뼈를 꺾지 않는 것과 한 집에서 먹는 것은 어린양을 나누되 흩어버리지 않는 공동체적 온전함을 나타냅니다.'},
+      {t:'참여 자격에는 아무 제한이 없으며 누구든 원하면 함께 먹을 수 있다.', correct:false, fb:'제한이 없는 것이 아닙니다. 할례라는 분명한 언약의 표가 참여의 전제 조건으로 명시되어 있습니다.'}
+    ],
+    meaning:'이 규례는 이스라엘의 구원이 순수한 혈통주의가 아니라 언약 안으로의 초대라는 것을 보여줍니다. 동시에 그 초대에는 분명한 경계(할례)가 있습니다 — 누구나 저절로 속하는 것이 아니라, 언약의 표를 받아들인 이가 온전한 구성원이 됩니다.'
+  }
+];
+let prepIndex = 0, prepDone = 0, prepInit = false;
+function initPrep(){
+  if(prepInit) return; prepInit = true;
+  const dots = document.getElementById('stepDots');
+  prepSteps.forEach((_,i)=>{ const d=document.createElement('div'); d.className='dot'; d.id='dot-'+i; dots.appendChild(d); });
+  renderPrepStep();
+}
+function renderPrepStep(){
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.classList.remove('current','done');
+    if(i<prepIndex) d.classList.add('done');
+    if(i===prepIndex) d.classList.add('current');
+  });
+  const step = prepSteps[prepIndex];
+  const panel = document.getElementById('prepPanel');
+  panel.innerHTML = `
+    <p class="verse-ref">${step.ref}</p>
+    <h3 style="font-family:'Noto Serif KR',serif; margin:6px 0 12px; color:var(--parchment); font-size:19px;">${step.title}</h3>
+    <p class="lede" style="margin:0 0 14px;">${step.q}</p>
+    <div id="prepChoices"></div>
+    <div class="feedback" id="prepFeedback"></div>
+  `;
+  const box = document.getElementById('prepChoices');
+  step.choices.forEach((c,i)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
+    b.onclick=()=>answerPrep(i); box.appendChild(b);
+  });
+}
+function answerPrep(i){
+  const step = prepSteps[prepIndex];
+  document.querySelectorAll('#prepChoices .choice').forEach((b,idx)=>{
+    b.disabled=true;
+    if(step.choices[idx].correct) b.classList.add('correct');
+    else if(idx===i) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('prepFeedback');
+  fb.innerHTML = step.choices[i].fb + `<span class="meaning"><b>💡 의미</b><br>${step.meaning}</span>`;
+  fb.classList.add('show');
+
+  prepDone = Math.min(prepDone + 1, prepSteps.length);
+  document.getElementById('prepFill').style.width = (prepDone/prepSteps.length*100)+'%';
+  document.getElementById('prepLabel').textContent = `준비 ${prepDone}/${prepSteps.length}`;
+
+  if(prepIndex===3){
+    document.getElementById('mark-lintel').classList.add('show');
+    document.getElementById('mark-left').classList.add('show');
+    document.getElementById('mark-right').classList.add('show');
+  }
+
+  const nextBtn = document.createElement('div'); nextBtn.className='btn-row';
+  if(prepIndex < prepSteps.length-1){
+    nextBtn.innerHTML = `<button class="btn btn-primary">다음 단계</button>`;
+    nextBtn.querySelector('button').onclick = ()=>{ prepIndex++; renderPrepStep(); };
+  } else {
+    nextBtn.innerHTML = `<p style="color:var(--gold-soft); font-family:'Noto Serif KR',serif; font-size:16px;">이 집은 준비되었습니다. 규례를 다 갖추었습니다.</p>`;
+    document.getElementById('s2continue').style.display='flex';
+  }
+  document.getElementById('prepPanel').appendChild(nextBtn);
+}
+
+/* ---------- STAGE 3 ---------- */
+let cineInit = false;
+function initCinematic(){
+  if(cineInit) return; cineInit = true;
+  const lines = document.querySelectorAll('.cine-line');
+  lines.forEach(line=>{
+    const delay = parseFloat(line.dataset.d)*850;
+    setTimeout(()=>line.classList.add('show'), delay);
+  });
+  setTimeout(()=>{
+    document.getElementById('cineQpanel').style.display='block';
+    renderCineQ();
+  }, lines.length*850 + 500);
+}
+const cineQ = {
+  choices:[
+    {t:'이 밤이 여호와께서 친히 행하신 일이며, 그래서 이스라엘이 아니라 "여호와의 밤"으로 불린다는 것 — 즉 기념의 중심이 인간의 노력이 아니라 하나님의 행하심이라는 것.', correct:true, fb:'맞습니다. 구원의 주체가 이스라엘의 용기나 계획이 아니라 여호와의 직접적인 행하심이라는 점이 이 표현의 핵심입니다.'},
+    {t:'이스라엘 백성이 스스로의 힘으로 탈출에 성공했다는 것을 기념하기 위함이다.', correct:false, fb:'본문의 강조점은 정반대입니다. "여호와의 밤"이라는 이름 자체가 행위의 주체를 이스라엘이 아니라 하나님께 둡니다.'},
+    {t:'단지 밤에 일어난 사건이므로 붙여진 시간적 명칭일 뿐, 특별한 신학적 의미는 없다.', correct:false, fb:'단순한 시간 표시가 아닙니다. "여호와 앞에 지킬 밤", "대대로 지킬 것"이라는 반복은 이 밤에 예배적 무게가 실려 있음을 보여줍니다.'}
+  ]
+};
+function renderCineQ(){
+  const box = document.getElementById('cineQchoices'); box.innerHTML='';
+  cineQ.choices.forEach((c,i)=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent=c.t;
+    b.onclick=()=>answerCineQ(i); box.appendChild(b);
+  });
+}
+function answerCineQ(i){
+  document.querySelectorAll('#cineQchoices .choice').forEach((b,idx)=>{
+    b.disabled=true;
+    if(cineQ.choices[idx].correct) b.classList.add('correct');
+    else if(idx===i) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('cineQfeedback');
+  fb.textContent = cineQ.choices[i].fb;
+  fb.classList.add('show');
+}
+
+/* ---------- NOTES DRAWER (accessible from any stage) ---------- */
+function toggleNotes(){
+  document.getElementById('notesOverlay').classList.toggle('show');
+}
+function closeNotesOutside(e){
+  if(e.target.id === 'notesOverlay') toggleNotes();
+}
+function switchChapter(ch){
+  ['11','12'].forEach(c=>{
+    document.getElementById('tab-'+c).classList.toggle('active', c===ch);
+    document.getElementById('pane-'+c).classList.toggle('active', c===ch);
+  });
+}
+
+/* ---------- STAGE 4 ---------- */
+function showLegacy(){
+  const val = document.getElementById('reflect4').value.trim();
+  const card = document.getElementById('legacyCard');
+  card.textContent = val.length===0
+    ? '"이 밤은 아직 말이 되지 않았지만, 나는 여전히 그것을 기억하려 합니다."'
+    : '"' + val + '"';
+  card.classList.add('show');
+}
+function buildApplicationText(){
+  const get = id => { const v = document.getElementById(id).value.trim(); return v.length ? v : '(작성하지 않음)'; };
+  const chapterBlock = (ch) => `───────────────
+출애굽기 ${ch}장
+───────────────
+
+■ 본문 요약
+${get('summary'+ch)}
+
+■ 문단 나누기
+${get('paragraphs'+ch)}
+
+■ 믿어야 할 것
+${get('belief'+ch)}
+
+■ 감사와 찬양할 것
+${get('thanks'+ch)}
+
+■ 회개할 것
+${get('repent'+ch)}
+
+■ 간구할 것
+${get('petition'+ch)}
+
+■ 즉시 취해야 할 행동이나 기도
+${get('action'+ch)}`;
+
+  return `[출애굽기 11-12장 묵상 적용노트]
+
+${chapterBlock('11')}
+
+
+${chapterBlock('12')}`;
+}
+function previewApplication(){
+  const box = document.getElementById('appPreview');
+  box.textContent = buildApplicationText();
+  box.classList.add('show');
+  document.getElementById('copyBtn').style.display='inline-block';
+}
+async function copyApplication(){
+  const text = buildApplicationText();
+  const status = document.getElementById('copyStatus');
+  try{
+    await navigator.clipboard.writeText(text);
+    status.textContent = '복사되었습니다 ✓';
+  }catch(e){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      status.textContent = '복사되었습니다 ✓';
+    }catch(e2){
+      status.textContent = '자동 복사에 실패했습니다. 미리보기 내용을 직접 선택해 복사해주세요.';
+    }
+  }
+  setTimeout(()=>{ status.textContent=''; }, 3500);
+}
+
+function restart(){
+  prepIndex=0; prepDone=0; prepInit=false; cineInit=false;
+  document.getElementById('prepFill').style.width='0%';
+  document.getElementById('prepLabel').textContent='준비 0/'+prepSteps.length;
+  document.getElementById('stepDots').innerHTML='';
+  ['mark-lintel','mark-left','mark-right'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  document.getElementById('s2continue').style.display='none';
+  document.querySelectorAll('.cine-line').forEach(l=>l.classList.remove('show'));
+  document.getElementById('cineQpanel').style.display='none';
+  document.getElementById('reflect3').value='';
+  document.getElementById('reflect4').value='';
+  document.getElementById('legacyCard').classList.remove('show');
+  ['11','12'].forEach(ch=>{
+    ['summary','paragraphs','belief','thanks','repent','petition','action'].forEach(f=>{
+      document.getElementById(f+ch).value='';
+    });
+  });
+  switchChapter('11');
+  document.getElementById('appPreview').classList.remove('show');
+  document.getElementById('copyBtn').style.display='none';
+  document.getElementById('notesOverlay').classList.remove('show');
+  document.getElementById('q0next').style.display='none';
+  document.getElementById('q1next').style.display='none';
+  document.getElementById('s1continue').style.display='none';
+  renderQ0(); renderQ2();
+  document.getElementById('q0feedback').classList.remove('show');
+  document.getElementById('q1feedback').classList.remove('show');
+  document.getElementById('q2feedback').classList.remove('show');
+  goTo(0);
+}
+</script>
+</body>
+</html>
