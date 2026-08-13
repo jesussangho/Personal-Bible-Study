@@ -24,8 +24,8 @@ window.EXODUS_13_DATA = {
   notesTitle: '출애굽기 13장 묵상 적용노트',
   music: {
     tracks: [
-      'music/출애굽기13장/Heaven Opens Wide.mp3',
-      'music/출애굽기13장/Heaven Opens Wide_1.mp3'
+      'assets/music/출애굽기13장/Heaven Opens Wide.mp3',
+      'assets/music/출애굽기13장/Heaven Opens Wide_1.mp3'
     ]
   },
 
