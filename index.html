@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBS — Personal Bible Study</title>
+<meta name="description" content="출애굽기를 재미있게, 초등학생도 이해할 수 있게 공부하는 인터랙티브 성경 공부 노트.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/pbs-theme.css">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(ellipse at 50% -10%, #1a2140 0%, var(--night) 55%, #050710 100%);
+    color:var(--parchment); font-family:'Noto Sans KR', sans-serif;
+    min-height:100vh; overflow-x:hidden; position:relative;
+  }
+  #starfield{ height:100vh; }
+
+  .pbs-hero{ padding-top:12vh; }
+  .glow-orb{
+    position:fixed; top:-140px; left:50%; transform:translateX(-50%);
+    width:560px; height:560px; border-radius:50%;
+    background:radial-gradient(circle, rgba(201,162,75,0.14) 0%, rgba(201,162,75,0.04) 45%, transparent 70%);
+    pointer-events:none; z-index:0; animation: flicker 6s ease-in-out infinite;
+  }
+  @keyframes flicker{
+    0%,100%{opacity:1;} 45%{opacity:0.85;} 50%{opacity:1;} 78%{opacity:0.9;}
+  }
+
+  .divider-line{
+    position:relative; z-index:1; max-width:520px; margin:44px auto 0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  .journey-strip{
+    position:relative; z-index:1; max-width:920px; margin:44px auto 0; padding:0 22px;
+    display:flex; align-items:center; gap:10px; overflow-x:auto;
+  }
+  .journey-node{
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:6px;
+    font-size:11px; color:var(--muted); min-width:64px; text-align:center;
+  }
+  .journey-node .jn-dot{ width:10px; height:10px; border-radius:50%; background:var(--line-strong); }
+  .journey-node.done .jn-dot{ background:var(--gold); box-shadow:0 0 8px var(--gold); }
+  .journey-node.done{ color:var(--gold-soft); }
+  .journey-node.next .jn-dot{ background:var(--gold-dim); border:2px solid var(--gold); }
+  .journey-line{ flex:1; height:2px; background:var(--line); min-width:20px; }
+  .journey-line.done{ background:var(--gold-dim); }
+
+  footer.pbs-foot{
+    position:relative; z-index:1; text-align:center; padding:20px 22px 50px;
+    font-size:12px; color:var(--muted); line-height:1.9;
+  }
+  footer.pbs-foot .verse{ font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--gold-soft); font-size:14px; display:block; margin-bottom:6px; }
+</style>
+</head>
+<body>
+
+<div class="glow-orb"></div>
+<canvas id="starfield" class="pbs-canvas-bg"></canvas>
+
+<div id="pbsNavRoot"></div>
+
+<header class="pbs-hero">
+  <div class="eyebrow" style="display:flex; justify-content:center; gap:10px; font-family:'Cormorant Garamond', serif; font-style:italic; letter-spacing:0.14em; text-transform:uppercase; font-size:13px; color:var(--gold-soft);">
+    Interactive Scripture Study
+  </div>
+  <h1 class="pbs-title">PBS</h1>
+  <p class="pbs-sub">Personal Bible Study — 나의 개인 성경 공부 노트</p>
+  <p class="pbs-verse">"주의 말씀은 내 발에 등이요 내 길에 빛이니이다" — 시편 119:105<br>
+  본문을 읽고, 질문에 답하고, 어려운 낱말은 클릭 한 번으로 풀어보는 인터랙티브 성경 공부입니다.</p>
+</header>
+
+<div class="divider-line"></div>
+
+<div class="journey-strip" aria-label="출애굽기 진행 지도">
+  <div class="journey-node done"><span class="jn-dot"></span>출 1–10<br>이전 재앙들</div>
+  <div class="journey-line done"></div>
+  <div class="journey-node done"><span class="jn-dot"></span>출 11–12<br>그날 밤</div>
+  <div class="journey-line"></div>
+  <div class="journey-node next"><span class="jn-dot"></span>출 13<br>떠나는 길</div>
+  <div class="journey-line"></div>
+  <div class="journey-node"><span class="jn-dot"></span>출 14<br>홍해</div>
+</div>
+
+<main class="pbs-cards">
+  <a class="pbs-card" href="exodus-11-12.html">
+    <div class="pc-eyebrow">Chapter · 11–12</div>
+    <div class="pc-title">그날 밤, 문설주에</div>
+    <p class="pc-desc">마지막 재앙의 경고부터 유월절 규례, 그리고 430년 만의 탈출까지.
+    네 개의 막(경고 · 준비 · 그 밤 · 전승)을 따라가며 본문 하나하나의 의미를 함께 짚어봅니다.</p>
+    <div class="pc-meta">
+      <span class="pc-chip">출 11:1–10</span>
+      <span class="pc-chip">출 12:1–51</span>
+      <span class="pc-chip">퀴즈 · 매칭 게임</span>
+    </div>
+    <div class="pc-cta">공부 시작하기 <span class="arrow">→</span></div>
+  </a>
+
+  <a class="pbs-card" href="exodus-13.html">
+    <div class="pc-eyebrow">Chapter · 13</div>
+    <div class="pc-title">손의 표, 이마의 기호</div>
+    <p class="pc-desc">이집트를 떠난 백성이 처음 배운 것 — 처음 난 것을 구별하는 법, 자녀에게 전하는 법,
+    그리고 낮의 구름 기둥과 밤의 불 기둥을 따라 걷는 법.</p>
+    <div class="pc-meta">
+      <span class="pc-chip">출 13:1–22</span>
+      <span class="pc-chip">불·구름 기둥 이펙트</span>
+      <span class="pc-chip">쉬운말 모드</span>
+    </div>
+    <div class="pc-cta">공부 시작하기 <span class="arrow">→</span></div>
+  </a>
+
+  <div class="pbs-card soon">
+    <div class="pc-eyebrow">Chapter · 14</div>
+    <div class="pc-title">갈라진 바다</div>
+    <p class="pc-desc">홍해가 갈라지는 그 순간. 다음 본문은 아직 준비 중입니다.</p>
+    <div class="pc-meta"><span class="pc-chip">준비 중</span></div>
+  </div>
+</main>
+
+<section class="pbs-method">
+  <div class="pm-panel">
+    <h3>🧒 어떻게 하면 쉽게 공부할 수 있을까?</h3>
+    <div class="pm-steps">
+      <div class="pm-step"><b>① 이야기로 먼저</b>본문을 요약한 이야기를 먼저 읽고, 흐름을 자연스럽게 따라갑니다.</div>
+      <div class="pm-step"><b>② 어려운 낱말은 클릭</b>점선 밑줄이 있는 낱말을 누르면 쉬운 설명이 바로 뜹니다.</div>
+      <div class="pm-step"><b>③ 쉬운말 모드</b>상단의 "🧒 쉬운말 모드"를 켜면, 어려운 문장 아래 초등학생도 이해할 수 있는 풀이가 함께 보입니다.</div>
+      <div class="pm-step"><b>④ 생각하고, 적용하기</b>질문에 답하며 의미를 스스로 생각해보고, 노트에 나만의 묵상을 남깁니다.</div>
+    </div>
+  </div>
+</section>
+
+<footer class="pbs-foot">
+  <span class="verse">Personal Bible Study</span>
+  본문은 성경 내용을 요약·재구성한 것이며 개역개정을 참고하였습니다.<br>
+  각 장은 브라우저에서 진행 상황과 노트를 자동 저장합니다 (기기 로컬 저장).
+</footer>
+
+<script src="assets/pbs-nav.js"></script>
+<script src="assets/pbs-effects.js"></script>
+<script>
+  PBS_renderNav('index');
+  PBS_startStarfield(document.getElementById('starfield'), { density: 140 });
+</script>
+</body>
+</html>

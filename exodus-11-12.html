@@ -6,6 +6,8 @@
 <title>그날 밤, 문설주에 — 출애굽기 11-12장</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/pbs-theme.css">
+<link rel="stylesheet" href="assets/pbs-study.css">
 <style>
   :root{
     --night:#0a0d18; --night2:#0f1324;
@@ -293,10 +295,45 @@
     h1.title{ font-size:30px; } h2.section-title{ font-size:21px; } .wrap{ padding:22px 16px 70px; }
   }
   @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+
+  /* ---------- explain-list: full right/wrong breakdown after answering ---------- */
+  .explain-list{ margin-top:14px; display:flex; flex-direction:column; gap:10px; }
+  .explain-item{ display:flex; gap:10px; padding:12px 14px; border-radius:4px; background:rgba(255,255,255,0.02); border:1px solid var(--line); }
+  .explain-item.is-correct{ border-color:var(--gold-dim); background:rgba(201,162,75,0.08); }
+  .explain-item.is-wrong{ border-color:rgba(124,36,48,0.4); background:rgba(124,36,48,0.06); }
+  .explain-item.is-neutral{ border-color:var(--line-strong); background:rgba(255,255,255,0.03); }
+  .explain-item .ei-mark{ flex:0 0 auto; font-size:15px; line-height:1.6; }
+  .explain-item .ei-body{ font-size:14px; line-height:1.75; }
+  .explain-item .ei-choice{ color:var(--parchment); font-weight:500; margin-bottom:3px; }
+  .explain-item.is-correct .ei-choice{ color:var(--gold-soft); }
+  .explain-item .ei-why{ color:var(--parchment-dim); font-weight:300; }
+  .explain-item .ei-picked{ display:inline-block; margin-left:6px; font-size:11px; padding:1px 8px; border-radius:10px; background:rgba(201,162,75,0.15); color:var(--gold-soft); }
+
+  @keyframes pbsShake{ 10%,90%{transform:translateX(-1px);} 20%,80%{transform:translateX(2px);} 30%,50%,70%{transform:translateX(-4px);} 40%,60%{transform:translateX(4px);} }
+  .choice.wrong{ animation:pbsShake .45s ease; }
+  @keyframes pbsGlowPulse{ 0%{box-shadow:0 0 0 rgba(201,162,75,0);} 40%{box-shadow:0 0 18px rgba(201,162,75,0.55);} 100%{box-shadow:0 0 0 rgba(201,162,75,0);} }
+  .choice.correct{ animation:pbsGlowPulse 1s ease; }
+
+  #fxCanvas{ z-index:150; }
+  #starfield{ height:100%; }
+
+  .next-chapter-card{
+    margin:26px 0; padding:24px; border:1px solid var(--gold-dim); border-radius:6px;
+    background:linear-gradient(135deg, rgba(201,162,75,0.1), transparent);
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    text-decoration:none;
+  }
+  .next-chapter-card .nc-eyebrow{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold-soft); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px; }
+  .next-chapter-card .nc-title{ font-family:'Noto Serif KR',serif; color:var(--parchment); font-size:19px; }
+  .next-chapter-card .nc-arrow{ font-size:24px; color:var(--gold); transition:transform .25s ease; }
+  .next-chapter-card:hover .nc-arrow{ transform:translateX(6px); }
 </style>
 </head>
 <body>
+<canvas id="starfield" class="pbs-canvas-bg"></canvas>
+<canvas id="fxCanvas" class="pbs-canvas-bg" style="position:fixed;"></canvas>
 <div id="lamp-glow"></div>
+<div id="pbsNavRoot"></div>
 
 <button id="notesToggle" class="notes-fab" onclick="toggleNotes()">📝 적용노트</button>
 
@@ -423,15 +460,22 @@
     <div class="chap-tabs">
       <button class="chap-tab active" id="rtab-11" onclick="switchTextChapter('11')">11장</button>
       <button class="chap-tab" id="rtab-12" onclick="switchTextChapter('12')">12장</button>
+      <button class="chap-tab" id="rtab-gloss" onclick="switchTextChapter('gloss')">📖 용어 사전</button>
+    </div>
+
+    <!-- ===== 용어 사전 ===== -->
+    <div class="chap-pane" id="rpane-gloss">
+      <p class="hint" style="margin:0 0 14px;">11–12장에 나오는 어려운 낱말을 한눈에 모아두었습니다. 본문 중 점선 밑줄이 있는 낱말을 눌러도 같은 설명이 뜹니다.</p>
+      <div id="glossListChapter"></div>
     </div>
 
     <!-- ===== 11장 읽기 ===== -->
     <div class="chap-pane active" id="rpane-11">
-      <div class="verse-block"><span class="vnum">1</span><p>여호와께서 모세에게 이르시기를 내가 이제 한 가지 재앙을 바로와 애굽에 내린 후에야 그가 너희를 여기서 내보내리라 그가 너희를 내보낼 때에는 여기서 반드시 다 쫓아내리니</p></div>
+      <div class="verse-block"><span class="vnum">1</span><p>여호와께서 모세에게 이르시기를 내가 이제 한 가지 <span class="gloss" data-term="재앙">재앙</span>을 바로와 애굽에 내린 후에야 그가 너희를 여기서 내보내리라 그가 너희를 내보낼 때에는 여기서 반드시 다 쫓아내리니</p></div>
       <div class="verse-block"><span class="vnum">2</span><p>백성에게 말하여 사람들에게 각기 이웃들에게 은금 패물을 구하게 하라 하시더니</p></div>
       <div class="verse-block"><span class="vnum">3</span><p>여호와께서 그 백성으로 애굽 사람들에게 은혜를 받게 하셨고 또 그 사람 모세는 애굽 땅에 있는 바로의 신하와 백성의 눈에 아주 위대하게 보였더라</p></div>
       <div class="verse-block"><span class="vnum">4</span><p>모세가 이르되 여호와께서 이같이 말씀하시기를 밤중에 내가 애굽 가운데로 들어가리니</p></div>
-      <div class="verse-block"><span class="vnum">5</span><p>애굽 땅에 있는 모든 처음 난 것은 왕위에 앉은 바로의 장자로부터 맷돌 뒤에 있는 여종의 장자까지와 가축의 처음 난 것도 다 죽으리라</p></div>
+      <div class="verse-block"><span class="vnum">5</span><p>애굽 땅에 있는 모든 <span class="gloss" data-term="처음 난 것">처음 난 것</span>은 왕위에 앉은 바로의 <span class="gloss" data-term="장자">장자</span>로부터 맷돌 뒤에 있는 여종의 장자까지와 가축의 처음 난 것도 다 죽으리라</p></div>
       <div class="verse-block"><span class="vnum">6</span><p>애굽 온 땅에 큰 부르짖음이 있으리니 이같은 것이 전에도 없었고 후에도 없으리라</p></div>
       <div class="verse-block"><span class="vnum">7</span><p>그러나 이스라엘 자손에게는 사람에게나 짐승에게나 개도 그 혀를 움직이지 아니하리니 여호와가 애굽 사람과 이스라엘 사이를 구별하는 줄을 너희가 알리라</p></div>
       <div class="verse-block"><span class="vnum">8</span><p>왕의 이 모든 신하가 내게 내려와 내게 절하며 이르기를 너와 너를 따르는 온 백성은 나가라 한 후에야 내가 나가리라 하고 심히 노하여 바로에게서 나오니라</p></div>
@@ -447,22 +491,22 @@
       <div class="verse-block"><span class="vnum">4</span><p>그 어린 양에 대하여 식구가 너무 적으면 그 집의 이웃과 함께 사람 수를 따라서 하나를 잡고 각 사람이 먹을 수 있는 분량에 따라서 너희 어린 양을 계산할 것이며</p></div>
       <div class="verse-block"><span class="vnum">5</span><p>너희 어린 양은 흠 없고 일 년 된 수컷으로 하되 양이나 염소 중에서 취하고</p></div>
       <div class="verse-block"><span class="vnum">6</span><p>이 달 열나흗날까지 간직하였다가 해 질 때에 이스라엘 회중이 그 양을 잡고</p></div>
-      <div class="verse-block"><span class="vnum">7</span><p>그 피를 양을 먹을 집 좌우 문설주와 인방에 바르고</p></div>
-      <div class="verse-block"><span class="vnum">8</span><p>그 밤에 그 고기를 불에 구워 무교병과 쓴 나물과 아울러 먹되</p></div>
+      <div class="verse-block"><span class="vnum">7</span><p>그 피를 양을 먹을 집 좌우 <span class="gloss" data-term="문설주">문설주</span>와 <span class="gloss" data-term="인방">인방</span>에 바르고</p></div>
+      <div class="verse-block"><span class="vnum">8</span><p>그 밤에 그 고기를 불에 구워 <span class="gloss" data-term="무교병">무교병</span>과 쓴 나물과 아울러 먹되</p></div>
       <div class="verse-block"><span class="vnum">9</span><p>날것으로나 물에 삶아서 먹지 말고 머리와 다리와 내장을 다 불에 구워 먹고</p></div>
       <div class="verse-block"><span class="vnum">10</span><p>아침까지 남겨두지 말며 아침까지 남은 것은 불로 소화하라</p></div>
-      <div class="verse-block"><span class="vnum">11</span><p>너희는 그것을 이렇게 먹을지니 허리에 띠를 띠고 발에 신을 신고 손에 지팡이를 잡고 급히 먹으라 이것이 여호와의 유월절이니라</p></div>
+      <div class="verse-block"><span class="vnum">11</span><p>너희는 그것을 이렇게 먹을지니 허리에 띠를 띠고 발에 신을 신고 손에 지팡이를 잡고 급히 먹으라 이것이 여호와의 <span class="gloss" data-term="유월절">유월절</span>이니라</p></div>
       <div class="verse-block"><span class="vnum">12</span><p>내가 그 밤에 애굽 땅에 두루 다니며 사람이나 짐승을 막론하고 애굽 땅에 있는 모든 처음 난 것을 다 치고 애굽의 모든 신을 내가 심판하리라 나는 여호와라</p></div>
       <div class="verse-block"><span class="vnum">13</span><p>내가 애굽 땅을 칠 때에 그 피가 너희가 사는 집에 있어서 너희를 위하여 표적이 될지라 내가 피를 볼 때에 너희를 넘어가리니 재앙이 너희에게 내려 멸하지 아니하리라</p></div>
-      <div class="verse-block"><span class="vnum">14</span><p>너희는 이 날을 기념하여 여호와의 절기를 삼아 영원한 규례로 대대로 지킬지니라</p></div>
+      <div class="verse-block"><span class="vnum">14</span><p>너희는 이 날을 기념하여 여호와의 절기를 삼아 영원한 <span class="gloss" data-term="규례">규례</span>로 <span class="gloss" data-term="대대로">대대로</span> 지킬지니라</p></div>
       <div class="verse-block"><span class="vnum">15</span><p>너희는 이레 동안 무교병을 먹을지니 그 첫날에 누룩을 너희 집에서 제하라 무릇 첫날부터 일곱째 날까지 유교병을 먹는 자는 이스라엘에서 끊어지리라</p></div>
-      <div class="verse-block"><span class="vnum">16</span><p>너희에게 첫날에도 성회요 일곱째 날에도 성회가 되리니 너희는 이 두 날에는 아무 일도 하지 말고 각자의 먹을 것만 갖출 것이니라</p></div>
+      <div class="verse-block"><span class="vnum">16</span><p>너희에게 첫날에도 <span class="gloss" data-term="성회">성회</span>요 일곱째 날에도 성회가 되리니 너희는 이 두 날에는 아무 일도 하지 말고 각자의 먹을 것만 갖출 것이니라</p></div>
       <div class="verse-block"><span class="vnum">17</span><p>너희는 무교절을 지키라 이 날에 내가 너희 군대를 애굽 땅에서 인도하여 내었음이니라 그러므로 너희가 영원한 규례로 삼아 대대로 이 날을 지킬지니라</p></div>
       <div class="verse-block"><span class="vnum">18</span><p>첫째 달 그 달 열나흗날 저녁부터 이십일일 저녁까지 너희는 무교병을 먹을 것이요</p></div>
       <div class="verse-block"><span class="vnum">19</span><p>이레 동안은 누룩이 너희 집에서 발견되지 아니하도록 하라 무릇 유교물을 먹는 자는 타국인이든지 본국에서 난 자든지를 막론하고 이스라엘 회중에서 끊어지리니</p></div>
       <div class="verse-block"><span class="vnum">20</span><p>너희는 아무 유교물이든지 먹지 말고 너희 모든 처소에서 무교병을 먹을지니라</p></div>
       <div class="verse-block"><span class="vnum">21</span><p>모세가 이스라엘 모든 장로를 불러서 그들에게 이르되 너희는 나가서 너희의 가족대로 어린 양을 택하여 유월절 양으로 잡고</p></div>
-      <div class="verse-block"><span class="vnum">22</span><p>너희는 우슬초 묶음을 가져다가 그릇에 담은 피에 적시어서 그 피를 문 인방과 좌우 설주에 뿌리고 아침까지 한 사람도 자기 집 문 밖에 나가지 말라</p></div>
+      <div class="verse-block"><span class="vnum">22</span><p>너희는 <span class="gloss" data-term="우슬초">우슬초</span> 묶음을 가져다가 그릇에 담은 피에 적시어서 그 피를 문 인방과 좌우 설주에 뿌리고 아침까지 한 사람도 자기 집 문 밖에 나가지 말라</p></div>
       <div class="verse-block"><span class="vnum">23</span><p>여호와께서 애굽 사람들에게 재앙을 내리려고 지나가실 때에 문 인방과 좌우 문설주의 피를 보시면 여호와께서 그 문을 넘어가시고 멸하는 자가 너희 집에 들어와 너희를 치지 못하게 하시리라</p></div>
       <div class="verse-block"><span class="vnum">24</span><p>너희는 이 일을 규례로 삼아 너희와 너희 자손이 영원히 지킬 것이니라</p></div>
       <div class="verse-block"><span class="vnum">25</span><p>너희는 여호와께서 허락하신 대로 너희에게 주시는 땅에 이를 때에 이 예식을 지킬 것이니라</p></div>
@@ -502,7 +546,7 @@
     <div class="brand">그날 밤, 문설주에</div>
     <div style="display:flex; align-items:center; gap:14px;">
       <span class="score-hud" id="scoreHud">⭐ 0점 · 🔥 0콤보</span>
-      <button class="btn btn-small music-btn" id="musicBtn" onclick="toggleMusic()">♪ 배경음악 켜기</button>
+      <button class="btn btn-small music-btn" id="musicBtn">♪ 배경음악</button>
       <button class="icon-btn" onclick="toggleHistory()" aria-label="학습 기록" title="학습 기록">📊</button>
       <div class="stage-tag" id="stageTag">출애굽기 11–12장</div>
     </div>
@@ -559,7 +603,7 @@
 
   <!-- STAGE 0 -->
   <section class="stage active" id="stage-0">
-    <div class="eyebrow">Interactive Scripture · 성인용 · 전체 본문</div>
+    <div class="eyebrow">Interactive Scripture · 전 연령 · 전체 본문</div>
     <h1 class="title">그날 밤,<br>문설주에</h1>
     <p class="lede">애굽 왕궁의 마지막 경고부터, 430년 만에 시작된 새벽까지.<br>
     출애굽기 11장과 12장 전체를 본문의 흐름 그대로 따라가며, 각 규례가 무엇을 의미하는지 깊이 있게 살펴봅니다.</p>
@@ -576,6 +620,10 @@
       본문은 성경 내용을 요약·재구성한 것이며 직접 인용이 아닌 이야기 형식으로 각색되었습니다.
       배경음악은 이 브라우저 안에서 실시간으로 생성되는 소리이며, 재생을 누르면 시작됩니다.
     </p>
+    <div class="kids-explain"><span class="ke-tag">🧒 쉬운 설명</span><br>
+      상단의 "🧒 쉬운말 모드"를 켜두면, 어려운 문장 아래에 이렇게 초등학생도 이해할 수 있는 쉬운 풀이가 함께 나와요.
+      또 점선 밑줄이 있는 낱말( <span class="gloss" data-term="유월절">유월절</span> 처럼)을 누르면 무슨 뜻인지 바로 알려줘요.
+    </div>
     <div class="panel">
       <p style="margin:0 0 10px; color:var(--parchment);">플레이어 이름 (선택 — 같은 기기에서 여러 명이 기록을 남길 때 구분됩니다)</p>
       <input type="text" id="playerNameInput" class="name-input" placeholder="이름을 입력하세요" maxlength="20">
@@ -638,6 +686,13 @@
         <div id="q2choices" style="margin-top:14px;"></div>
         <div class="feedback" id="q2feedback"></div>
       </div>
+      <div id="s1takeaway" style="display:none;">
+        <div class="takeaway-box">
+          <span class="tw-tag">🔑 핵심 한 줄 정리</span>
+          <div class="tw-text">은금 패물 규례부터 마지막 경고까지, 이 모든 일은 즉흥적 사건이 아니라 창세기에서부터 이어진 하나님의 오래된 약속과 계획의 성취입니다.</div>
+          <div class="tw-kids">🧒 하나님은 아주 오래 전에 하신 약속을 하나도 잊지 않고 그대로 이루고 계세요.</div>
+        </div>
+      </div>
       <div class="btn-row" id="s1continue" style="display:none;">
         <button class="btn btn-primary" onclick="goTo(2)">2막으로 — 준비</button>
       </div>
@@ -649,7 +704,7 @@
     <div class="eyebrow">2막 — 준비</div>
     <h2 class="section-title">달력에서 문설주까지</h2>
     <span class="verse-ref">출애굽기 12:1–20, 43–49</span>
-    <p style="margin-top:16px;">여호와께서 모세와 아론에게 새로운 절기의 규례를 주십니다.
+    <p style="margin-top:16px;">여호와께서 모세와 아론에게 새로운 절기의 <span class="gloss" data-term="규례">규례</span>를 주십니다.
     각 규례는 단순한 절차가 아니라, 그 자체로 의미를 담고 있습니다. 아홉 단계에 걸쳐 함께 짚어봅니다.</p>
 
     <div class="door-wrap">
@@ -671,6 +726,13 @@
 
     <div class="panel" id="matchGamePanel" style="display:none;"></div>
 
+    <div id="s2takeaway" style="display:none;">
+      <div class="takeaway-box">
+        <span class="tw-tag">🔑 핵심 한 줄 정리</span>
+        <div class="tw-text">유월절의 아홉 규례는 하나같이 "완전한 것이 불완전한 것을 대신한다"는 원리와 "온 공동체가 함께, 눈에 보이게 순종한다"는 원리를 담고 있습니다.</div>
+        <div class="tw-kids">🧒 흠 없는 어린양의 피를 문에 발라서, 그 집 안에 있는 사람들이 심판을 피하고 살 수 있게 됐어요.</div>
+      </div>
+    </div>
     <div class="btn-row" id="s2continue" style="display:none;">
       <button class="btn btn-primary" onclick="goTo(3)">3막으로 — 그 밤</button>
     </div>
@@ -682,7 +744,7 @@
     <h2 class="section-title">한밤중, 그리고 새벽</h2>
     <span class="verse-ref">출애굽기 12:21–42</span>
     <div class="panel" style="margin-top:18px;">
-      <div class="cine-line" data-d="0">모세가 이스라엘 장로들을 불러 말합니다. "우슬초 묶음을 피에 적셔 문 인방과 좌우 설주에 뿌리고, 아침까지 아무도 집 문밖에 나가지 말라."
+      <div class="cine-line" data-d="0">모세가 이스라엘 장로들을 불러 말합니다. "<span class="gloss" data-term="우슬초">우슬초</span> 묶음을 피에 적셔 문 <span class="gloss" data-term="인방">인방</span>과 좌우 <span class="gloss" data-term="문설주">설주</span>에 뿌리고, 아침까지 아무도 집 문밖에 나가지 말라."
         <span class="ref">출 12:21-22</span></div>
       <div class="cine-line" data-d="1">"멸하는 자"가 그 땅을 지나갈 때, 문에 피가 없는 집은 그대로 지나가지 않습니다. 문에 피가 있는 집만, 그 문이 열리지 않은 채로 넘어갑니다.
         <span class="ref">출 12:23</span></div>
@@ -714,7 +776,33 @@
       <br><br>
       <b>잠시 멈추어, 이 장면이 당신에게 남긴 것을 짧게 적어보세요.</b> 이 기록은 저장되지 않으며, 오직 이 순간을 위한 것입니다.
     </div>
+    <div class="kids-explain"><span class="ke-tag">🧒 쉬운 설명</span><br>
+      이 부분은 슬프고 무거운 이야기예요. 오랫동안 이스라엘 사람들을 힘들게 괴롭혔던 애굽(이집트)에게 하나님이 "이제 그만!"이라고 아주 크고 무서운 벌을 내리신 거예요.
+      그런데 하나님은 이스라엘 사람들을 미리 지켜주는 방법(문에 피를 바르는 것)도 함께 알려주셨어요. 이 이야기를 읽으면서 슬프거나 무섭게 느껴져도 괜찮아요 — 어른이나 부모님과 함께 이야기 나눠보세요.
+    </div>
     <textarea id="reflect3" placeholder="예: 이 심판의 무게 앞에서 나는..."></textarea>
+
+    <div class="panel">
+      <p class="lede" style="margin:0 0 4px;">떠나기 전에, 오늘 배운 것을 짧게 복습해볼까요?</p>
+      <div class="recap-item">
+        <div id="recap0-choices"></div>
+        <div class="feedback" id="recap0-feedback"></div>
+      </div>
+      <div class="recap-item">
+        <div id="recap1-choices"></div>
+        <div class="feedback" id="recap1-feedback"></div>
+      </div>
+      <div class="recap-item">
+        <div id="recap2-choices"></div>
+        <div class="feedback" id="recap2-feedback"></div>
+      </div>
+    </div>
+
+    <div class="takeaway-box">
+      <span class="tw-tag">🔑 핵심 한 줄 정리</span>
+      <div class="tw-text">심판의 밤 한복판에서도 문설주의 피가 있는 집은 넘어감을 받았습니다 — 이것이 "유월절"이라는 이름의 뜻이며, 이스라엘은 이 밤을 "여호와의 밤"이라 부르며 스스로의 힘이 아니라 하나님의 행하심을 기억합니다.</div>
+      <div class="tw-kids">🧒 피가 발린 문이 있는 집은 무섭던 그 밤에도 안전했어요. 이건 이스라엘이 잘해서가 아니라 하나님이 구해주신 거예요.</div>
+    </div>
 
     <div class="btn-row"><button class="btn btn-primary" onclick="goTo(4)">4막으로 — 전승</button></div>
   </section>
@@ -727,6 +815,12 @@
     <p style="margin-top:16px;">여호와께서는 이 밤을 단 한 번의 사건으로 남기지 않으셨습니다.
     "이 날을 대대로 지켜 영원한 규례를 삼으라." 그리고 12:26-27은 구체적인 장면 하나를 미리 그려줍니다 —
     언젠가 자녀가 물을 것입니다. "이 예식이 아버지께 무슨 뜻이니이까?"</p>
+
+    <div class="takeaway-box">
+      <span class="tw-tag">🔑 핵심 한 줄 정리</span>
+      <div class="tw-text">유월절과 무교절은 한 세대의 경험으로 끝나지 않고, 자녀에게 설명하고 대대로 지켜야 할 살아있는 기억으로 주어졌습니다.</div>
+      <div class="tw-kids">🧒 이 특별한 밤 이야기는 부모님이 아이들에게 계속 들려줘야 하는, 우리 가족의 소중한 이야기예요.</div>
+    </div>
 
     <div class="panel">
       <p class="lede" style="margin:0;">그날이 왔다고 상상해보세요. 당신의 아이, 혹은 다음 세대의 누군가가 묻습니다 —
@@ -759,13 +853,42 @@
       <div class="btn-row"><button class="btn btn-primary" onclick="toggleNotes()">📝 적용노트 열기</button></div>
     </div>
 
-    <div class="btn-row"><button class="btn" onclick="restart()">처음부터 다시</button></div>
+    <a class="next-chapter-card" href="exodus-13.html">
+      <div>
+        <div class="nc-eyebrow">다음 이야기 · 출애굽기 13장</div>
+        <div class="nc-title">손의 표, 이마의 기호 — 떠나는 백성이 걷는 첫 길</div>
+      </div>
+      <div class="nc-arrow">→</div>
+    </a>
+
+    <div class="btn-row">
+      <button class="btn" onclick="restart()">처음부터 다시</button>
+      <a class="btn" href="index.html" style="text-decoration:none; display:inline-block;">🏠 처음 화면으로</a>
+    </div>
   </section>
 
 </div>
 
+<script src="assets/pbs-nav.js"></script>
+<script src="assets/pbs-glossary.js"></script>
+<script src="assets/pbs-effects.js"></script>
+<script src="assets/pbs-debug.js"></script>
 <script>
 let currentStage = 0;
+/* Debug-mode snapshot — read-only view of this page's existing state
+   variables for the debug panel (assets/pbs-debug.js). Added purely for
+   visibility; nothing below is restructured. */
+function debugSnapshot(){
+  return {
+    stage: currentStage,
+    difficulty, playerName,
+    score, combo, bestCombo,
+    sessionLogged,
+    firstTryCorrect,
+    prepIndex, prepDone,
+    matchActive: !!matchState
+  };
+}
 function goTo(n){
   document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
   document.getElementById('stage-'+n).classList.add('active');
@@ -782,6 +905,7 @@ function goTo(n){
   if(n===3) initCinematic();
   if(n===4) logHistoryIfNeeded();
   if(typeof autosave === 'function') autosave();
+  if(window.PBS_Debug){ PBS_Debug.log('goTo('+n+')'); PBS_Debug.update(debugSnapshot()); }
 }
 
 /* ---------- SHARED AUDIO CONTEXT (used by both music and sound effects) ---------- */
@@ -847,6 +971,7 @@ function registerAnswer(isCorrect, points){
   }
   updateScoreHud();
   if(typeof autosave === 'function') autosave();
+  if(window.PBS_Debug){ PBS_Debug.log(`registerAnswer(${isCorrect}) → score=${score}, combo=${combo}`); PBS_Debug.update(debugSnapshot()); }
 }
 
 /* ---------- SHUFFLE UTILITY ---------- */
@@ -859,10 +984,96 @@ function shuffleIndices(n){
   return arr;
 }
 function meaningBlock(text){
+  if(!text) return '';
   if(difficulty === 'hard'){
     return `<details class="meaning-details"><summary>💡 의미 더 보기</summary><div class="meaning-body">${text}</div></details>`;
   }
   return `<span class="meaning"><b>💡 의미</b><br>${text}</span>`;
+}
+
+/* ---------- full right/wrong breakdown: shows EVERY choice with its own
+   explanation (not just the one the learner clicked), so "why is this
+   right / why is that wrong" is always answered in full. ---------- */
+function renderExplainList(feedbackEl, choices, order, pickedPos, opts){
+  opts = opts || {};
+  const noJudge = !!opts.noJudge;
+  let html = '<div class="explain-list">';
+  order.forEach((origIdx, pos)=>{
+    const c = choices[origIdx];
+    const isPicked = pos === pickedPos;
+    const cls = noJudge ? 'is-neutral' : (c.correct ? 'is-correct' : 'is-wrong');
+    const mark = noJudge ? '🔹' : (c.correct ? '✅ 정답' : '❌ 오답');
+    html += `<div class="explain-item ${cls}">
+      <div class="ei-mark">${mark}</div>
+      <div class="ei-body">
+        <div class="ei-choice">${c.t}${isPicked ? '<span class="ei-picked">내 선택</span>' : ''}</div>
+        ${c.fb ? `<div class="ei-why">${c.fb}</div>` : ''}
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  if(opts.meaning) html += meaningBlock(opts.meaning);
+  if(opts.kids) html += `<div class="kids-explain"><span class="ke-tag">🧒 쉬운 설명</span><br>${opts.kids}</div>`;
+  feedbackEl.innerHTML = html;
+  feedbackEl.classList.add('show');
+  if(window.PBS_initGlossary) PBS_initGlossary(feedbackEl);
+}
+
+/* ---------- small celebratory particle pop near a correct answer ---------- */
+function fxSparkleAt(el){
+  const cv = document.getElementById('fxCanvas');
+  if(!cv || !window.PBS_sparkleBurst || !el) return;
+  const r = el.getBoundingClientRect();
+  PBS_sparkleBurst(cv, r.left + r.width/2, r.top + r.height/2, { count: 22 });
+}
+
+/* ---------- OX(true/false) recap quiz — a second question format for variety ---------- */
+function renderRecapTF(boxId, feedbackId, statement, answer, fb, kids){
+  const box = document.getElementById(boxId);
+  box.innerHTML = `
+    <p class="lede" style="margin:0 0 12px;">${statement}</p>
+    <div class="tf-row">
+      <button class="tf-btn" data-v="true">⭕ 맞다 (참)</button>
+      <button class="tf-btn" data-v="false">❌ 틀리다 (거짓)</button>
+    </div>`;
+  document.querySelectorAll('#'+boxId+' .tf-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      const chosenVal = btn.dataset.v === 'true';
+      const isCorrect = chosenVal === answer;
+      document.querySelectorAll('#'+boxId+' .tf-btn').forEach(b=>{
+        b.disabled = true;
+        const bVal = b.dataset.v === 'true';
+        if(bVal === answer) b.classList.add('correct');
+        else if(b===btn) b.classList.add('wrong');
+      });
+      if(isCorrect) fxSparkleAt(btn);
+      const feedback = document.getElementById(feedbackId);
+      let html = `<div class="explain-list"><div class="explain-item ${isCorrect?'is-correct':'is-wrong'}">
+        <div class="ei-mark">${answer ? '⭕ 정답: 맞다(참)' : '❌ 정답: 틀리다(거짓)'}</div>
+        <div class="ei-body"><div class="ei-why">${fb||''}</div></div>
+      </div></div>`;
+      if(kids) html += `<div class="kids-explain"><span class="ke-tag">🧒 쉬운 설명</span><br>${kids}</div>`;
+      feedback.innerHTML = html; feedback.classList.add('show');
+      registerAnswer(isCorrect);
+      recordFirstTry(boxId, isCorrect);
+    };
+  });
+}
+let recapInit = false;
+function initRecapQuiz(){
+  if(recapInit) return; recapInit = true;
+  renderRecapTF('recap0-choices','recap0-feedback',
+    '"이스라엘 백성이 은금 패물을 구한 것은 창세기에서 하나님이 아브라함에게 미리 하신 약속과는 관련이 없다."', false,
+    '관련이 아주 깊습니다. 창세기 15:13-14에서 여호와는 이미 "그들이 큰 재물을 이끌고 나오리라"고 약속하셨고, 11:2-3은 그 성취의 시작입니다.',
+    '아니에요! 은금 패물을 받은 건, 하나님이 아주 오래 전 아브라함 할아버지께 하신 약속이 이루어지는 거예요.');
+  renderRecapTF('recap1-choices','recap1-feedback',
+    '"유월절 어린양은 아무 흠이 있어도 상관없었다."', false,
+    '흠 없고 1년 된 수컷이어야 했습니다(12:5). "흠 없음"은 하나님께 바쳐지는 것의 온전함을 상징합니다.',
+    '아니에요! 흠이 없는, 건강한 어린양이어야 했어요.');
+  renderRecapTF('recap2-choices','recap2-feedback',
+    '"문설주에 피를 바른 것은 애굽 사람들에게 누가 이스라엘인지 보여주기 위함이었다."', false,
+    '애굽 사람들에게 보여주기 위한 것이 아니라, 순종하여 피를 바른 이스라엘 백성 스스로에게 구원의 확신과 안전을 주기 위한 표적이었습니다(12:13).',
+    '아니에요! 피는 이집트 사람들한테 보여주려는 게 아니라, 그 집 안에 있는 사람들을 지켜주는 표시였어요.');
 }
 
 /* ---------- DIFFICULTY & PLAYER NAME ---------- */
@@ -871,6 +1082,7 @@ function setDifficulty(d){
   difficulty = d;
   document.querySelectorAll('.diff-btn').forEach(b=>b.classList.toggle('active', b.dataset.d===d));
   try{ localStorage.setItem('exodusGame_difficulty_v1', d); }catch(e){}
+  if(window.PBS_Debug){ PBS_Debug.log('difficulty → '+d); PBS_Debug.update(debugSnapshot()); }
 }
 let playerName = 'Player';
 function setPlayerName(name){
@@ -1072,6 +1284,11 @@ function renderReview(){
 
 /* ---------- CELEBRATION ---------- */
 function spawnConfetti(){
+  const cv = document.getElementById('fxCanvas');
+  if(cv && window.PBS_burstConfetti){
+    PBS_burstConfetti(cv, { count: 90, colors:['#c9a24b','#e3c579','#a83244','#ece1c6','#7fb3cf'] });
+    return;
+  }
   const layer = document.getElementById('confettiLayer');
   if(!layer) return;
   layer.innerHTML = '';
@@ -1208,127 +1425,27 @@ function clearHistory(){
   renderHistory();
 }
 
-/* ---------- MUSIC (plain Web Audio API — no external library) ----------
-   A bright, warm, major-key loop: a gentle bell arpeggio over a soft
-   sustained pad. I-V-vi-IV in C major — one of the most familiar,
-   uplifting progressions there is. No dissonance, no low pulsing,
-   nothing tense — just a cheerful little game theme.               */
-let padOscs=[];
-let musicOn=false, noteTimer=null, noteStep=0;
-
-const N = { C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
-            C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88, C5:523.25 };
-
-// Four bars, each with a pad chord and a little rising bell arpeggio over it.
-const BARS = [
-  { pad:[N.C3, N.E3, N.G3], arp:[N.C4, N.E4, N.G4, N.C5] },  // C major
-  { pad:[N.G3, N.B3, N.D4], arp:[N.G3, N.D4, N.G4, N.B4] },  // G major
-  { pad:[N.A3, N.C4, N.E4], arp:[N.A3, N.E4, N.A4, N.C5] },  // A minor
-  { pad:[N.F3, N.A3, N.C4], arp:[N.F3, N.C4, N.F4, N.A4] }   // F major
+/* ---------- MUSIC: real playlist only, no synthesized fallback ----------
+   music/출애굽기11-12장/ holds the actual mp3s (kept out of git — see
+   .gitignore). The button opens a small popover listing every track so
+   you can pick exactly what plays, with prev/next/play controls. ---------- */
+const BGM_TRACKS_1112 = [
+  'music/출애굽기11-12장/Ashes And Brass.mp3',
+  'music/출애굽기11-12장/Ashes And Brass_1.mp3'
 ];
-const NOTE_MS = 380; // tempo of the bell arpeggio
-
-function playBell(freq, time, vol){
-  // A short, bright pluck: fundamental + a soft octave shimmer on top.
-  [ [freq, 1], [freq*2, 0.18] ].forEach(([f, mix])=>{
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'sine';
-    o.frequency.value = f;
-    g.gain.setValueAtTime(0.0001, time);
-    g.gain.exponentialRampToValueAtTime(vol * mix, time + 0.008);
-    g.gain.exponentialRampToValueAtTime(0.0001, time + 0.5);
-    o.connect(g); g.connect(masterGain);
-    o.start(time); o.stop(time + 0.55);
-    o.onended = () => { try{ o.disconnect(); g.disconnect(); }catch(e){} };
-  });
-}
-
-function setPadChord(freqs, time){
-  padOscs.forEach(o=>{
-    o.gain.gain.setValueAtTime(o.gain.gain.value, time);
-    o.gain.gain.linearRampToValueAtTime(0.0001, time + 0.8);
-    o.osc.stop(time + 0.85);
-  });
-  padOscs = freqs.map(f=>{
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'triangle';
-    o.frequency.value = f;
-    g.gain.setValueAtTime(0.0001, time);
-    g.gain.linearRampToValueAtTime(0.05, time + 1.0);
-    o.connect(g); g.connect(padGain);
-    o.start(time);
-    return { osc:o, gain:g };
-  });
-}
-
-function scheduleNote(){
-  if(!musicOn || !audioCtx) return;
-  const barIdx = Math.floor(noteStep / 4) % BARS.length;
-  const beatIdx = noteStep % 4;
-  const bar = BARS[barIdx];
-  const now = audioCtx.currentTime;
-
-  if(beatIdx === 0) setPadChord(bar.pad, now);
-  playBell(bar.arp[beatIdx], now + 0.01, 0.16);
-
-  noteStep++;
-  noteTimer = setTimeout(scheduleNote, NOTE_MS);
-}
-
-function startMusic(){
-  return ensureAudioContext();
-}
-
-function toggleMusic(){
-  const btn = document.getElementById('musicBtn');
-  try{
-    if(!startMusic()){
-      btn.textContent = '♪ 이 브라우저는 음악 미지원';
-      return;
-    }
-    if(!musicOn){
-      audioCtx.resume().then(()=>{
-        musicOn = true;
-        noteStep = 0;
-        scheduleNote();
-        btn.textContent = '♪ 배경음악 끄기';
-        setTimeout(()=>{
-          if(audioCtx.state !== 'running'){
-            btn.textContent = '♪ 소리 안 남 · 무음모드 확인';
-          }
-        }, 700);
-      }).catch(()=>{
-        btn.textContent = '♪ 재생 실패 (다시 클릭)';
-      });
-    } else {
-      clearTimeout(noteTimer);
-      noteTimer = null;
-      const now = audioCtx.currentTime;
-      padOscs.forEach(o=>{
-        o.gain.gain.linearRampToValueAtTime(0.0001, now + 0.4);
-        o.osc.stop(now + 0.45);
-      });
-      padOscs = [];
-      audioCtx.suspend();
-      musicOn = false;
-      btn.textContent = '♪ 배경음악 켜기';
-    }
-  }catch(err){
-    btn.textContent = '♪ 재생 실패 (다시 클릭)';
-  }
-}
 
 /* ---------- STAGE 1 ---------- */
 const q0 = {
   choices:[
-    {t:'애굽 경제에 타격을 주어 백성들을 심리적으로 굴복시키기 위해서다.', correct:false},
-    {t:'훗날 성막을 짓는 데 필요한 재료를 미리 마련해 두시려는 실용적 목적이다.', correct:false},
-    {t:'창세기 15:14에서 아브라함에게 하신 약속 — "그들이 큰 재물을 이끌고 나오리라" — 이 성취되는 순간이며, 이는 이후 12:35-36의 사건으로 실현된다.', correct:true}
+    {t:'애굽 경제에 타격을 주어 백성들을 심리적으로 굴복시키기 위해서다.', correct:false,
+      fb:'이 지시의 대상은 바로가 아니라 이스라엘 백성입니다. 애굽 경제를 흔드는 것이 목적이었다면 바로에게 보여야 할 텐데, 본문은 오히려 백성 각자에게 "네 이웃에게 구하라"고 말합니다.'},
+    {t:'훗날 성막을 짓는 데 필요한 재료를 미리 마련해 두시려는 실용적 목적이다.', correct:false,
+      fb:'성막 재료로 쓰인 것은 나중의 결과일 뿐, 이 시점에 주어진 이유는 아닙니다. 성막을 지으라는 명령은 이보다 한참 뒤인 출애굽기 25장에서야 나옵니다.'},
+    {t:'창세기 15:14에서 아브라함에게 하신 약속 — "그들이 큰 재물을 이끌고 나오리라" — 이 성취되는 순간이며, 이는 이후 12:35-36의 사건으로 실현된다.', correct:true,
+      fb:'맞습니다. 창세기 15:13-14에서 여호와는 아브라함에게 이미 말씀하셨습니다 — 그의 후손이 사백 년 동안 종살이한 후, "큰 재물을 이끌고" 나오리라고. 11:2-3의 지시는 바로 그 오래된 약속이 실현되기 직전의 준비 단계입니다.'}
   ],
-  fb:'창세기 15:13-14에서 여호와는 아브라함에게 이미 말씀하셨습니다 — 그의 후손이 사백 년 동안 종살이한 후, "큰 재물을 이끌고" 나오리라고. 11:2-3의 지시는 바로 그 오래된 약속이 실현되기 직전의 준비 단계입니다.',
-  meaning:'이 짧은 구절은 출애굽 전체가 갑작스러운 사건이 아니라, 수백 년 전에 이미 하신 약속의 성취라는 것을 보여줍니다. 심판과 구원의 밤은 즉흥적인 개입이 아니라 오래 참고 지켜온 언약의 완성입니다.'
+  meaning:'이 짧은 구절은 출애굽 전체가 갑작스러운 사건이 아니라, 수백 년 전에 이미 하신 약속의 성취라는 것을 보여줍니다. 심판과 구원의 밤은 즉흥적인 개입이 아니라 오래 참고 지켜온 언약의 완성입니다.',
+  kids:'하나님은 아주 오래 전, 아브라함 할아버지에게 "네 자손이 나중에 큰 부자가 되어서 나올 거야"라고 약속하셨어요. 이스라엘 백성이 이집트 이웃들에게 금과 은 물건을 받은 건, 바로 그 오래된 약속이 진짜로 이루어지는 순간이에요!'
 };
 function pickRenderOrder(choices){
   let order = shuffleIndices(choices.length);
@@ -1351,15 +1468,14 @@ function renderQ0(){
 }
 function answerQ0(pos){
   const order = q0.order;
-  document.querySelectorAll('#q0choices .choice').forEach((b,idx)=>{
+  const buttons = document.querySelectorAll('#q0choices .choice');
+  buttons.forEach((b,idx)=>{
     b.disabled=true;
-    if(q0.choices[order[idx]].correct) b.classList.add('correct');
+    if(q0.choices[order[idx]].correct){ b.classList.add('correct'); if(idx===pos) fxSparkleAt(b); }
     else if(idx===pos) b.classList.add('wrong');
   });
   const chosen = q0.choices[order[pos]];
-  const fb = document.getElementById('q0feedback');
-  fb.innerHTML = q0.fb + meaningBlock(q0.meaning);
-  fb.classList.add('show');
+  renderExplainList(document.getElementById('q0feedback'), q0.choices, order, pos, { meaning: q0.meaning, kids: q0.kids });
   document.getElementById('q0next').style.display='block';
   renderQ1();
   recordFirstTry('q0', chosen.correct);
@@ -1370,7 +1486,8 @@ const q1 = {
     {t:'이번엔 백성을 완전히, 스스로 보내겠다고 결정할 것이다.', correct:false, fb:'아직입니다. 바로는 이 시점까지도 굴복하지 않습니다. 실제 전환점은 12:31, 장자의 죽음 이후에야 옵니다.'},
     {t:'경고를 무시하고 오히려 모세를 쫓아내며 "다시는 내 얼굴을 보지 말라"고 할 것이다.', correct:true, fb:'맞습니다. 10:28에서 바로는 이미 그렇게 경고했고, 11:9-10은 이번에도 그가 듣지 않으리라는 것을 미리 알려줍니다.'},
     {t:'애굽 신하들의 압박에 못 이겨 조건부로 협상을 시도할 것이다.', correct:false, fb:'신하들이 먼저 바로를 압박하는 장면은 이미 10:7에 나왔습니다. 그러나 바로 자신은 끝까지 협상이 아니라 거부를 택합니다.'}
-  ]
+  ],
+  kids:'바로 왕은 이번에도 "싫어, 안 보낼 거야!"라고 고집을 부렸어요. 사실 왕의 신하들조차 "제발 좀 보내주세요"라고 왕을 말렸는데도(10:7), 왕은 끝까지 듣지 않았어요.'
 };
 function renderQ1(){
   const box = document.getElementById('q1choices'); box.innerHTML='';
@@ -1382,15 +1499,14 @@ function renderQ1(){
 }
 function answerQ1(pos){
   const order = q1.order;
-  document.querySelectorAll('#q1choices .choice').forEach((b,idx)=>{
+  const buttons = document.querySelectorAll('#q1choices .choice');
+  buttons.forEach((b,idx)=>{
     b.disabled=true;
-    if(q1.choices[order[idx]].correct) b.classList.add('correct');
+    if(q1.choices[order[idx]].correct){ b.classList.add('correct'); if(idx===pos) fxSparkleAt(b); }
     else if(idx===pos) b.classList.add('wrong');
   });
   const chosen = q1.choices[order[pos]];
-  const fb = document.getElementById('q1feedback');
-  fb.textContent = chosen.fb;
-  fb.classList.add('show');
+  renderExplainList(document.getElementById('q1feedback'), q1.choices, order, pos, { kids: q1.kids });
   document.getElementById('q1next').style.display='block';
   recordFirstTry('q1', chosen.correct);
   registerAnswer(chosen.correct);
@@ -1400,7 +1516,8 @@ const q2 = {
     {t:'스스로 선택한 결과다 — 반복된 거절이 습관이 되었다.', fb:'본문은 여러 번 "바로가 자기 마음을 완악하게 하였다"고 말합니다(8:15, 8:32). 인간의 반복된 거부가 스스로를 굳어지게 만드는 모습으로 읽을 수 있습니다.'},
     {t:'하나님이 정하신 흐름이다 — 심판의 크기와 하나님의 능력을 드러내기 위함이다.', fb:'본문은 "여호와께서 바로의 마음을 완악하게 하셨다"고도 말합니다(9:12, 11:10). 이는 하나님의 주권과 심판의 목적(9:16, "내 이름이 온 천하에 전파되게 하려 하였음이니라")과 연결됩니다.'},
     {t:'둘 다 본문 안에 있다 — 어느 한쪽으로 완전히 정리되지 않는다.', fb:'많은 독자들이 이 지점에서 멈춰 섭니다. 본문은 두 표현을 나란히 두며, 인간의 책임과 하나님의 주권이 함께 얽힌 긴장을 그대로 남겨둡니다.'}
-  ]
+  ],
+  kids:'좀 어려운 질문이죠? 어떤 사람은 "바로 왕이 스스로 고집부린 거야"라고 하고, 어떤 사람은 "하나님이 그렇게 하신 거야"라고 해요. 성경에는 이 두 가지 말이 다 나와요. 딱 하나의 정답은 없고, 여러분이 스스로 생각해보는 질문이에요.'
 };
 function renderQ2(){
   const box = document.getElementById('q2choices'); box.innerHTML='';
@@ -1412,12 +1529,13 @@ function renderQ2(){
 }
 function answerQ2(pos){
   const order = q2.order;
-  document.querySelectorAll('#q2choices .choice').forEach(b=>b.disabled=true);
-  document.querySelectorAll('#q2choices .choice')[pos].classList.add('correct');
-  const fb=document.getElementById('q2feedback');
-  fb.textContent = q2.choices[order[pos]].fb;
-  fb.classList.add('show');
+  const buttons = document.querySelectorAll('#q2choices .choice');
+  buttons.forEach(b=>b.disabled=true);
+  buttons[pos].classList.add('correct');
+  fxSparkleAt(buttons[pos]);
+  renderExplainList(document.getElementById('q2feedback'), q2.choices, order, pos, { noJudge:true, kids: q2.kids });
   document.getElementById('s1continue').style.display='flex';
+  document.getElementById('s1takeaway').style.display='block';
   autosave();
 }
 renderQ0(); renderQ2();
@@ -1431,7 +1549,8 @@ const prepSteps = [
       {t:'이스라엘의 시간 자체가 이 구원 사건을 기준으로 새로 시작된다는 선언이다.', correct:true, fb:'맞습니다. 애굽에서의 마지막 달이 이스라엘 달력의 첫째 달이 됩니다.'},
       {t:'애굽의 달력 체계를 그대로 따르되 이름만 바꾸는 것이다.', correct:false, fb:'애굽 달력을 따르는 것이 아니라, 완전히 새로운 기준점을 세우는 것입니다.'}
     ],
-    meaning:'한 민족의 정체성은 종종 "무엇을 기준으로 시간을 세는가"에서 드러납니다. 이스라엘은 이제부터 구원받은 그날을 기점으로 시간을 셉니다 — 노예의 역사가 아니라 해방의 역사로 자신을 정의하는 것입니다.'
+    meaning:'한 민족의 정체성은 종종 "무엇을 기준으로 시간을 세는가"에서 드러납니다. 이스라엘은 이제부터 구원받은 그날을 기점으로 시간을 셉니다 — 노예의 역사가 아니라 해방의 역사로 자신을 정의하는 것입니다.',
+    kids:'이제부터 이스라엘 사람들은 "이집트에서 도망친 그 달"을 한 해의 첫 번째 달로 셀 거예요. 우리가 생일을 특별히 기억하는 것처럼, 구원받은 날을 가장 중요한 날로 기억하기로 한 거예요!'
   },
   { title:'둘째 — 어린양을 고르다', ref:'출 12:3-5',
     q:'각 가정은 어떤 양(또는 염소)을 준비해야 할까요?',
@@ -1440,7 +1559,8 @@ const prepSteps = [
       {t:'흠 없고 1년 된 수컷으로, 가족의 수에 맞게 이웃과 나눈다.', correct:true, fb:'맞습니다. 한 가정이 다 먹기 어려우면 사람 수에 맞춰 나누도록 규정되어 있습니다.'},
       {t:'상태와 관계없이 형편에 맞는 것으로, 값을 아낀다.', correct:false, fb:'형편이 아니라 규례가 기준입니다. "흠 없는" 상태가 명확히 요구됩니다.'}
     ],
-    meaning:'"흠 없음"은 단순한 품질 기준이 아니라, 하나님께 바쳐지는 것의 온전함을 상징합니다. 완전한 것이 불완전한 것을 대신하는 구조가 여기서부터 시작됩니다.'
+    meaning:'"흠 없음"은 단순한 품질 기준이 아니라, 하나님께 바쳐지는 것의 온전함을 상징합니다. 완전한 것이 불완전한 것을 대신하는 구조가 여기서부터 시작됩니다.',
+    kids:'양을 고를 때는 비싸고 좋은 걸 고르는 게 아니라 "흠 없는 건강한 새끼 양"을 골라야 했어요. 가족 수가 적으면 이웃과 함께 나눠서 준비했어요.'
   },
   { title:'셋째 — 날짜와 시각', ref:'출 12:6',
     q:'양은 언제까지 간직했다가, 언제 잡아야 할까요?',
@@ -1449,7 +1569,8 @@ const prepSteps = [
       {t:'니산월 10일부터 14일까지 간직했다가, 그날 해 질 때 온 회중이 잡는다.', correct:true, fb:'맞습니다. 나흘간의 기다림 뒤, "해 질 때"(twilight) 함께 잡습니다.'},
       {t:'각 가정이 원하는 날짜를 자유롭게 정한다.', correct:false, fb:'자율이 아니라 온 회중이 같은 날, 같은 시각에 함께 행하는 규례입니다.'}
     ],
-    meaning:'나흘간 어린양을 집에 두고 지켜본다는 것은 그 생명과 마주하는 시간을 갖는다는 뜻입니다. 온 회중이 같은 날 같은 시각에 행한다는 것은, 이 일이 개인의 신앙 행위가 아니라 공동체 전체의 사건임을 보여줍니다.'
+    meaning:'나흘간 어린양을 집에 두고 지켜본다는 것은 그 생명과 마주하는 시간을 갖는다는 뜻입니다. 온 회중이 같은 날 같은 시각에 행한다는 것은, 이 일이 개인의 신앙 행위가 아니라 공동체 전체의 사건임을 보여줍니다.',
+    kids:'양을 4일 동안 집에서 데리고 있다가, 정해진 날 저녁에 온 마을이 다 같이 잡았어요. 나 혼자만 하는 게 아니라 모두 함께요!'
   },
   { title:'넷째 — 피를 바르다', ref:'출 12:7',
     q:'잡은 양의 피는 어떻게 사용해야 할까요?',
@@ -1458,7 +1579,8 @@ const prepSteps = [
       {t:'좌우 문설주와 인방(윗부분), 즉 문의 세 지점에 바른다.', correct:true, fb:'맞습니다. 양쪽 기둥과 위쪽 인방 — 문의 세 지점에 피를 발라 그 집을 표시합니다.'},
       {t:'가족 각자의 이마와 손목에 바른다.', correct:false, fb:'사람이 아니라 문에 표시합니다. 표적은 "그 집"에 있는 것입니다.'}
     ],
-    meaning:'피가 밖으로, 그것도 지나가는 이가 볼 수 있는 곳에 발린다는 점이 중요합니다. 이는 사적이고 은밀한 신앙이 아니라, 공개적으로 자신이 어느 편에 서 있는지를 드러내는 표지입니다.'
+    meaning:'피가 밖으로, 그것도 지나가는 이가 볼 수 있는 곳에 발린다는 점이 중요합니다. 이는 사적이고 은밀한 신앙이 아니라, 공개적으로 자신이 어느 편에 서 있는지를 드러내는 표지입니다.',
+    kids:'양의 피를 문의 양쪽 기둥과 위쪽(문설주와 인방)에 발랐어요. 집 안에 숨기지 않고, 밖에서도 보이게요.'
   },
   { title:'다섯째 — 피가 표적이 되는 이유', ref:'출 12:12-13',
     q:'"내가 그 피를 볼 때에 너희를 넘어가리라"는 말씀에서, 피가 표적이 되는 목적은 정확히 누구를 위한 것일까요?',
@@ -1467,7 +1589,8 @@ const prepSteps = [
       {t:'심판이 임하는 그 밤에, 순종하여 피를 바른 이스라엘 백성 스스로에게 구원의 확신과 안전을 주기 위한 것이다.', correct:true, fb:'맞습니다. 표적은 하나님을 위한 것이 아니라, 명령에 순종한 사람들이 그 순종의 결과를 눈으로 확인하고 안심할 수 있게 하는 것입니다.'},
       {t:'애굽 사람들에게 누가 이스라엘 사람인지 구별해 보여주기 위함이다.', correct:false, fb:'애굽 사람들에게 보여주기 위한 것이 아니라, 재앙이 지나가는 그 밤 그 집 안에 있는 사람들의 안전을 위한 표적입니다.'}
     ],
-    meaning:'12:12은 이 재앙이 단지 사람과 짐승만이 아니라 "애굽의 모든 신에게 벌을 내리는" 사건이라고 말합니다. 즉 이 밤은 애굽의 신들과 여호와 사이의 대결이기도 합니다. 그 한복판에서 피는 심판을 피하는 마법이 아니라, 순종과 신뢰의 가시적 표현입니다.'
+    meaning:'12:12은 이 재앙이 단지 사람과 짐승만이 아니라 "애굽의 모든 신에게 벌을 내리는" 사건이라고 말합니다. 즉 이 밤은 애굽의 신들과 여호와 사이의 대결이기도 합니다. 그 한복판에서 피는 심판을 피하는 마법이 아니라, 순종과 신뢰의 가시적 표현입니다.',
+    kids:'하나님은 어느 집이 이스라엘 집인지 몰라서 표시가 필요했던 게 아니에요. 순종해서 피를 바른 사람들 스스로가 "아, 우리 집은 안전하구나" 하고 안심할 수 있게 해주신 거예요.'
   },
   { title:'여섯째 — 고기를 먹다', ref:'출 12:8-9',
     q:'양고기는 어떻게 조리해서 먹어야 할까요?',
@@ -1476,7 +1599,8 @@ const prepSteps = [
       {t:'머리와 다리, 내장까지 통째로 불에 구워, 무교병과 쓴 나물과 함께 먹는다.', correct:true, fb:'맞습니다. 온전히 불에 굽고, 누룩 없는 빵과 쓴 나물을 곁들입니다.'},
       {t:'말려서 다음 날 천천히 나누어 먹는다.', correct:false, fb:'말리는 것이 아니라 그 밤에 불에 구워 바로 먹습니다.'}
     ],
-    meaning:'쓴 나물은 종살이의 쓰라림을 미각으로 기억하게 하고, 무교병(누룩 없는 빵)은 발효시킬 시간조차 없이 떠나야 했던 그 밤의 긴박함을 담고 있습니다. 이 식사는 회상이 아니라 몸으로 재현하는 기억입니다.'
+    meaning:'쓴 나물은 종살이의 쓰라림을 미각으로 기억하게 하고, 무교병(누룩 없는 빵)은 발효시킬 시간조차 없이 떠나야 했던 그 밤의 긴박함을 담고 있습니다. 이 식사는 회상이 아니라 몸으로 재현하는 기억입니다.',
+    kids:'고기는 삶지 않고 통째로 불에 구워서, 쓴 나물이랑 부풀지 않은 빵(무교병)이랑 같이 먹었어요. 쓴 나물은 힘들었던 종살이를, 납작한 빵은 급하게 떠나야 했던 그 밤을 기억하게 해줘요.'
   },
   { title:'일곱째 — 떠날 채비를 하다', ref:'출 12:10-11',
     q:'이 식사를 어떤 자세로 먹어야 하며, 남은 음식은 어떻게 해야 할까요?',
@@ -1485,7 +1609,8 @@ const prepSteps = [
       {t:'허리띠를 묶고 신을 신고 지팡이를 손에 든 채 급히 먹으며, 아침 전에 남은 것은 불사른다.', correct:true, fb:'맞습니다. 이것이 "유월절"(넘어가는 절기)이라는 이름의 유래입니다 — 언제든 떠날 수 있는 여행자의 자세로 먹고, 그 밤에 속한 것은 그 밤에 끝냅니다.'},
       {t:'맨발로 잠옷 차림으로 먹고, 남은 것은 이웃에게 나눈다.', correct:false, fb:'맨발이 아니라 신을 신고, 나눔이 아니라 완전히 태워 처리하는 것이 규례입니다.'}
     ],
-    meaning:'몸의 자세가 곧 신앙의 태도를 표현합니다. 허리띠, 신발, 지팡이 — 이는 안주가 아니라 순종할 준비가 되어 있는 상태를 몸으로 선언하는 것입니다.'
+    meaning:'몸의 자세가 곧 신앙의 태도를 표현합니다. 허리띠, 신발, 지팡이 — 이는 안주가 아니라 순종할 준비가 되어 있는 상태를 몸으로 선언하는 것입니다.',
+    kids:'신발도 신고 허리띠도 매고, 지팡이도 손에 들고 서서 급하게 먹었어요. 언제든지 바로 떠날 수 있게 미리 준비한 거예요!'
   },
   { title:'여덟째 — 무교절 이레 동안', ref:'출 12:14-20',
     q:'유월절 다음, 이레 동안 지켜야 할 무교절 규례의 핵심은 무엇일까요?',
@@ -1494,7 +1619,8 @@ const prepSteps = [
       {t:'이레 동안 집 안에서 누룩을 완전히 제거하고 무교병만 먹으며, 첫날과 일곱째 날은 일하지 않는 성회로 지킨다.', correct:true, fb:'맞습니다. 누룩을 먹거나 집에 두는 자는 "이스라엘에서 끊어지리라"는 엄중한 경고까지 붙습니다(12:15, 19).'},
       {t:'이레 동안 애굽 땅을 떠나지 않고 머물며 애곡한다.', correct:false, fb:'애곡이 아니라, 오히려 성회로 모여 지키는 절기입니다.'}
     ],
-    meaning:'누룩은 성경에서 자주 부패와 확산되는 죄를 상징합니다(고전 5:6-8과 같은 후대 본문에서도 이어지는 이미지). 하룻밤의 구원 이후 이레 동안 이어지는 이 규례는, 구원이 한순간의 사건일 뿐 아니라 그 뒤로 삶 전체에서 지속되어야 할 정결함이라는 것을 보여줍니다.'
+    meaning:'누룩은 성경에서 자주 부패와 확산되는 죄를 상징합니다(고전 5:6-8과 같은 후대 본문에서도 이어지는 이미지). 하룻밤의 구원 이후 이레 동안 이어지는 이 규례는, 구원이 한순간의 사건일 뿐 아니라 그 뒤로 삶 전체에서 지속되어야 할 정결함이라는 것을 보여줍니다.',
+    kids:'일주일 동안은 부풀린 빵(누룩 빵)을 집에 두면 안 됐어요. 딱 하루가 아니라 일주일씩이나 지킬 만큼, 이 사건을 아주 중요하게 여겼다는 뜻이에요.'
   },
   { title:'아홉째 — 누가 이 식사에 참여할 수 있는가', ref:'출 12:43-49',
     q:'유월절 식사에 참여할 자격에 대한 규례로 옳은 것은 무엇일까요?',
@@ -1503,7 +1629,8 @@ const prepSteps = [
       {t:'이방 나그네나 품꾼은 원칙적으로 먹을 수 없지만, 할례를 받은 이라면 본토인과 동일한 법 아래 참여할 수 있다. 다만 함께 먹는 고기는 한 집 안에서 먹어야 하고 뼈를 꺾지 말아야 한다.', correct:true, fb:'맞습니다. 할례는 언약 공동체로 들어오는 관문이며, 그 관문을 통과한 이에게는 "본토인과 거류민에게 동일한 법"이 적용됩니다(12:49). 뼈를 꺾지 않는 것과 한 집에서 먹는 것은 어린양을 나누되 흩어버리지 않는 공동체적 온전함을 나타냅니다.'},
       {t:'참여 자격에는 아무 제한이 없으며 누구든 원하면 함께 먹을 수 있다.', correct:false, fb:'제한이 없는 것이 아닙니다. 할례라는 분명한 언약의 표가 참여의 전제 조건으로 명시되어 있습니다.'}
     ],
-    meaning:'이 규례는 이스라엘의 구원이 순수한 혈통주의가 아니라 언약 안으로의 초대라는 것을 보여줍니다. 동시에 그 초대에는 분명한 경계(할례)가 있습니다 — 누구나 저절로 속하는 것이 아니라, 언약의 표를 받아들인 이가 온전한 구성원이 됩니다.'
+    meaning:'이 규례는 이스라엘의 구원이 순수한 혈통주의가 아니라 언약 안으로의 초대라는 것을 보여줍니다. 동시에 그 초대에는 분명한 경계(할례)가 있습니다 — 누구나 저절로 속하는 것이 아니라, 언약의 표를 받아들인 이가 온전한 구성원이 됩니다.',
+    kids:'이스라엘 사람이 아니어도, 할례라는 약속의 표를 받으면 함께 유월절을 먹을 수 있었어요. 어느 나라 사람인지보다 "약속 안으로 들어왔는지"가 더 중요했던 거예요.'
   }
 ];
 let prepIndex = 0, prepDone = 0, prepInit = false;
@@ -1538,15 +1665,14 @@ function renderPrepStep(){
 function answerPrep(pos){
   const step = prepSteps[prepIndex];
   const order = step.order;
-  document.querySelectorAll('#prepChoices .choice').forEach((b,idx)=>{
+  const buttons = document.querySelectorAll('#prepChoices .choice');
+  buttons.forEach((b,idx)=>{
     b.disabled=true;
-    if(step.choices[order[idx]].correct) b.classList.add('correct');
+    if(step.choices[order[idx]].correct){ b.classList.add('correct'); if(idx===pos) fxSparkleAt(b); }
     else if(idx===pos) b.classList.add('wrong');
   });
   const chosen = step.choices[order[pos]];
-  const fb = document.getElementById('prepFeedback');
-  fb.innerHTML = chosen.fb + meaningBlock(step.meaning);
-  fb.classList.add('show');
+  renderExplainList(document.getElementById('prepFeedback'), step.choices, order, pos, { meaning: step.meaning, kids: step.kids });
 
   prepDone = Math.min(prepDone + 1, prepSteps.length);
   document.getElementById('prepFill').style.width = (prepDone/prepSteps.length*100)+'%';
@@ -1565,6 +1691,7 @@ function answerPrep(pos){
   } else {
     nextBtn.innerHTML = `<p style="color:var(--gold-soft); font-family:'Noto Serif KR',serif; font-size:16px;">이 집은 준비되었습니다. 규례를 다 갖추었습니다.</p>`;
     document.getElementById('s2continue').style.display='flex';
+    document.getElementById('s2takeaway').style.display='block';
     document.getElementById('matchGamePanel').style.display='block';
     renderMatchGame();
   }
@@ -1666,13 +1793,15 @@ function initCinematic(){
     document.getElementById('cineQpanel').style.display='block';
     renderCineQ();
   }, lines.length*850 + 500);
+  initRecapQuiz();
 }
 const cineQ = {
   choices:[
     {t:'이 밤이 여호와께서 친히 행하신 일이며, 그래서 이스라엘이 아니라 "여호와의 밤"으로 불린다는 것 — 즉 기념의 중심이 인간의 노력이 아니라 하나님의 행하심이라는 것.', correct:true, fb:'맞습니다. 구원의 주체가 이스라엘의 용기나 계획이 아니라 여호와의 직접적인 행하심이라는 점이 이 표현의 핵심입니다.'},
     {t:'이스라엘 백성이 스스로의 힘으로 탈출에 성공했다는 것을 기념하기 위함이다.', correct:false, fb:'본문의 강조점은 정반대입니다. "여호와의 밤"이라는 이름 자체가 행위의 주체를 이스라엘이 아니라 하나님께 둡니다.'},
     {t:'단지 밤에 일어난 사건이므로 붙여진 시간적 명칭일 뿐, 특별한 신학적 의미는 없다.', correct:false, fb:'단순한 시간 표시가 아닙니다. "여호와 앞에 지킬 밤", "대대로 지킬 것"이라는 반복은 이 밤에 예배적 무게가 실려 있음을 보여줍니다.'}
-  ]
+  ],
+  kids:'"여호와의 밤"이라는 이름에는 "이건 우리가 잘해서 성공한 게 아니라, 하나님이 직접 구해주신 밤이야"라는 뜻이 담겨 있어요.'
 };
 function renderCineQ(){
   const box = document.getElementById('cineQchoices'); box.innerHTML='';
@@ -1684,15 +1813,14 @@ function renderCineQ(){
 }
 function answerCineQ(pos){
   const order = cineQ.order;
-  document.querySelectorAll('#cineQchoices .choice').forEach((b,idx)=>{
+  const buttons = document.querySelectorAll('#cineQchoices .choice');
+  buttons.forEach((b,idx)=>{
     b.disabled=true;
-    if(cineQ.choices[order[idx]].correct) b.classList.add('correct');
+    if(cineQ.choices[order[idx]].correct){ b.classList.add('correct'); if(idx===pos) fxSparkleAt(b); }
     else if(idx===pos) b.classList.add('wrong');
   });
   const chosen = cineQ.choices[order[pos]];
-  const fb = document.getElementById('cineQfeedback');
-  fb.textContent = chosen.fb;
-  fb.classList.add('show');
+  renderExplainList(document.getElementById('cineQfeedback'), cineQ.choices, order, pos, { kids: cineQ.kids });
   recordFirstTry('cineQ', chosen.correct);
   registerAnswer(chosen.correct);
 }
@@ -1720,10 +1848,13 @@ function closeTextOutside(e){
   if(e.target.id === 'textOverlay') toggleTextDrawer();
 }
 function switchTextChapter(ch){
-  ['11','12'].forEach(c=>{
+  ['11','12','gloss'].forEach(c=>{
     document.getElementById('rtab-'+c).classList.toggle('active', c===ch);
     document.getElementById('rpane-'+c).classList.toggle('active', c===ch);
   });
+  if(ch === 'gloss' && window.PBS_renderGlossaryList){
+    PBS_renderGlossaryList(document.getElementById('glossListChapter'));
+  }
 }
 function adjustTextFont(dir){
   textFontStep = Math.max(-2, Math.min(3, textFontStep + dir));
@@ -1804,12 +1935,19 @@ async function copyApplication(){
 }
 
 function restart(){
-  prepIndex=0; prepDone=0; prepInit=false; cineInit=false;
+  prepIndex=0; prepDone=0; prepInit=false; cineInit=false; recapInit=false;
   document.getElementById('prepFill').style.width='0%';
   document.getElementById('prepLabel').textContent='준비 0/'+prepSteps.length;
   document.getElementById('stepDots').innerHTML='';
   ['mark-lintel','mark-left','mark-right'].forEach(id=>document.getElementById(id).classList.remove('show'));
   document.getElementById('s2continue').style.display='none';
+  document.getElementById('s1takeaway').style.display='none';
+  document.getElementById('s2takeaway').style.display='none';
+  ['recap0','recap1','recap2'].forEach(id=>{
+    document.getElementById(id+'-choices').innerHTML='';
+    document.getElementById(id+'-feedback').classList.remove('show');
+    document.getElementById(id+'-feedback').innerHTML='';
+  });
   document.querySelectorAll('.cine-line').forEach(l=>l.classList.remove('show'));
   document.getElementById('cineQpanel').style.display='none';
   document.getElementById('reflect3').value='';
@@ -1846,6 +1984,7 @@ function restart(){
   saveJSON(STORAGE_KEY, null, 'progress');
   dismissContinue();
 
+  if(window.PBS_Debug) PBS_Debug.log('restart()');
   goTo(0);
 }
 
@@ -1874,6 +2013,11 @@ function restart(){
 
   updateScoreHud();
   checkForSavedProgress();
+
+  if(window.PBS_renderNav) PBS_renderNav('11-12');
+  if(window.PBS_startStarfield) PBS_startStarfield(document.getElementById('starfield'), { density: 70 });
+  if(window.PBS_attachBgmPlayer) PBS_attachBgmPlayer(document.getElementById('musicBtn'), BGM_TRACKS_1112);
+  if(window.PBS_Debug){ PBS_Debug.init(); PBS_Debug.log('init(exodus-11-12)'); PBS_Debug.update(debugSnapshot()); }
 })();
 </script>
 </body>

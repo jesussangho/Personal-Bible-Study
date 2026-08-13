@@ -1,0 +1,10 @@
+# Background music files (large, not meant to be committed to git)
+music/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.log
+
+# Local Claude Code tooling config (not project content)
+.claude/
