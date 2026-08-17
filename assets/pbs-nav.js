@@ -6,7 +6,9 @@
 (function(){
   const PAGES = [
     { id: '11-12', href: 'exodus-11-12.html', label: '출 11–12장' },
-    { id: '13', href: 'exodus-13.html', label: '출 13장' }
+    { id: '13', href: 'exodus-13.html', label: '출 13장' },
+    { id: '14', href: 'exodus-14.html', label: '출 14장' },
+    { id: 'manual', href: 'manual.html', label: '📘 사용법' }
   ];
 
   function renderNav(current){

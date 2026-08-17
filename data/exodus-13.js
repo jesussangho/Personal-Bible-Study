@@ -232,7 +232,7 @@ window.EXODUS_13_DATA = {
       askHtml: '요셉처럼, 지금 당장 눈에 보이지 않아도 하나님의 신실하심을 믿고 다음 세대에게 전하고 싶은 것이 있다면 무엇인가요?',
       reflectPlaceholder: '답을 적어보세요...',
       refsChips: ['출 13:1-2','출 13:3-10','출 13:11-16','출 13:17-19','출 13:20-22'],
-      nextChapter: null
+      nextChapter: { href:'exodus-14.html', label:'출애굽기 14장', title:'마른 땅으로 건넌 바다' }
     }
   ],
 

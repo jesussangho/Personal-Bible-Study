@@ -150,8 +150,28 @@ body.kids-on .kids-explain{ display:block; animation:pbsFadeUp .4s ease; }
 .pbs-method .pm-step{ font-size:13px; line-height:1.8; color:var(--parchment-dim); }
 .pbs-method .pm-step b{ display:block; color:var(--parchment); font-family:'Noto Serif KR',serif; font-size:14.5px; margin-bottom:4px; }
 
+/* ==========================================================================
+   Responsive breakpoints — mobile (<601px) / tablet (601–1024px) / desktop (1025px+)
+   Mobile-first base styles above already read fine down to ~360px; these
+   tune the landing page (nav, hero, cards) for the other two bands.
+   ========================================================================== */
 @media (max-width:600px){
   .pbs-nav{ padding:14px 16px 0; }
+  .pbs-hero{ padding:44px 18px 16px; }
+}
+@media (max-width:380px){
+  .pbs-hero .pbs-title{ font-size:clamp(36px, 15vw, 52px); }
+  .pbs-nav-link, .pbs-kids-toggle{ font-size:11.5px; padding:6px 10px; }
+  .pbs-card{ padding:22px 18px; }
+}
+@media (min-width:601px) and (max-width:1024px){
+  .pbs-nav, .pbs-cards, .pbs-method{ max-width:840px; }
+  .pbs-hero{ padding:76px 22px 20px; }
+}
+@media (min-width:1025px){
+  .pbs-nav, .pbs-cards, .pbs-method{ max-width:960px; }
+  .pbs-hero{ padding:88px 22px 24px; }
+  .pbs-cards{ grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); }
 }
 @media (prefers-reduced-motion: reduce){ .pbs-canvas-bg{ display:none; } }
 

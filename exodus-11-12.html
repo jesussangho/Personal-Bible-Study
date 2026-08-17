@@ -293,6 +293,30 @@
 
   @media (max-width:600px){
     h1.title{ font-size:30px; } h2.section-title{ font-size:21px; } .wrap{ padding:22px 16px 70px; }
+    .tf-row{ flex-direction:column; }
+    .match-grid{ grid-template-columns:1fr; }
+    .diff-row{ flex-wrap:wrap; }
+    .diff-btn{ flex:1 1 30%; }
+    .map-node{ font-size:9.5px; }
+    .map-node .dot{ width:12px; height:12px; }
+    .top-nav{ gap:8px; }
+    .score-hud{ font-size:11px; }
+  }
+  @media (max-width:380px){
+    h1.title{ font-size:25px; } h2.section-title{ font-size:19px; }
+    .panel{ padding:20px 16px; }
+    .notes-fab, .text-fab{ padding:10px 14px; font-size:12.5px; }
+  }
+  @media (min-width:601px) and (max-width:1024px){
+    .wrap{ max-width:680px; padding:26px 30px 90px; }
+    h1.title{ font-size:36px; } h2.section-title{ font-size:24px; }
+    .notes-drawer, .text-drawer{ width:420px; }
+  }
+  @media (min-width:1025px){
+    .wrap{ max-width:840px; padding:30px 32px 110px; }
+    .notes-drawer, .text-drawer{ width:460px; }
+    .panel{ padding:30px 32px; }
+    .match-grid{ gap:14px; }
   }
   @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
 
