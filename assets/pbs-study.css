@@ -356,6 +356,16 @@ details.meaning-details .meaning-body{ margin-top:8px; color:var(--parchment-dim
 .order-list li.order-correct{ border-color:var(--gold); background:rgba(201,162,75,0.12); }
 .order-list li.order-wrong{ border-color:var(--blood-bright); background:rgba(124,36,48,0.12); }
 .order-list li .order-correct-note{ margin-left:auto; font-size:12px; color:var(--muted); }
+.order-list li .order-item-text{ flex:1; }
+.order-list li .order-item-controls{ display:flex; gap:4px; flex:0 0 auto; }
+.order-move, .order-remove{
+  background:transparent; border:1px solid var(--line-strong); color:var(--muted);
+  border-radius:3px; width:26px; height:26px; cursor:pointer; font-size:11px; line-height:1;
+  display:flex; align-items:center; justify-content:center; transition:all .15s ease;
+}
+.order-move:hover, .order-remove:hover{ border-color:var(--gold-dim); color:var(--parchment); }
+.order-move[disabled]{ opacity:0.25; cursor:default; }
+.order-remove:hover{ border-color:var(--blood-bright); color:#e3a8ae; }
 
 /* ---------- takeaway / recap ---------- */
 .takeaway-box{ margin:22px 0; padding:20px 22px; border:1px solid var(--gold); border-radius:6px; background:linear-gradient(135deg, rgba(201,162,75,0.12), rgba(201,162,75,0.02)); }

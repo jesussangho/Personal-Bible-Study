@@ -352,16 +352,42 @@
     const placed = [];
     function paint(){
       const poolHtml = order.filter(i=>!placed.includes(i)).map(i=>`<button class="order-chip" data-i="${i}">${item.items[i]}</button>`).join('');
-      const listHtml = placed.map((i,pos)=>`<li><span class="order-num">${pos+1}</span>${item.items[i]}</li>`).join('');
-      box.innerHTML = `<p class="hint" style="margin:0 0 10px;">아래 카드를 일어난 순서대로 눌러보세요.</p>
+      const listHtml = placed.map((i,pos)=>`
+        <li>
+          <span class="order-num">${pos+1}</span>
+          <span class="order-item-text">${item.items[i]}</span>
+          <span class="order-item-controls">
+            <button type="button" class="order-move" data-act="up" data-pos="${pos}" ${pos===0?'disabled':''} aria-label="위로 이동" title="위로 이동">▲</button>
+            <button type="button" class="order-move" data-act="down" data-pos="${pos}" ${pos===placed.length-1?'disabled':''} aria-label="아래로 이동" title="아래로 이동">▼</button>
+            <button type="button" class="order-remove" data-pos="${pos}" aria-label="해제" title="해제(다시 고르기)">✕</button>
+          </span>
+        </li>`).join('');
+      const allPlaced = placed.length === item.items.length;
+      box.innerHTML = `<p class="hint" style="margin:0 0 10px;">아래 카드를 일어난 순서대로 눌러보세요. 놓은 뒤에도 ▲▼로 순서를 바꾸거나 ✕로 다시 뺄 수 있어요.</p>
         <div class="order-pool">${poolHtml}</div>
-        <ol class="order-list">${listHtml}</ol>`;
+        <ol class="order-list">${listHtml}</ol>
+        <div class="btn-row">
+          <button type="button" class="btn" id="orderResetBtn" ${placed.length===0?'disabled':''}>전체 해제</button>
+          <button type="button" class="btn btn-primary" id="orderSubmitBtn" ${allPlaced?'':'disabled'}>제출하기</button>
+        </div>`;
       $all('.order-chip', box).forEach(chip=>{
-        chip.onclick = ()=>{
-          placed.push(parseInt(chip.dataset.i,10));
-          if(placed.length === item.items.length) finish(); else paint();
+        chip.onclick = ()=>{ placed.push(parseInt(chip.dataset.i,10)); paint(); };
+      });
+      $all('.order-move', box).forEach(btn=>{
+        btn.onclick = ()=>{
+          const pos = parseInt(btn.dataset.pos,10);
+          const swapWith = btn.dataset.act==='up' ? pos-1 : pos+1;
+          const tmp = placed[pos]; placed[pos] = placed[swapWith]; placed[swapWith] = tmp;
+          paint();
         };
       });
+      $all('.order-remove', box).forEach(btn=>{
+        btn.onclick = ()=>{ placed.splice(parseInt(btn.dataset.pos,10), 1); paint(); };
+      });
+      const resetBtn = document.getElementById('orderResetBtn');
+      if(resetBtn) resetBtn.onclick = ()=>{ placed.length = 0; paint(); };
+      const submitBtn = document.getElementById('orderSubmitBtn');
+      if(submitBtn) submitBtn.onclick = ()=> finish();
     }
     function finish(){
       const isCorrect = placed.every((i,pos)=> i===pos);
@@ -438,7 +464,7 @@
       const pct = h.total ? Math.round(h.correct/h.total*100) : 0;
       const badgeLine = (h.badges&&h.badges.length) ? h.badges.map(id=>{ const d=BADGE_DEFS.find(b=>b.id===id); return `🏅 ${d?d.name:id}`; }).join(' · ') : '';
       return `<div class="history-item">
-        <div class="history-date">${formatDate(h.completedAt)} — ${h.player||'Player'}</div>
+        <div class="history-date">${formatDate(h.completedAt)}</div>
         <div class="history-stats">⭐ ${h.score||0}점 · 정답 ${h.correct}/${h.total} (${pct}%) · 소요 ${formatDuration(h.durationSec)}</div>
         ${badgeLine ? `<div class="hint" style="margin-top:4px;">${badgeLine}</div>` : ''}
       </div>`;

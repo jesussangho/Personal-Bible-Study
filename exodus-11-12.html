@@ -599,7 +599,6 @@
       <div class="chap-tabs">
         <button class="chap-tab active" id="htab-log" onclick="switchHistTab('log')">기록</button>
         <button class="chap-tab" id="htab-badges" onclick="switchHistTab('badges')">배지</button>
-        <button class="chap-tab" id="htab-board" onclick="switchHistTab('board')">리더보드</button>
         <button class="chap-tab" id="htab-review" onclick="switchHistTab('review')">복습</button>
       </div>
       <div class="chap-pane active" id="histpane-log">
@@ -607,7 +606,6 @@
         <div id="historyList"></div>
       </div>
       <div class="chap-pane" id="histpane-badges"><div id="badgeGallery"></div></div>
-      <div class="chap-pane" id="histpane-board"><div id="leaderboardList"></div></div>
       <div class="chap-pane" id="histpane-review">
         <p class="hint" style="margin:0 0 12px;">지난 한 세션에서 처음에 틀렸던 문제만 모아둔 목록입니다.</p>
         <div id="reviewList"></div>
@@ -1356,8 +1354,7 @@ function closeCelebrationOutside(e){
 /* ---------- HISTORY MODAL: tabs, badges gallery, leaderboard, rank ---------- */
 function computeRankTitle(){
   const hist = loadJSON(HISTORY_KEY, 'history') || [];
-  const mine = hist.filter(h=>(h.player||'Player') === playerName);
-  const n = mine.length;
+  const n = hist.length;
   if(n === 0) return '아직 여정을 시작하지 않았습니다';
   if(n < 2) return '초보 순례자';
   if(n < 4) return '유월절의 증인';
@@ -1376,7 +1373,7 @@ function renderHistory(){
       ? h.badges.map(id=>{ const def=BADGE_DEFS.find(b=>b.id===id); return `🏅 ${def?def.name:id}`; }).join(' · ')
       : '';
     return `<div class="history-item">
-      <div class="history-date">${formatDate(h.completedAt)} — ${h.player||'Player'}</div>
+      <div class="history-date">${formatDate(h.completedAt)}</div>
       <div class="history-stats">⭐ ${h.score||0}점 · 정답 ${h.correct}/${h.total} (${pct}%) · 소요 ${formatDuration(h.durationSec)}</div>
       ${badgeLine ? `<div class="hint" style="margin-top:4px;">${badgeLine}</div>` : ''}
     </div>`;
@@ -1397,39 +1394,13 @@ function renderBadgeGallery(){
     </div>`;
   }).join('');
 }
-function renderLeaderboard(){
-  const hist = loadJSON(HISTORY_KEY, 'history') || [];
-  const box = document.getElementById('leaderboardList');
-  if(!box) return;
-  if(hist.length === 0){
-    box.innerHTML = `<p class="hint" style="margin:0;">아직 기록이 없습니다.</p>`;
-    return;
-  }
-  const byPlayer = {};
-  hist.forEach(h=>{
-    const name = h.player || 'Player';
-    if(!byPlayer[name]) byPlayer[name] = { sessions:0, totalScore:0, totalCorrect:0, totalQ:0 };
-    const p = byPlayer[name];
-    p.sessions++; p.totalScore += (h.score||0); p.totalCorrect += h.correct; p.totalQ += h.total;
-  });
-  const rows = Object.entries(byPlayer).map(([name,p])=>({
-    name, ...p, avgAcc: p.totalQ ? Math.round(p.totalCorrect/p.totalQ*100) : 0
-  })).sort((a,b)=>b.totalScore-a.totalScore);
-  box.innerHTML = rows.map((r,i)=>`
-    <div class="history-item">
-      <div class="history-date">${i+1}위 · ${r.name}</div>
-      <div class="history-stats">누적 점수 ${r.totalScore}점 · 완주 ${r.sessions}회 · 평균 정답률 ${r.avgAcc}%</div>
-    </div>
-  `).join('');
-}
 function switchHistTab(name){
-  ['log','badges','board','review'].forEach(k=>{
+  ['log','badges','review'].forEach(k=>{
     document.getElementById('htab-'+k).classList.toggle('active', k===name);
     document.getElementById('histpane-'+k).classList.toggle('active', k===name);
   });
   if(name==='log') renderHistory();
   if(name==='badges') renderBadgeGallery();
-  if(name==='board') renderLeaderboard();
   if(name==='review') renderReview();
 }
 function toggleHistory(){
