@@ -27,7 +27,14 @@
   let sessionLogged = false;
   let seqState = {};      // per sequence-stage: {index, done}
   let matchState = null;
+  let flipState = null;
   let audioCtx = null, masterGain = null;
+  const THEME_STAR_COLORS = {
+    night: '255,214,214',
+    gold: '255,232,190',
+    sea: '210,236,255',
+    victory: '255,224,170'
+  };
   let STORAGE_KEY, HISTORY_KEY, BADGES_KEY;
   let storageAvailable = true;
   let memoryProgress = null, memoryHistory = [], memoryBadges = [];
@@ -130,7 +137,8 @@
       sessionLogged,
       firstTryCorrect,
       seqState,
-      matchActive: !!matchState
+      matchActive: !!matchState,
+      flipActive: !!flipState
     };
   }
   function registerAnswer(isCorrect, points){
@@ -492,19 +500,20 @@
       <div class="eyebrow">${esc(cfg.eyebrow)}</div>
       <h1 class="title">${cfg.titleHtml}</h1>
       <p class="lede">${cfg.ledeHtml}</p>
-      <div class="panel">${cfg.overviewHtml}</div>
-      ${cfg.footnoteHtml ? `<p style="font-size:13px; color:var(--muted);">${cfg.footnoteHtml}</p>` : ''}
-      ${cfg.kidsIntroHtml ? `<div class="kids-explain"><span class="ke-tag">🧒 쉬운 설명</span><br>${cfg.kidsIntroHtml}</div>` : ''}
-      <div class="panel">
-        <p style="margin:0 0 10px; color:var(--parchment);">플레이어 이름 (선택 — 같은 기기에서 여러 명이 기록을 남길 때 구분됩니다)</p>
-        <input type="text" id="playerNameInput" class="name-input" placeholder="이름을 입력하세요" maxlength="20">
-        <p style="margin:0 0 10px; color:var(--parchment);">난이도</p>
-        <div class="diff-row" id="diffRow">
-          <button class="diff-btn" data-d="easy">쉬움 <span class="hint" style="margin:0;">· 선택지 힌트</span></button>
-          <button class="diff-btn active" data-d="normal">보통</button>
-          <button class="diff-btn" data-d="hard">어려움 <span class="hint" style="margin:0;">· 해설 접힘</span></button>
+      <div class="panel study-card">
+        <div class="study-card-tag">📋 오늘의 공부 노트</div>
+        ${cfg.overviewHtml}
+        <div class="study-card-diff">
+          <p class="hint" style="margin:0 0 8px;">난이도 · 언제든 바꿀 수 있어요</p>
+          <div class="diff-row" id="diffRow">
+            <button class="diff-btn" data-d="easy">쉬움 <span class="hint" style="margin:0;">· 선택지 힌트</span></button>
+            <button class="diff-btn active" data-d="normal">보통</button>
+            <button class="diff-btn" data-d="hard">어려움 <span class="hint" style="margin:0;">· 해설 접힘</span></button>
+          </div>
         </div>
       </div>
+      ${cfg.footnoteHtml ? `<p style="font-size:13px; color:var(--muted);">${cfg.footnoteHtml}</p>` : ''}
+      ${cfg.kidsIntroHtml ? `<div class="kids-explain"><span class="ke-tag">🧒 쉬운 설명</span><br>${cfg.kidsIntroHtml}</div>` : ''}
       <div class="panel continue-banner" id="continueBanner" style="display:none;">
         <p style="margin:0; color:var(--parchment);" id="continueText"></p>
         <div class="btn-row">
@@ -535,6 +544,7 @@
       <h2 class="section-title">${esc(cfg.title)}</h2>
       <span class="verse-ref">${esc(cfg.verseRef)}</span>
       ${cfg.intro ? `<p style="margin-top:16px;">${cfg.intro}</p>` : ''}
+      ${cfg.visualHtml || ''}
       ${beatsHtml}
       <div id="s${idx}-takeaway" style="display:none;">${renderTakeawayHtml(cfg)}</div>
       <div class="btn-row" id="s${idx}-continue" style="display:none;">
@@ -575,6 +585,7 @@
       <div class="step-dots" id="s${idx}-dots"></div>
       <div class="panel" id="s${idx}-panel"></div>
       <div class="panel" id="s${idx}-match" style="display:none;"></div>
+      <div class="panel" id="s${idx}-flip" style="display:none;"></div>
       <div id="s${idx}-takeaway" style="display:none;">${renderTakeawayHtml(cfg)}</div>
       <div class="btn-row" id="s${idx}-continue" style="display:none;">
         <button class="btn btn-primary" id="s${idx}-continue-btn">${esc(cfg.continueLabel||'다음 막으로')}</button>
@@ -624,6 +635,10 @@
       if(cfg.matchPairs && cfg.matchPairs.length){
         document.getElementById(`s${idx}-match`).style.display='block';
         renderMatchGame(idx, cfg.matchPairs);
+      }
+      if(cfg.flipGame && cfg.flipGame.length){
+        document.getElementById(`s${idx}-flip`).style.display='block';
+        renderFlipGame(idx, cfg.flipGame);
       }
     }
     document.getElementById(`s${idx}-panel`).appendChild(nextBtn);
@@ -685,6 +700,69 @@
           }
         }, 500);
       }
+    }
+  }
+
+  /* ---------------------------------------------------------------------
+     Bonus mini-game: flip-card memory match — a different feel from the
+     left/right matchPairs game (content is hidden until flipped, so it's
+     a memory challenge rather than a straight lookup). cfg.flipGame is an
+     array of {id, icon, label}; each item is duplicated into a pair.
+     --------------------------------------------------------------------- */
+  function renderFlipGame(idx, items){
+    const cards = [];
+    items.forEach(it=>{ cards.push(it); cards.push(it); });
+    flipState = { cards, order: shuffleIndices(cards.length), flipped: [], matchedIds: new Set(), lock:false, total: items.length };
+    const box = document.getElementById(`s${idx}-flip`);
+    box.innerHTML = `
+      <p class="lede" style="margin:0 0 6px;">보너스 — 카드 뒤집기</p>
+      <p class="hint" style="margin:0 0 14px;">카드 두 장을 뒤집어 같은 그림을 찾아보세요. 건너뛰어도 진행에는 지장이 없습니다.</p>
+      <div class="flip-grid" id="s${idx}-flipGrid"></div>
+      <div class="btn-row"><button class="btn" id="s${idx}-flipSkip">건너뛰기</button></div>`;
+    document.getElementById(`s${idx}-flipSkip`).onclick = ()=>{ box.innerHTML=''; };
+    paintFlipGrid(idx);
+  }
+  function paintFlipGrid(idx){
+    const grid = document.getElementById(`s${idx}-flipGrid`);
+    if(!grid || !flipState) return;
+    grid.innerHTML = '';
+    flipState.order.forEach(pos=>{
+      const card = flipState.cards[pos];
+      const matched = flipState.matchedIds.has(card.id);
+      const up = matched || flipState.flipped.includes(pos);
+      const b = document.createElement('button');
+      b.className = 'flip-card' + (up?' up':'') + (matched?' matched':'');
+      const face = card.img ? `<img src="${esc(card.img)}" alt="">` : `<span>${card.icon||''}</span>`;
+      b.innerHTML = up ? `${face}<span class="fc-label">${esc(card.label)}</span>` : '❔';
+      b.disabled = matched;
+      b.onclick = ()=> flipCard(idx, pos);
+      grid.appendChild(b);
+    });
+  }
+  function flipCard(idx, pos){
+    if(!flipState || flipState.lock || flipState.flipped.includes(pos)) return;
+    const card = flipState.cards[pos];
+    if(flipState.matchedIds.has(card.id)) return;
+    flipState.flipped.push(pos);
+    paintFlipGrid(idx);
+    if(flipState.flipped.length < 2) return;
+    flipState.lock = true;
+    const [p1, p2] = flipState.flipped;
+    const c1 = flipState.cards[p1], c2 = flipState.cards[p2];
+    if(c1.id === c2.id){
+      flipState.matchedIds.add(c1.id);
+      score += 15; updateScoreHud(); sfxCorrect(); autosave();
+      flipState.flipped = []; flipState.lock = false;
+      paintFlipGrid(idx);
+      if(flipState.matchedIds.size === flipState.total){
+        const box = document.getElementById(`s${idx}-flip`);
+        box.innerHTML = `<p style="color:var(--gold-soft); font-family:'Noto Serif KR',serif; font-size:16px; margin:0;">보너스 완료! 모든 짝을 맞혔습니다. (+${flipState.total*15}점)</p>`;
+      }
+    } else {
+      sfxWrong();
+      setTimeout(()=>{
+        if(flipState){ flipState.flipped = []; flipState.lock = false; paintFlipGrid(idx); }
+      }, 700);
     }
   }
 
@@ -1020,8 +1098,9 @@
     $all('[id$="-continue"]').forEach(elm=> elm.style.display='none');
     $all('[id$="-takeaway"]').forEach(elm=> elm.style.display='none');
     $all('[id$="-match"]').forEach(elm=>{ elm.style.display='none'; elm.innerHTML=''; });
+    $all('[id$="-flip"]').forEach(elm=>{ elm.style.display='none'; elm.innerHTML=''; });
     $all('[id$="-cineQpanel"]').forEach(elm=> elm.style.display='none');
-    seqState = {}; matchState = null; cineInitDone = {};
+    seqState = {}; matchState = null; flipState = null; cineInitDone = {};
     sessionStart = Date.now(); firstTryCorrect = {}; sessionLogged = false;
     score=0; combo=0; bestCombo=0; updateScoreHud();
     document.getElementById('appPreview').classList.remove('show');
@@ -1055,6 +1134,7 @@
     HISTORY_KEY = cfg.storageId+'_history_v1';
     BADGES_KEY = cfg.storageId+'_badges_v1';
     storageAvailable = testStorage();
+    document.body.classList.add('theme-'+(cfg.theme||'night'));
 
     document.body.insertAdjacentHTML('afterbegin', `
       <canvas id="starfield" class="pbs-canvas-bg"></canvas>
@@ -1100,13 +1180,6 @@
         if(window.PBS_Debug){ PBS_Debug.log('difficulty → '+difficulty); PBS_Debug.update(debugSnapshot()); }
       };
     });
-    const nameInput = document.getElementById('playerNameInput');
-    try{ const saved = localStorage.getItem(cfg.storageId+'_playerName'); if(saved) playerName = saved; }catch(e){}
-    nameInput.value = playerName==='Player' ? '' : playerName;
-    nameInput.addEventListener('input', ()=>{
-      playerName = nameInput.value.trim() || 'Player';
-      try{ localStorage.setItem(cfg.storageId+'_playerName', playerName); }catch(e){}
-    });
     try{ const savedDiff = localStorage.getItem(cfg.storageId+'_difficulty_v1'); if(savedDiff){ difficulty=savedDiff; $all('.diff-btn').forEach(b=>b.classList.toggle('active', b.dataset.d===difficulty)); } }catch(e){}
 
     // autosave listeners
@@ -1133,7 +1206,11 @@
     updateScoreHud();
 
     if(window.PBS_renderNav) PBS_renderNav(cfg.navCurrent);
-    if(window.PBS_startStarfield) PBS_startStarfield(document.getElementById('starfield'), { density: 70 });
+    const starCv = document.getElementById('starfield');
+    if(cfg.theme==='sea' && window.PBS_startWaveField) PBS_startWaveField(starCv, { colorRGB: '90,170,205' });
+    else if(cfg.theme==='victory' && window.PBS_startSparkleField) PBS_startSparkleField(starCv, { colorRGB: '230,190,120' });
+    else if(cfg.theme==='night' && window.PBS_startEmberField) PBS_startEmberField(starCv, {});
+    else if(window.PBS_startStarfield) PBS_startStarfield(starCv, { density: 70, colorRGB: THEME_STAR_COLORS[cfg.theme] });
     if(window.PBS_initGlossary) PBS_initGlossary(document);
     if(window.PBS_Debug){ PBS_Debug.log('init('+cfg.storageId+')'); PBS_Debug.update(debugSnapshot()); }
   }

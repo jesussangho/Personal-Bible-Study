@@ -8,7 +8,7 @@
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{
-  background:radial-gradient(ellipse at 50% -10%, #1a2140 0%, var(--night) 55%, #050710 100%);
+  background:radial-gradient(ellipse at 50% -10%, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-bottom) 100%);
   color:var(--parchment); font-family:'Noto Sans KR', sans-serif;
   min-height:100vh; overflow-x:hidden; position:relative;
 }
@@ -26,7 +26,7 @@ body::before{
 #lamp-glow{
   position:fixed; top:-120px; left:50%; transform:translateX(-50%);
   width:520px; height:520px; border-radius:50%;
-  background:radial-gradient(circle, rgba(201,162,75,0.16) 0%, rgba(201,162,75,0.05) 45%, transparent 70%);
+  background:radial-gradient(circle, var(--lamp-color) 0%, var(--lamp-color2) 45%, transparent 70%);
   pointer-events:none; z-index:0; animation: flicker 5s ease-in-out infinite;
 }
 @keyframes flicker{
@@ -263,8 +263,29 @@ textarea:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; 
 .diff-btn{ flex:1; background:transparent; border:1px solid var(--line); color:var(--muted); padding:11px 8px; border-radius:3px; cursor:pointer; font-size:14px; transition:all .2s ease; }
 .diff-btn:hover{ border-color:var(--gold-dim); color:var(--parchment-dim); }
 .diff-btn.active{ border-color:var(--gold); color:var(--gold-soft); background:rgba(201,162,75,0.1); }
-.name-input{ width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:3px; color:var(--parchment); padding:11px 14px; font-size:15px; font-family:'Noto Sans KR',sans-serif; margin-bottom:18px; }
-.name-input:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; }
+
+.study-card{ padding-top:22px; }
+.study-card-tag{
+  display:inline-block; font-family:'Noto Serif KR',serif; font-weight:700; font-size:12px;
+  color:var(--gold-soft); background:rgba(201,162,75,0.12); border-radius:12px; padding:3px 12px; margin-bottom:12px;
+}
+.study-card-diff{ margin-top:20px; padding-top:18px; border-top:1px dashed var(--line-strong); }
+
+.flip-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(84px,1fr)); gap:10px; margin:6px 0; }
+.flip-card{
+  aspect-ratio:3/4; border-radius:6px; cursor:pointer; position:relative;
+  background:var(--panel2); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; color:var(--parchment-dim); transition:all .2s ease;
+}
+.flip-card:hover{ border-color:var(--gold-dim); }
+.flip-card.up{ background:rgba(201,162,75,0.1); border-color:var(--gold); color:var(--gold-soft); flex-direction:column; gap:4px; }
+.flip-card.up svg{ width:28px; height:28px; }
+.flip-card.up img{ width:100%; height:60%; object-fit:cover; border-radius:4px; }
+.flip-card.up .fc-label{ font-size:10.5px; color:var(--gold-soft); text-align:center; padding:0 4px; }
+.flip-card.matched{ border-color:var(--gold); background:rgba(201,162,75,0.06); opacity:0.55; cursor:default; }
+.flip-card.wrong{ border-color:var(--blood-bright); animation:pbsShake .4s ease; }
+.flip-card[disabled]{ pointer-events:none; }
 
 .celebration-modal{ position:relative; overflow:hidden; text-align:center; }
 .badge-chip{ display:inline-block; background:rgba(201,162,75,0.12); border:1px solid var(--gold-dim); border-radius:20px; padding:6px 14px; margin:4px; font-size:13px; color:var(--gold-soft); }

@@ -18,6 +18,7 @@
   function startStarfield(cv, opts){
     opts = opts || {};
     const density = opts.density || 90;
+    const colorRGB = opts.colorRGB || '255,255,255';
     let ctx = resizeCanvas(cv);
     let stars = [];
     function seed(){
@@ -37,7 +38,7 @@
       ctx.clearRect(0,0,w,h);
       stars.forEach(s=>{
         ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-        ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
+        ctx.fillStyle = `rgba(${colorRGB},0.5)`; ctx.fill();
       });
       return;
     }
@@ -50,7 +51,136 @@
         const tw = 0.35 + 0.65 * Math.abs(Math.sin(t*s.speed + s.phase));
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(255,255,255,${tw*0.75})`;
+        ctx.fillStyle = `rgba(${colorRGB},${tw*0.75})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- wave field: slow rolling sine-wave lines (sea theme) ---------- */
+  function startWaveField(cv, opts){
+    opts = opts || {};
+    let ctx = resizeCanvas(cv);
+    window.addEventListener('resize', ()=>{ ctx = resizeCanvas(cv); });
+    const colorRGB = opts.colorRGB || '90,170,205';
+    const LINES = 4;
+    if(REDUCED){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      for(let i=0;i<LINES;i++){
+        const baseY = h*0.15 + i*(h*0.16);
+        ctx.beginPath(); ctx.moveTo(0,baseY); ctx.lineTo(w,baseY);
+        ctx.strokeStyle = `rgba(${colorRGB},${0.08 - i*0.012})`; ctx.lineWidth = 1.4; ctx.stroke();
+      }
+      return;
+    }
+    let t = 0;
+    function frame(){
+      t += 0.006;
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      for(let i=0;i<LINES;i++){
+        const baseY = h*0.15 + i*(h*0.16);
+        const amp = 10 + i*4;
+        const speed = 0.6 + i*0.15;
+        ctx.beginPath();
+        for(let x=0; x<=w; x+=6){
+          const y = baseY + Math.sin(x*0.008 + t*speed + i) * amp;
+          if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.strokeStyle = `rgba(${colorRGB},${Math.max(0.03, 0.09 - i*0.014)})`;
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- sparkle field: drifting warm motes (victory / festive theme) ---------- */
+  function startSparkleField(cv, opts){
+    opts = opts || {};
+    const density = opts.density || 34;
+    const colorRGB = opts.colorRGB || '230,190,120';
+    let ctx = resizeCanvas(cv);
+    let motes = [];
+    function seed(){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      motes = Array.from({length: density}, ()=>({
+        x: Math.random()*w, y: Math.random()*h,
+        r: 1 + Math.random()*2.2,
+        vy: -(0.15 + Math.random()*0.3),
+        vx: (Math.random()-0.5)*0.15,
+        phase: Math.random()*Math.PI*2,
+        speed: 0.5 + Math.random()*0.8
+      }));
+    }
+    seed();
+    window.addEventListener('resize', ()=>{ ctx = resizeCanvas(cv); seed(); });
+    if(REDUCED){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      motes.forEach(m=>{ ctx.beginPath(); ctx.arc(m.x,m.y,m.r,0,Math.PI*2); ctx.fillStyle = `rgba(${colorRGB},0.5)`; ctx.fill(); });
+      return;
+    }
+    let t = 0;
+    function frame(){
+      t += 0.016;
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      motes.forEach(m=>{
+        m.x += m.vx; m.y += m.vy;
+        if(m.y < -5){ m.y = h+5; m.x = Math.random()*w; }
+        const tw = 0.4 + 0.6*Math.abs(Math.sin(t*m.speed + m.phase));
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${colorRGB},${tw*0.8})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- ember field: slow rising embers (judgment-night theme) ---------- */
+  function startEmberField(cv, opts){
+    opts = opts || {};
+    const density = opts.density || 22;
+    let ctx = resizeCanvas(cv);
+    let embers = [];
+    function seed(){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      embers = Array.from({length: density}, ()=>({
+        x: Math.random()*w, y: h + Math.random()*h*0.3,
+        r: 1 + Math.random()*1.8,
+        vy: -(0.12 + Math.random()*0.22),
+        vx: (Math.random()-0.5)*0.1,
+        hue: 4 + Math.random()*20,
+        phase: Math.random()*Math.PI*2
+      }));
+    }
+    seed();
+    window.addEventListener('resize', ()=>{ ctx = resizeCanvas(cv); seed(); });
+    if(REDUCED){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      embers.forEach(e=>{ ctx.beginPath(); ctx.arc(e.x,e.y,e.r,0,Math.PI*2); ctx.fillStyle = `hsla(${e.hue},80%,55%,0.5)`; ctx.fill(); });
+      return;
+    }
+    let t = 0;
+    function frame(){
+      t += 0.02;
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      embers.forEach(e=>{
+        e.x += e.vx; e.y += e.vy;
+        if(e.y < -10){ e.y = h+10; e.x = Math.random()*w; }
+        const tw = 0.5 + 0.5*Math.abs(Math.sin(t + e.phase));
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.r, 0, Math.PI*2);
+        ctx.fillStyle = `hsla(${e.hue},80%,55%,${tw*0.55})`;
         ctx.fill();
       });
       requestAnimationFrame(frame);
@@ -311,6 +441,9 @@
   }
 
   window.PBS_startStarfield = startStarfield;
+  window.PBS_startWaveField = startWaveField;
+  window.PBS_startSparkleField = startSparkleField;
+  window.PBS_startEmberField = startEmberField;
   window.PBS_startPillar = startPillar;
   window.PBS_burstConfetti = burstConfetti;
   window.PBS_sparkleBurst = sparkleBurst;

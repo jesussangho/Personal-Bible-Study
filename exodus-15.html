@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>손의 표, 이마의 기호 — 출애굽기 13장</title>
-<meta name="description" content="출애굽기 13장을 초등학생도 이해할 수 있게 풀어주는 인터랙티브 성경 공부.">
+<title>바다 건너 부른 노래 — 출애굽기 15장</title>
+<meta name="description" content="출애굽기 15장을 초등학생도 이해할 수 있게 풀어주는 인터랙티브 성경 공부. 모세의 노래, 미리암의 춤, 마라와 엘림까지.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/pbs-theme.css">
@@ -17,12 +17,18 @@
 <script src="assets/pbs-debug.js"></script>
 <script src="assets/pbs-engine.js"></script>
 <script src="assets/pbs-bible.js"></script>
-<script src="data/exodus-13.js"></script>
+<script src="data/exodus-15.js"></script>
 <script>
-  PBS_loadBibleText('assets/bible/출애굽기13장.txt')
-    .then(function(verses){ window.EXODUS_13_DATA.chapters['13'].verses = verses; })
-    .catch(function(err){ console.error(err); })
-    .then(function(){ PBSStudy.init(window.EXODUS_13_DATA); });
+  PBS_loadBibleText('assets/bible/출애굽기15장.txt')
+    .then(function(verses){
+      window.EXODUS_15_DATA.chapters['15'].verses = verses;
+    })
+    .catch(function(err){
+      console.error(err);
+    })
+    .then(function(){
+      PBSStudy.init(window.EXODUS_15_DATA);
+    });
 </script>
 </body>
 </html>

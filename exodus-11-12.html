@@ -262,8 +262,13 @@
   .diff-btn{ flex:1; background:transparent; border:1px solid var(--line); color:var(--muted); padding:11px 8px; border-radius:3px; cursor:pointer; font-size:14px; transition:all .2s ease; }
   .diff-btn:hover{ border-color:var(--gold-dim); color:var(--parchment-dim); }
   .diff-btn.active{ border-color:var(--gold); color:var(--gold-soft); background:rgba(201,162,75,0.1); }
-  .name-input{ width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:3px; color:var(--parchment); padding:11px 14px; font-size:15px; font-family:'Noto Sans KR',sans-serif; margin-bottom:18px; }
-  .name-input:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; }
+
+  .study-card{ padding-top:22px; }
+  .study-card-tag{
+    display:inline-block; font-family:'Noto Serif KR',serif; font-weight:700; font-size:12px;
+    color:var(--gold-soft); background:rgba(201,162,75,0.12); border-radius:12px; padding:3px 12px; margin-bottom:12px;
+  }
+  .study-card-diff{ margin-top:20px; padding-top:18px; border-top:1px dashed var(--line-strong); }
 
   .celebration-modal{ position:relative; overflow:hidden; text-align:center; }
   .confetti-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
@@ -353,7 +358,7 @@
   .next-chapter-card:hover .nc-arrow{ transform:translateX(6px); }
 </style>
 </head>
-<body>
+<body class="theme-night">
 <canvas id="starfield" class="pbs-canvas-bg"></canvas>
 <canvas id="fxCanvas" class="pbs-canvas-bg" style="position:fixed;"></canvas>
 <div id="lamp-glow"></div>
@@ -631,7 +636,8 @@
     <h1 class="title">그날 밤,<br>문설주에</h1>
     <p class="lede">애굽 왕궁의 마지막 경고부터, 430년 만에 시작된 새벽까지.<br>
     출애굽기 11장과 12장 전체를 본문의 흐름 그대로 따라가며, 각 규례가 무엇을 의미하는지 깊이 있게 살펴봅니다.</p>
-    <div class="panel">
+    <div class="panel study-card">
+      <div class="study-card-tag">📋 오늘의 공부 노트</div>
       <p style="margin:0;">네 장면, 그리고 그 안의 세부 본문들</p>
       <p style="margin:8px 0 0; color:var(--muted); font-size:14px;">
         1막 경고 — 11:1-10 (마지막 재앙의 예고, 애굽 신들에 대한 심판의 전조)<br>
@@ -639,24 +645,21 @@
         3막 그 밤 — 12:21-42 (장자의 죽음, 탈출, 430년, 영원한 밤)<br>
         4막 전승 — 12:24-27, 42 (다음 세대에게 전하는 말 + 적용노트)
       </p>
+      <div class="study-card-diff">
+        <p class="hint" style="margin:0 0 8px;">난이도 · 언제든 바꿀 수 있어요</p>
+        <div class="diff-row" id="diffRow">
+          <button class="diff-btn" data-d="easy" onclick="setDifficulty('easy')">쉬움 <span class="hint" style="margin:0;">· 선택지 힌트</span></button>
+          <button class="diff-btn active" data-d="normal" onclick="setDifficulty('normal')">보통</button>
+          <button class="diff-btn" data-d="hard" onclick="setDifficulty('hard')">어려움 <span class="hint" style="margin:0;">· 해설 접힘</span></button>
+        </div>
+      </div>
     </div>
     <p style="font-size:13px; color:var(--muted);">
       본문은 성경 내용을 요약·재구성한 것이며 직접 인용이 아닌 이야기 형식으로 각색되었습니다.
-      배경음악은 이 브라우저 안에서 실시간으로 생성되는 소리이며, 재생을 누르면 시작됩니다.
     </p>
     <div class="kids-explain"><span class="ke-tag">🧒 쉬운 설명</span><br>
       상단의 "🧒 쉬운말 모드"를 켜두면, 어려운 문장 아래에 이렇게 초등학생도 이해할 수 있는 쉬운 풀이가 함께 나와요.
       또 점선 밑줄이 있는 낱말( <span class="gloss" data-term="유월절">유월절</span> 처럼)을 누르면 무슨 뜻인지 바로 알려줘요.
-    </div>
-    <div class="panel">
-      <p style="margin:0 0 10px; color:var(--parchment);">플레이어 이름 (선택 — 같은 기기에서 여러 명이 기록을 남길 때 구분됩니다)</p>
-      <input type="text" id="playerNameInput" class="name-input" placeholder="이름을 입력하세요" maxlength="20">
-      <p style="margin:0 0 10px; color:var(--parchment);">난이도</p>
-      <div class="diff-row" id="diffRow">
-        <button class="diff-btn" data-d="easy" onclick="setDifficulty('easy')">쉬움 <span class="hint" style="margin:0;">· 선택지 힌트</span></button>
-        <button class="diff-btn active" data-d="normal" onclick="setDifficulty('normal')">보통</button>
-        <button class="diff-btn" data-d="hard" onclick="setDifficulty('hard')">어려움 <span class="hint" style="margin:0;">· 해설 접힘</span></button>
-      </div>
     </div>
     <div class="panel continue-banner" id="continueBanner" style="display:none;">
       <p style="margin:0; color:var(--parchment);" id="continueText"></p>
@@ -1109,10 +1112,6 @@ function setDifficulty(d){
   if(window.PBS_Debug){ PBS_Debug.log('difficulty → '+d); PBS_Debug.update(debugSnapshot()); }
 }
 let playerName = 'Player';
-function setPlayerName(name){
-  playerName = (name && name.trim()) ? name.trim() : 'Player';
-  try{ localStorage.setItem('exodusGame_playerName', playerName); }catch(e){}
-}
 
 /* ---------- PROGRESS AUTOSAVE & LEARNING HISTORY ----------
    Falls back to an in-memory object when localStorage is unavailable
@@ -2024,12 +2023,6 @@ function restart(){
     const savedName = localStorage.getItem('exodusGame_playerName');
     if(savedName) playerName = savedName;
   }catch(e){}
-  const nameInput = document.getElementById('playerNameInput');
-  if(nameInput){
-    nameInput.value = playerName === 'Player' ? '' : playerName;
-    nameInput.addEventListener('input', ()=>setPlayerName(nameInput.value));
-  }
-
   try{
     const savedDiff = localStorage.getItem('exodusGame_difficulty_v1');
     if(savedDiff) difficulty = savedDiff;
@@ -2040,7 +2033,7 @@ function restart(){
   checkForSavedProgress();
 
   if(window.PBS_renderNav) PBS_renderNav('11-12');
-  if(window.PBS_startStarfield) PBS_startStarfield(document.getElementById('starfield'), { density: 70 });
+  if(window.PBS_startEmberField) PBS_startEmberField(document.getElementById('starfield'), {});
   if(window.PBS_attachBgmPlayer) PBS_attachBgmPlayer(document.getElementById('musicBtn'), BGM_TRACKS_1112);
   if(window.PBS_Debug){ PBS_Debug.init(); PBS_Debug.log('init(exodus-11-12)'); PBS_Debug.update(debugSnapshot()); }
 })();

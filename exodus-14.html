@@ -16,9 +16,13 @@
 <script src="assets/pbs-effects.js"></script>
 <script src="assets/pbs-debug.js"></script>
 <script src="assets/pbs-engine.js"></script>
+<script src="assets/pbs-bible.js"></script>
 <script src="data/exodus-14.js"></script>
 <script>
-  PBSStudy.init(window.EXODUS_14_DATA);
+  PBS_loadBibleText('assets/bible/출애굽기14장.txt')
+    .then(function(verses){ window.EXODUS_14_DATA.chapters['14'].verses = verses; })
+    .catch(function(err){ console.error(err); })
+    .then(function(){ PBSStudy.init(window.EXODUS_14_DATA); });
 </script>
 </body>
 </html>
