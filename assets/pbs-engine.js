@@ -512,6 +512,7 @@
     const stageCfg = n>0 ? CFG.stages[n-1] : null;
     if(stageCfg && stageCfg.type==='sequence' && !seqState[n]) initSequenceStage(n, stageCfg);
     if(stageCfg && stageCfg.type==='cinematic') initCinematicStage(n, stageCfg);
+    if(stageCfg && stageCfg.type==='legacy') logCompletion();
     autosave();
     if(window.PBS_Debug){ PBS_Debug.log(`goTo(${n}) — ${stageCfg ? stageCfg.type : 'title'}`); PBS_Debug.update(debugSnapshot()); }
   }
