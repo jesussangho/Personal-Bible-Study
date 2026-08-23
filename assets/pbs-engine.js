@@ -24,7 +24,8 @@
   let score = 0, combo = 0, bestCombo = 0;
   let sessionStart = Date.now();
   let firstTryCorrect = {};
-  let sessionLogged = false;
+  let sessionLogIndex = null; // index of this session's entry in history, once first logged
+  let sessionCelebrated = false;
   let seqState = {};      // per sequence-stage: {index, done}
   let matchState = null;
   let flipState = null;
@@ -134,7 +135,7 @@
       stage: currentStage,
       difficulty, playerName,
       score, combo, bestCombo,
-      sessionLogged,
+      sessionLogIndex, sessionCelebrated,
       firstTryCorrect,
       seqState,
       matchActive: !!matchState,
@@ -423,18 +424,33 @@
       check:(ftc,durationSec,histLenAfter)=> histLenAfter >= 3 }
   ];
   function logCompletion(){
-    if(sessionLogged) return; sessionLogged = true;
+    // Fires as soon as the learner reaches the last stage, and again every
+    // time they answer something more on it (e.g. the recap quiz) — so a
+    // record exists even if they never click a specific "finish" button,
+    // but the saved score/combo/correct stays up to date with what they
+    // actually did, not just a snapshot from the moment they arrived.
     const {correct,total} = currentScoreTally();
     const durationSec = Math.max(0, Math.round((Date.now()-sessionStart)/1000));
     const hist = loadJSON(HISTORY_KEY,'history') || [];
-    const newLen = hist.length+1;
-    const earned = BADGE_DEFS.filter(b=>b.check(firstTryCorrect, durationSec, newLen)).map(b=>b.id);
-    const entry = { completedAt: Date.now(), durationSec, correct, total, score, bestCombo, player: playerName, badges: earned };
-    hist.push(entry); saveJSON(HISTORY_KEY, hist, 'history');
+    let entry;
+    if(sessionLogIndex !== null && hist[sessionLogIndex]){
+      entry = hist[sessionLogIndex];
+      entry.completedAt = Date.now();
+      entry.durationSec = durationSec;
+      entry.correct = correct; entry.total = total;
+      entry.score = score; entry.bestCombo = bestCombo;
+    } else {
+      entry = { completedAt: Date.now(), durationSec, correct, total, score, bestCombo, player: playerName, badges: [] };
+      hist.push(entry);
+      sessionLogIndex = hist.length-1;
+    }
+    const earned = BADGE_DEFS.filter(b=>b.check(firstTryCorrect, durationSec, hist.length)).map(b=>b.id);
+    entry.badges = earned;
+    saveJSON(HISTORY_KEY, hist, 'history');
     const unlocked = loadJSON(BADGES_KEY,'badges') || [];
     earned.forEach(id=>{ if(!unlocked.includes(id)) unlocked.push(id); });
     saveJSON(BADGES_KEY, unlocked, 'badges');
-    showCelebration(entry, earned);
+    if(!sessionCelebrated){ sessionCelebrated = true; showCelebration(entry, earned); }
   }
   function showCelebration(entry, earned){
     const stats = document.getElementById('celebrationStats');
@@ -925,7 +941,7 @@
         renderQuizUnit(
           Object.assign({kind:'truefalse'}, r),
           `s${idx}-recap${ri}-choices`, `s${idx}-recap${ri}-feedback`,
-          (isCorrect)=>{ recordFirstTry(`s${idx}recap${ri}`, isCorrect); registerAnswer(isCorrect); }
+          (isCorrect)=>{ recordFirstTry(`s${idx}recap${ri}`, isCorrect); registerAnswer(isCorrect); logCompletion(); }
         );
       });
     }
@@ -1128,7 +1144,7 @@
     $all('[id$="-flip"]').forEach(elm=>{ elm.style.display='none'; elm.innerHTML=''; });
     $all('[id$="-cineQpanel"]').forEach(elm=> elm.style.display='none');
     seqState = {}; matchState = null; flipState = null; cineInitDone = {};
-    sessionStart = Date.now(); firstTryCorrect = {}; sessionLogged = false;
+    sessionStart = Date.now(); firstTryCorrect = {}; sessionLogIndex = null; sessionCelebrated = false;
     score=0; combo=0; bestCombo=0; updateScoreHud();
     document.getElementById('appPreview').classList.remove('show');
     document.getElementById('notesCopyBtn').style.display='none';
@@ -1143,7 +1159,7 @@
       if(stageCfg.type==='legacy' && stageCfg.recapQuiz){
         stageCfg.recapQuiz.forEach((r,ri)=>{
           renderQuizUnit(Object.assign({kind:'truefalse'}, r), `s${idx}-recap${ri}-choices`, `s${idx}-recap${ri}-feedback`,
-            (isCorrect)=>{ recordFirstTry(`s${idx}recap${ri}`, isCorrect); registerAnswer(isCorrect); });
+            (isCorrect)=>{ recordFirstTry(`s${idx}recap${ri}`, isCorrect); registerAnswer(isCorrect); logCompletion(); });
         });
       }
     });
