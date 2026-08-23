@@ -148,6 +148,7 @@
     else { combo = 0; sfxWrong(); }
     updateScoreHud();
     autosave();
+    if(window.PBS_recordActivity) PBS_recordActivity();
     if(window.PBS_Debug){ PBS_Debug.log(`registerAnswer(${isCorrect}) → score=${score}, combo=${combo}`); PBS_Debug.update(debugSnapshot()); }
   }
   function recordFirstTry(key, isCorrect){ if(firstTryCorrect[key]===undefined) firstTryCorrect[key]=isCorrect; }
@@ -450,11 +451,27 @@
     const unlocked = loadJSON(BADGES_KEY,'badges') || [];
     earned.forEach(id=>{ if(!unlocked.includes(id)) unlocked.push(id); });
     saveJSON(BADGES_KEY, unlocked, 'badges');
-    if(!sessionCelebrated){ sessionCelebrated = true; showCelebration(entry, earned); }
+    const bestResult = window.PBS_setBestIfHigher ? PBS_setBestIfHigher(CFG.storageId, entry) : null;
+    if(!sessionCelebrated){ sessionCelebrated = true; showCelebration(entry, earned, bestResult); }
   }
-  function showCelebration(entry, earned){
+  function showCelebration(entry, earned, bestResult){
     const stats = document.getElementById('celebrationStats');
     if(stats) stats.textContent = `점수 ${entry.score}점 · 정답 ${entry.correct}/${entry.total} · 소요 ${formatDuration(entry.durationSec)} · 최고 콤보 ${entry.bestCombo}`;
+    const recordLine = document.getElementById('celebrationRecord');
+    if(recordLine){
+      if(bestResult && bestResult.isNewBest && bestResult.prev){
+        recordLine.textContent = `🏆 신기록! 이전 최고 ${bestResult.prev.score}점을 넘었습니다.`;
+        recordLine.style.display = 'block';
+      } else if(bestResult && bestResult.isNewBest && !bestResult.prev){
+        recordLine.textContent = `🏆 이 장의 첫 기록을 남겼습니다!`;
+        recordLine.style.display = 'block';
+      } else if(bestResult && bestResult.best){
+        recordLine.textContent = `이 장의 최고 기록은 ${bestResult.best.score}점입니다. (다음엔 넘어볼까요?)`;
+        recordLine.style.display = 'block';
+      } else {
+        recordLine.style.display = 'none';
+      }
+    }
     const bBox = document.getElementById('celebrationBadges');
     if(bBox){
       bBox.innerHTML = earned.length
@@ -463,6 +480,11 @@
             return `<div class="badge-chip">🏅 ${def?def.name:id}</div>`;
           }).join('')
         : '';
+    }
+    const streakEl = document.getElementById('celebrationStreak');
+    if(streakEl){
+      const streak = window.PBS_getStreak ? PBS_getStreak() : null;
+      streakEl.textContent = (streak && streak.count > 1) ? `🔥 ${streak.count}일 연속 학습 중이에요!` : '';
     }
     const cv = document.getElementById('fxCanvas');
     if(cv && window.PBS_burstConfetti) PBS_burstConfetti(cv, { count:90 });
@@ -538,11 +560,18 @@
      Stage 0 — title / intro
      --------------------------------------------------------------------- */
   function renderStage0(cfg){
+    const best = window.PBS_getBest ? PBS_getBest(cfg.storageId) : null;
+    const streak = window.PBS_getStreak ? PBS_getStreak() : null;
     return `
     <section class="stage active" id="stage-0">
       <div class="eyebrow">${esc(cfg.eyebrow)}</div>
       <h1 class="title">${cfg.titleHtml}</h1>
       <p class="lede">${cfg.ledeHtml}</p>
+      ${(best || (streak && streak.active && streak.count>1)) ? `
+      <div class="record-strip">
+        ${best ? `<span class="record-chip">🏆 최고 기록 ${best.score}점</span>` : ''}
+        ${(streak && streak.active && streak.count>1) ? `<span class="record-chip streak">🔥 ${streak.count}일 연속</span>` : ''}
+      </div>` : ''}
       <div class="panel study-card">
         <div class="study-card-tag">📋 오늘의 공부 노트</div>
         ${cfg.overviewHtml}
@@ -1108,8 +1137,10 @@
     <div id="celebrationOverlay" class="history-overlay" style="z-index:95;">
       <div class="history-modal celebration-modal">
         <h2 style="font-family:'Noto Serif KR',serif; color:var(--gold-soft); margin:6px 0 10px; font-size:22px;">🎉 여정을 마쳤습니다</h2>
-        <p id="celebrationStats" style="margin:0 0 16px; color:var(--parchment);"></p>
+        <p id="celebrationStats" style="margin:0 0 10px; color:var(--parchment);"></p>
+        <p id="celebrationRecord" style="margin:0 0 16px; color:var(--gold-soft); font-family:'Noto Serif KR',serif; display:none;"></p>
         <div id="celebrationBadges"></div>
+        <div id="celebrationStreak" style="margin-top:10px; color:var(--sky-soft); font-size:13px;"></div>
         <div class="btn-row" style="justify-content:center;"><button class="btn btn-primary" id="celebrationCloseBtn">확인</button></div>
       </div>
     </div>`;

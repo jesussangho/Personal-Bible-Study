@@ -54,6 +54,23 @@
     font-size:12px; color:var(--muted); line-height:1.9;
   }
   footer.pbs-foot .verse{ font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--gold-soft); font-size:14px; display:block; margin-bottom:6px; }
+
+  .streak-banner{
+    display:inline-flex; align-items:center; gap:8px; margin:18px auto 0; padding:8px 18px;
+    border:1px solid rgba(202,110,60,0.5); border-radius:20px; background:rgba(202,110,60,0.1);
+    color:#e3a878; font-size:13px; font-weight:500;
+  }
+  .pc-progress{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:14px; }
+  .pc-progress .record-chip{
+    font-size:11.5px; font-weight:500; padding:4px 11px; border-radius:16px;
+    border:1px solid var(--gold-dim); color:var(--gold-soft); background:rgba(201,162,75,0.1);
+  }
+  .pc-progress .trophy-row{ display:flex; gap:5px; }
+  .pc-progress .trophy-badge{
+    width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:12px; border:1px solid var(--gold-dim); background:rgba(201,162,75,0.12);
+  }
+  .pc-progress .trophy-badge.locked{ border-color:var(--line); background:rgba(255,255,255,0.02); opacity:0.45; filter:grayscale(1); }
   footer.pbs-foot a, .pm-more a{ color:var(--gold-soft); }
   .pm-more{ margin-top:16px; padding-top:14px; border-top:1px dashed var(--line-strong); font-size:12.5px; color:var(--muted); line-height:1.8; }
 </style>
@@ -73,6 +90,7 @@
   <p class="pbs-sub">Personal Bible Study — 나의 개인 성경 공부 노트</p>
   <p class="pbs-verse">"주의 말씀은 내 발에 등이요 내 길에 빛이니이다" — 시편 119:105<br>
   본문을 읽고, 질문에 답하고, 어려운 낱말은 클릭 한 번으로 풀어보는 인터랙티브 성경 공부입니다.</p>
+  <div id="streakBanner" class="streak-banner" style="display:none;"></div>
 </header>
 
 <div class="divider-line"></div>
@@ -92,7 +110,7 @@
 </div>
 
 <main class="pbs-cards">
-  <a class="pbs-card" href="exodus-11-12.html">
+  <a class="pbs-card" href="exodus-11-12.html" data-storage-id="exodusGame" data-badges="perfect_door,fast_exit,perfect_score,devoted">
     <div class="pc-eyebrow">Chapter · 11–12</div>
     <div class="pc-title">그날 밤, 문설주에</div>
     <p class="pc-desc">마지막 재앙의 경고부터 유월절 규례, 그리고 430년 만의 탈출까지.
@@ -102,10 +120,11 @@
       <span class="pc-chip">출 12:1–51</span>
       <span class="pc-chip">퀴즈 · 매칭 게임</span>
     </div>
+    <div class="pc-progress" data-progress></div>
     <div class="pc-cta">공부 시작하기 <span class="arrow">→</span></div>
   </a>
 
-  <a class="pbs-card" href="exodus-13.html">
+  <a class="pbs-card" href="exodus-13.html" data-storage-id="exodus13" data-badges="perfect_score,fast_finish,devoted">
     <div class="pc-eyebrow">Chapter · 13</div>
     <div class="pc-title">손의 표, 이마의 기호</div>
     <p class="pc-desc">이집트를 떠난 백성이 처음 배운 것 — 처음 난 것을 구별하는 법, 자녀에게 전하는 법,
@@ -115,10 +134,11 @@
       <span class="pc-chip">불·구름 기둥 이펙트</span>
       <span class="pc-chip">쉬운말 모드</span>
     </div>
+    <div class="pc-progress" data-progress></div>
     <div class="pc-cta">공부 시작하기 <span class="arrow">→</span></div>
   </a>
 
-  <a class="pbs-card" href="exodus-14.html">
+  <a class="pbs-card" href="exodus-14.html" data-storage-id="exodus14" data-badges="perfect_score,fast_finish,devoted">
     <div class="pc-eyebrow">Chapter · 14</div>
     <div class="pc-title">마른 땅으로 건넌 바다</div>
     <p class="pc-desc">뒤에는 바로의 병거, 앞에는 가로막힌 바다. 궁지에 몰린 그 순간 하나님은 동풍으로 바다를 가르시고,
@@ -128,10 +148,11 @@
       <span class="pc-chip">바다 갈라짐 이펙트</span>
       <span class="pc-chip">쉬운말 모드</span>
     </div>
+    <div class="pc-progress" data-progress></div>
     <div class="pc-cta">공부 시작하기 <span class="arrow">→</span></div>
   </a>
 
-  <a class="pbs-card" href="exodus-15.html">
+  <a class="pbs-card" href="exodus-15.html" data-storage-id="exodus15" data-badges="perfect_score,fast_finish,devoted">
     <div class="pc-eyebrow">Chapter · 15</div>
     <div class="pc-title">바다 건너 부른 노래</div>
     <p class="pc-desc">바다를 건넌 직후 부른 모세의 노래부터, 미리암의 소고와 춤, 마라의 쓴 물, 엘림의 쉼까지.
@@ -141,6 +162,7 @@
       <span class="pc-chip">카드 뒤집기 게임</span>
       <span class="pc-chip">쉬운말 모드</span>
     </div>
+    <div class="pc-progress" data-progress></div>
     <div class="pc-cta">공부 시작하기 <span class="arrow">→</span></div>
   </a>
 
@@ -174,9 +196,37 @@
 
 <script src="assets/pbs-nav.js"></script>
 <script src="assets/pbs-effects.js"></script>
+<script src="assets/pbs-progress.js"></script>
 <script>
   PBS_renderNav('index');
   PBS_startStarfield(document.getElementById('starfield'), { density: 140 });
+
+  const streak = PBS_getStreak();
+  if(streak.active && streak.count > 1){
+    const banner = document.getElementById('streakBanner');
+    banner.textContent = `🔥 ${streak.count}일 연속 학습 중이에요!`;
+    banner.style.display = 'inline-flex';
+  }
+
+  document.querySelectorAll('.pbs-card[data-storage-id]').forEach(card=>{
+    const storageId = card.dataset.storageId;
+    const badgeIds = (card.dataset.badges||'').split(',').filter(Boolean);
+    const best = PBS_getBest(storageId);
+    let earned = [];
+    try{ earned = JSON.parse(localStorage.getItem(storageId+'_badges_v1')||'[]'); }catch(e){}
+    const box = card.querySelector('[data-progress]');
+    if(!box) return;
+    let html = '';
+    if(best) html += `<span class="record-chip">🏆 최고 ${best.score}점</span>`;
+    if(badgeIds.length){
+      html += '<span class="trophy-row">' + badgeIds.map(id=>{
+        const meta = PBS_BADGE_META[id] || {icon:'🏅', name:id};
+        const got = earned.includes(id);
+        return `<span class="trophy-badge${got?'':' locked'}" title="${got?meta.name:'미획득: '+meta.name}">${got?meta.icon:'🔒'}</span>`;
+      }).join('') + '</span>';
+    }
+    box.innerHTML = html;
+  });
 </script>
 </body>
 </html>

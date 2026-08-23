@@ -271,6 +271,20 @@ textarea:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; 
 }
 .study-card-diff{ margin-top:20px; padding-top:18px; border-top:1px dashed var(--line-strong); }
 
+.record-strip{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 0; }
+.record-chip{
+  font-size:12.5px; font-weight:500; padding:6px 13px; border-radius:20px;
+  border:1px solid var(--gold-dim); color:var(--gold-soft); background:rgba(201,162,75,0.1);
+}
+.record-chip.streak{ border-color:rgba(202,110,60,0.5); color:#e3a878; background:rgba(202,110,60,0.1); }
+
+.trophy-row{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+.trophy-badge{
+  width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:14px; border:1px solid var(--gold-dim); background:rgba(201,162,75,0.12);
+}
+.trophy-badge.locked{ border-color:var(--line); background:rgba(255,255,255,0.02); color:var(--muted); opacity:0.55; filter:grayscale(1); }
+
 .flip-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(84px,1fr)); gap:10px; margin:6px 0; }
 .flip-card{
   aspect-ratio:3/4; border-radius:6px; cursor:pointer; position:relative;

@@ -620,8 +620,10 @@
     <div class="history-modal celebration-modal" onclick="event.stopPropagation()">
       <div class="confetti-layer" id="confettiLayer"></div>
       <h2 style="font-family:'Noto Serif KR',serif; color:var(--gold-soft); margin:6px 0 10px; font-size:22px;">🎉 여정을 마쳤습니다</h2>
-      <p id="celebrationStats" style="margin:0 0 16px; color:var(--parchment);"></p>
+      <p id="celebrationStats" style="margin:0 0 10px; color:var(--parchment);"></p>
+      <p id="celebrationRecord" style="margin:0 0 16px; color:var(--gold-soft); font-family:'Noto Serif KR',serif; display:none;"></p>
       <div id="celebrationBadges"></div>
+      <div id="celebrationStreak" style="margin-top:10px; color:var(--sky-soft); font-size:13px;"></div>
       <div class="btn-row" style="justify-content:center;">
         <button class="btn btn-primary" onclick="closeCelebration()">확인</button>
       </div>
@@ -634,6 +636,7 @@
     <h1 class="title">그날 밤,<br>문설주에</h1>
     <p class="lede">애굽 왕궁의 마지막 경고부터, 430년 만에 시작된 새벽까지.<br>
     출애굽기 11장과 12장 전체를 본문의 흐름 그대로 따라가며, 각 규례가 무엇을 의미하는지 깊이 있게 살펴봅니다.</p>
+    <div class="record-strip" id="recordStrip"></div>
     <div class="panel study-card">
       <div class="study-card-tag">📋 오늘의 공부 노트</div>
       <p style="margin:0;">네 장면, 그리고 그 안의 세부 본문들</p>
@@ -898,6 +901,7 @@
 <script src="assets/pbs-glossary.js"></script>
 <script src="assets/pbs-effects.js"></script>
 <script src="assets/pbs-debug.js"></script>
+<script src="assets/pbs-progress.js"></script>
 <script>
 let currentStage = 0;
 /* Debug-mode snapshot — read-only view of this page's existing state
@@ -996,6 +1000,7 @@ function registerAnswer(isCorrect, points){
   }
   updateScoreHud();
   if(typeof autosave === 'function') autosave();
+  if(window.PBS_recordActivity) PBS_recordActivity();
   if(window.PBS_Debug){ PBS_Debug.log(`registerAnswer(${isCorrect}) → score=${score}, combo=${combo}`); PBS_Debug.update(debugSnapshot()); }
 }
 
@@ -1264,8 +1269,9 @@ function logHistoryIfNeeded(){
   earnedBadgeIds.forEach(id=>{ if(!unlocked.includes(id)) unlocked.push(id); });
   saveJSON(BADGES_KEY, unlocked, 'badges');
 
+  const bestResult = window.PBS_setBestIfHigher ? PBS_setBestIfHigher('exodusGame', entry) : null;
   buildReviewList();
-  showCelebration(entry, earnedBadgeIds);
+  showCelebration(entry, earnedBadgeIds, bestResult);
 }
 
 /* ---------- REVIEW: items missed on first try, last session ---------- */
@@ -1324,9 +1330,29 @@ function spawnConfetti(){
     layer.appendChild(p);
   }
 }
-function showCelebration(entry, earnedBadgeIds){
+function showCelebration(entry, earnedBadgeIds, bestResult){
   const stats = document.getElementById('celebrationStats');
   if(stats) stats.textContent = `점수 ${entry.score}점 · 정답 ${entry.correct}/${entry.total} · 소요 ${formatDuration(entry.durationSec)} · 최고 콤보 ${entry.bestCombo}`;
+  const recordLine = document.getElementById('celebrationRecord');
+  if(recordLine){
+    if(bestResult && bestResult.isNewBest && bestResult.prev){
+      recordLine.textContent = `🏆 신기록! 이전 최고 ${bestResult.prev.score}점을 넘었습니다.`;
+      recordLine.style.display = 'block';
+    } else if(bestResult && bestResult.isNewBest && !bestResult.prev){
+      recordLine.textContent = `🏆 이 장의 첫 기록을 남겼습니다!`;
+      recordLine.style.display = 'block';
+    } else if(bestResult && bestResult.best){
+      recordLine.textContent = `이 장의 최고 기록은 ${bestResult.best.score}점입니다. (다음엔 넘어볼까요?)`;
+      recordLine.style.display = 'block';
+    } else {
+      recordLine.style.display = 'none';
+    }
+  }
+  const streakEl = document.getElementById('celebrationStreak');
+  if(streakEl){
+    const streak = window.PBS_getStreak ? PBS_getStreak() : null;
+    streakEl.textContent = (streak && streak.count > 1) ? `🔥 ${streak.count}일 연속 학습 중이에요!` : '';
+  }
   const bBox = document.getElementById('celebrationBadges');
   if(bBox){
     if(earnedBadgeIds.length){
@@ -2002,6 +2028,16 @@ function restart(){
 
   updateScoreHud();
   checkForSavedProgress();
+
+  const recordStrip = document.getElementById('recordStrip');
+  if(recordStrip){
+    const best = window.PBS_getBest ? PBS_getBest('exodusGame') : null;
+    const streak = window.PBS_getStreak ? PBS_getStreak() : null;
+    let html = '';
+    if(best) html += `<span class="record-chip">🏆 최고 기록 ${best.score}점</span>`;
+    if(streak && streak.active && streak.count>1) html += `<span class="record-chip streak">🔥 ${streak.count}일 연속</span>`;
+    recordStrip.innerHTML = html;
+  }
 
   if(window.PBS_renderNav) PBS_renderNav('11-12');
   if(window.PBS_startEmberField) PBS_startEmberField(document.getElementById('starfield'), {});
