@@ -224,12 +224,13 @@ textarea:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:2px; 
 
 .history-overlay{
   position:fixed; inset:0; background:rgba(5,7,16,0.68); z-index:90;
-  display:flex; align-items:center; justify-content:center; padding:20px;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:20px; padding-top:calc(var(--nav-h, 70px) + 16px); overflow-y:auto;
   opacity:0; pointer-events:none; transition:opacity .25s ease;
 }
 .history-overlay.show{ opacity:1; pointer-events:auto; }
 .history-modal{
-  width:480px; max-width:100%; max-height:80vh; overflow-y:auto;
+  width:480px; max-width:100%; max-height:75vh; overflow-y:auto;
   background:linear-gradient(180deg, var(--panel), var(--night2));
   border:1px solid var(--line-strong); border-radius:6px; padding:26px 24px;
 }

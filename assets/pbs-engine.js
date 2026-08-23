@@ -47,6 +47,13 @@
   function $all(sel, root){ return Array.from((root||document).querySelectorAll(sel)); }
   function el(html){ const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild; }
   function esc(s){ return String(s==null?'':s); }
+  // Measures the real nav bar height (it wraps to 2 lines on narrow phones)
+  // so history/celebration overlays can start below it instead of guessing
+  // a fixed offset and ending up overlapping the nav links.
+  function updateNavHeightVar(){
+    const nav = document.querySelector('.pbs-nav');
+    if(nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+  }
 
   /* ---------------------------------------------------------------------
      Storage
@@ -1280,6 +1287,8 @@
     updateScoreHud();
 
     if(window.PBS_renderNav) PBS_renderNav(cfg.navCurrent);
+    updateNavHeightVar();
+    window.addEventListener('resize', updateNavHeightVar);
     const starCv = document.getElementById('starfield');
     if(cfg.theme==='sea' && window.PBS_startWaveField) PBS_startWaveField(starCv, { colorRGB: '90,170,205' });
     else if(cfg.theme==='victory' && window.PBS_startSparkleField) PBS_startSparkleField(starCv, { colorRGB: '230,190,120' });
