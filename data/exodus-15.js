@@ -29,8 +29,8 @@ window.EXODUS_15_DATA = {
   notesTitle: '출애굽기 15장 묵상 적용노트',
   music: {
     tracks: [
-      'assets/music/출애굽기15장/Midnight in the Desert.mp3',
-      'assets/music/출애굽기15장/Midnight in the Desert_1.mp3'
+      '../assets/music/출애굽기15장/Midnight in the Desert.mp3',
+      '../assets/music/출애굽기15장/Midnight in the Desert_1.mp3'
     ]
   },
 
@@ -298,7 +298,7 @@ window.EXODUS_15_DATA = {
       askHtml: '노래(기쁨)와 마라(시험)와 엘림(쉼)이 며칠 사이에 이어진 것처럼, 내 삶에도 그런 흐름이 있었다면 무엇인가요? 지금 나는 노래·시험·쉼 중 어디쯤 있나요?',
       reflectPlaceholder: '답을 적어보세요...',
       refsChips: ['출 15:1-12','출 15:13-18','출 15:19-21','출 15:22-26','출 15:27'],
-      nextChapter: null
+      nextChapter: { href:'exodus-16.html', label:'출애굽기 16장', title:'하늘에서 내린 것' }
     }
   ],
 

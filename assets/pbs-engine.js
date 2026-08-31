@@ -6,12 +6,12 @@
    reveals, notes drawer, text drawer, glossary, kids-mode, effects,
    storage/badges/history), and each chapter supplies only its content.
 
-   Usage (from a thin chapter HTML shell):
-     <script src="assets/pbs-nav.js"></script>
-     <script src="assets/pbs-glossary.js"></script>
-     <script src="assets/pbs-effects.js"></script>
-     <script src="assets/pbs-engine.js"></script>
-     <script src="data/exodus-13.js"></script>   (defines window.EXODUS_13_DATA)
+   Usage (from a thin chapter HTML shell, living in /chapters/):
+     <script src="../assets/pbs-nav.js"></script>
+     <script src="../assets/pbs-glossary.js"></script>
+     <script src="../assets/pbs-effects.js"></script>
+     <script src="../assets/pbs-engine.js"></script>
+     <script src="../data/exodus-13.js"></script>   (defines window.EXODUS_13_DATA)
      <script>PBSStudy.init(EXODUS_13_DATA);</script>
    ========================================================================== */
 (function(){
@@ -34,7 +34,8 @@
     night: '255,214,214',
     gold: '255,232,190',
     sea: '210,236,255',
-    victory: '255,224,170'
+    victory: '255,224,170',
+    dawn: '255,232,205'
   };
   let STORAGE_KEY, HISTORY_KEY, BADGES_KEY;
   let storageAvailable = true;
@@ -423,7 +424,7 @@
   /* ---------------------------------------------------------------------
      Badges (lightweight generic set)
      --------------------------------------------------------------------- */
-  const BADGE_DEFS = [
+  let BADGE_DEFS = [
     { id:'perfect_score', name:'만점 순례자', desc:'모든 질문을 한 번에 맞혔어요',
       check:(ftc)=>{ const v=Object.values(ftc); return v.length>0 && v.every(Boolean); } },
     { id:'fast_finish', name:'빠른 발걸음', desc:'10분 안에 전체 여정을 마쳤어요',
@@ -532,10 +533,23 @@
     });
     if(name==='log') renderHistory(); else renderBadgeGallery();
   }
+  function computeRankTitle(){
+    const hist = loadJSON(HISTORY_KEY, 'history') || [];
+    const n = hist.length;
+    const titles = (CFG && CFG.rankTitles) || ['새내기 순례자', '꾸준한 순례자', '말씀의 증인'];
+    if(n === 0) return '아직 여정을 시작하지 않았습니다';
+    if(n < 2) return titles[0];
+    if(n < 4) return titles[1];
+    return titles[2];
+  }
   window.PBSStudyToggleHistory = function(){
     const ov = document.getElementById('historyOverlay');
     ov.classList.toggle('show');
-    if(ov.classList.contains('show')) switchHistTab('log');
+    if(ov.classList.contains('show')){
+      const rankLine = document.getElementById('rankLine');
+      if(rankLine) rankLine.textContent = '현재 칭호: ' + computeRankTitle();
+      switchHistTab('log');
+    }
   };
   window.PBSStudyClearHistory = function(){ saveJSON(HISTORY_KEY, [], 'history'); renderHistory(); };
 
@@ -967,7 +981,7 @@
       </a>` : ''}
       <div class="btn-row">
         <button class="btn" id="s${idx}-restart-btn">처음부터 다시</button>
-        <a class="btn" href="index.html">🏠 처음 화면으로</a>
+        <a class="btn" href="../index.html">🏠 처음 화면으로</a>
       </div>
     </section>`;
   }
@@ -986,7 +1000,7 @@
       const card = document.getElementById(`s${idx}-legacyCard`);
       card.innerHTML = val.trim()
         ? `"${esc(val.trim())}"<br><span style="font-family:'Noto Sans KR',sans-serif; font-style:normal; font-size:13px; color:var(--muted);">— 오늘, 다음 세대에게 전한 말</span>`
-        : `이 밤을 기억하는 이유는, 우리를 구원하신 분이 우리가 아니라 여호와이시기 때문입니다.`;
+        : (cfg.legacyFallback || `이 여정에서 붙잡은 한 가지를 조용히 되새겨 봅니다.`);
       card.classList.add('show');
       logCompletion();
     };
@@ -1132,6 +1146,7 @@
     <div id="historyOverlay" class="history-overlay">
       <div class="history-modal">
         <div class="text-header"><span>학습 기록</span><button class="notes-close" id="historyCloseBtn" aria-label="닫기">✕</button></div>
+        <p class="hint" id="rankLine" style="margin:0 0 14px;"></p>
         <div class="chap-tabs">
           <button class="chap-tab active" id="htab-log">기록</button>
           <button class="chap-tab" id="htab-badges">배지</button>
@@ -1201,6 +1216,7 @@
         });
       }
     });
+    if(CFG.onRestart) CFG.onRestart(document);
     if(window.PBS_Debug){ PBS_Debug.log('restart()'); PBS_Debug.update(debugSnapshot()); }
     goTo(0);
   }
@@ -1211,6 +1227,7 @@
   function init(cfg){
     if(window.PBS_Debug) PBS_Debug.init();
     CFG = cfg;
+    if(cfg.extraBadges && cfg.extraBadges.length) BADGE_DEFS = BADGE_DEFS.concat(cfg.extraBadges);
     STORAGE_KEY = cfg.storageId+'_progress_v1';
     HISTORY_KEY = cfg.storageId+'_history_v1';
     BADGES_KEY = cfg.storageId+'_badges_v1';
@@ -1293,6 +1310,7 @@
     if(cfg.theme==='sea' && window.PBS_startWaveField) PBS_startWaveField(starCv, { colorRGB: '90,170,205' });
     else if(cfg.theme==='victory' && window.PBS_startSparkleField) PBS_startSparkleField(starCv, { colorRGB: '230,190,120' });
     else if(cfg.theme==='night' && window.PBS_startEmberField) PBS_startEmberField(starCv, {});
+    else if(cfg.theme==='dawn' && window.PBS_startDewField) PBS_startDewField(starCv, { colorRGB: '255,232,205' });
     else if(window.PBS_startStarfield) PBS_startStarfield(starCv, { density: 70, colorRGB: THEME_STAR_COLORS[cfg.theme] });
     if(window.PBS_initGlossary) PBS_initGlossary(document);
     if(window.PBS_Debug){ PBS_Debug.log('init('+cfg.storageId+')'); PBS_Debug.update(debugSnapshot()); }

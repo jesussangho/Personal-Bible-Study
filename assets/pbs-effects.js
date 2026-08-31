@@ -188,6 +188,57 @@
     requestAnimationFrame(frame);
   }
 
+  /* ---------- dew field: pale flakes drifting gently DOWN (manna/dawn theme) ----------
+     Deliberately the opposite motion of sparkle/ember (which rise) — manna and
+     dew settle onto the ground each morning, so these flakes fall and gently
+     sway, like a light bread-flake snowfall. */
+  function startDewField(cv, opts){
+    opts = opts || {};
+    const density = opts.density || 30;
+    const colorRGB = opts.colorRGB || '255,232,205';
+    let ctx = resizeCanvas(cv);
+    let flakes = [];
+    function seed(){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      flakes = Array.from({length: density}, ()=>({
+        x: Math.random()*w, y: Math.random()*h - h,
+        r: 1 + Math.random()*2,
+        vy: 0.18 + Math.random()*0.28,
+        swayAmp: 6 + Math.random()*14,
+        swaySpeed: 0.4 + Math.random()*0.6,
+        phase: Math.random()*Math.PI*2,
+        baseX: 0
+      }));
+      flakes.forEach(f=> f.baseX = f.x);
+    }
+    seed();
+    window.addEventListener('resize', ()=>{ ctx = resizeCanvas(cv); seed(); });
+    if(REDUCED){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      flakes.forEach(f=>{ ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2); ctx.fillStyle = `rgba(${colorRGB},0.5)`; ctx.fill(); });
+      return;
+    }
+    let t = 0;
+    function frame(){
+      t += 0.016;
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      flakes.forEach(f=>{
+        f.y += f.vy;
+        f.x = f.baseX + Math.sin(t*f.swaySpeed + f.phase) * f.swayAmp;
+        if(f.y > h + 6){ f.y = -6; f.baseX = Math.random()*w; }
+        const tw = 0.5 + 0.5*Math.abs(Math.sin(t*0.8 + f.phase));
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${colorRGB},${tw*0.75})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
   /* ---------- fire & cloud pillar: rising particles, day/night blend ---------- */
   function startPillar(cv, opts){
     opts = opts || {};
@@ -444,6 +495,7 @@
   window.PBS_startWaveField = startWaveField;
   window.PBS_startSparkleField = startSparkleField;
   window.PBS_startEmberField = startEmberField;
+  window.PBS_startDewField = startDewField;
   window.PBS_startPillar = startPillar;
   window.PBS_burstConfetti = burstConfetti;
   window.PBS_sparkleBurst = sparkleBurst;

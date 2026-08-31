@@ -1,24 +1,33 @@
 /* ==========================================================================
    PBS shared top navigation — injects a consistent brand + chapter links
    Usage: <div id="pbsNavRoot"></div>  then  PBS_renderNav('11-12');
-   current: 'index' | '11-12' | '13'
-   ========================================================================== */
+   current: 'index' | '11-12' | '13' | ...
+
+   Chapter pages live in /chapters/, index.html and manual.html live at
+   the site root — this file is loaded by both, so every link is built
+   relative to whichever one is currently running (detected from the
+   page's own URL) rather than hard-coded. */
 (function(){
   const PAGES = [
-    { id: '11-12', href: 'exodus-11-12.html', label: '출 11–12장' },
-    { id: '13', href: 'exodus-13.html', label: '출 13장' },
-    { id: '14', href: 'exodus-14.html', label: '출 14장' },
-    { id: '15', href: 'exodus-15.html', label: '출 15장' },
-    { id: 'manual', href: 'manual.html', label: '📘 사용법' }
+    { id: '11-12', file: 'exodus-11-12.html', label: '출 11–12장', chapter: true },
+    { id: '13', file: 'exodus-13.html', label: '출 13장', chapter: true },
+    { id: '14', file: 'exodus-14.html', label: '출 14장', chapter: true },
+    { id: '15', file: 'exodus-15.html', label: '출 15장', chapter: true },
+    { id: '16', file: 'exodus-16.html', label: '출 16장', chapter: true },
+    { id: 'manual', file: 'manual.html', label: '📘 사용법', chapter: false }
   ];
 
   function renderNav(current){
     const root = document.getElementById('pbsNavRoot');
     if(!root) return;
-    const homeHref = current === 'index' ? null : 'index.html';
+    const inChapter = location.pathname.indexOf('/chapters/') !== -1;
+    const toRoot = inChapter ? '../' : '';
+    const toChapters = inChapter ? '' : 'chapters/';
+    const homeHref = current === 'index' ? null : toRoot + 'index.html';
     const links = PAGES.map(p=>{
       const isCurrent = p.id === current;
-      return `<a class="pbs-nav-link${isCurrent ? ' current' : ''}" href="${p.href}"${isCurrent ? ' aria-current="page"' : ''}>${p.label}</a>`;
+      const href = (p.chapter ? toChapters : toRoot) + p.file;
+      return `<a class="pbs-nav-link${isCurrent ? ' current' : ''}" href="${href}"${isCurrent ? ' aria-current="page"' : ''}>${p.label}</a>`;
     }).join('');
 
     root.innerHTML = `

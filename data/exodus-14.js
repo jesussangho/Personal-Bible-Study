@@ -27,8 +27,8 @@ window.EXODUS_14_DATA = {
   notesTitle: '출애굽기 14장 묵상 적용노트',
   music: {
     tracks: [
-      'assets/music/출애굽기14장/The Throne of Light.mp3',
-      'assets/music/출애굽기14장/The Throne of Light_1.mp3'
+      '../assets/music/출애굽기14장/The Throne of Light.mp3',
+      '../assets/music/출애굽기14장/The Throne of Light_1.mp3'
     ]
   },
 
