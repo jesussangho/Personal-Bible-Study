@@ -17,7 +17,7 @@
 }
 
 /* ---------- per-chapter ambience themes ----------
-   Each chapter opts in via PBSStudy.init({theme:'night'|'gold'|'sea'|'victory'|'dawn'}),
+   Each chapter opts in via PBSStudy.init({theme:'night'|'gold'|'sea'|'victory'|'dawn'|'battle'}),
    which adds body.theme-* — only the background/lamp glow (and starfield tint,
    set in JS) change; --gold/--blood stay put so quiz-correct/wrong colors and
    buttons stay consistent everywhere. */
@@ -40,6 +40,10 @@ body.theme-victory{
 body.theme-dawn{
   --bg-top:#3a3358; --bg-mid:#241f3d; --bg-bottom:#0d0b18;
   --lamp-color: rgba(255,214,170,0.22); --lamp-color2: rgba(180,170,255,0.08);
+}
+body.theme-battle{
+  --bg-top:#332a1c; --bg-mid:#201a10; --bg-bottom:#0c0906;
+  --lamp-color: rgba(195,160,110,0.20); --lamp-color2: rgba(195,160,110,0.05);
 }
 
 /* ---------- fixed canvas backdrop (starfield / effects) ---------- */

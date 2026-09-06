@@ -223,7 +223,7 @@ window.EXODUS_16_DATA = {
       askHtml: '한 항아리의 만나처럼, 당신이 다음 세대에게 "이건 꼭 기억해야 해"라며 간직하고 전해주고 싶은 하나님의 신실하심이 있다면 무엇인가요?',
       reflectPlaceholder: '답을 적어보세요...',
       refsChips: ['출 16:1-8','출 16:9-21','출 16:22-30','출 16:31-36'],
-      nextChapter: null
+      nextChapter: { href:'exodus-17.html', label:'출애굽기 17장', title:'반석과 전쟁' }
     }
   ],
 

@@ -239,6 +239,54 @@
     requestAnimationFrame(frame);
   }
 
+  /* ---------- dust field: dry, wind-blown haze drifting sideways (battle/wilderness-testing theme) ----------
+     Deliberately horizontal motion (unlike ember/sparkle which rise, or dew
+     which falls) — grit blown low across a dry battlefield, not settling
+     or drifting up. */
+  function startDustField(cv, opts){
+    opts = opts || {};
+    const density = opts.density || 26;
+    const colorRGB = opts.colorRGB || '195,160,110';
+    let ctx = resizeCanvas(cv);
+    let motes = [];
+    function seed(){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      motes = Array.from({length: density}, ()=>({
+        x: Math.random()*w, y: h*0.15 + Math.random()*h*0.7,
+        r: 0.8 + Math.random()*1.6,
+        vx: 0.15 + Math.random()*0.35,
+        vy: (Math.random()-0.5)*0.05,
+        phase: Math.random()*Math.PI*2,
+        speed: 0.4 + Math.random()*0.6
+      }));
+    }
+    seed();
+    window.addEventListener('resize', ()=>{ ctx = resizeCanvas(cv); seed(); });
+    if(REDUCED){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      motes.forEach(m=>{ ctx.beginPath(); ctx.arc(m.x,m.y,m.r,0,Math.PI*2); ctx.fillStyle = `rgba(${colorRGB},0.4)`; ctx.fill(); });
+      return;
+    }
+    let t = 0;
+    function frame(){
+      t += 0.016;
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      motes.forEach(m=>{
+        m.x += m.vx; m.y += m.vy;
+        if(m.x > w + 6){ m.x = -6; m.y = h*0.15 + Math.random()*h*0.7; }
+        const tw = 0.4 + 0.6*Math.abs(Math.sin(t*m.speed + m.phase));
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${colorRGB},${tw*0.5})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
   /* ---------- fire & cloud pillar: rising particles, day/night blend ---------- */
   function startPillar(cv, opts){
     opts = opts || {};
@@ -496,6 +544,7 @@
   window.PBS_startSparkleField = startSparkleField;
   window.PBS_startEmberField = startEmberField;
   window.PBS_startDewField = startDewField;
+  window.PBS_startDustField = startDustField;
   window.PBS_startPillar = startPillar;
   window.PBS_burstConfetti = burstConfetti;
   window.PBS_sparkleBurst = sparkleBurst;
