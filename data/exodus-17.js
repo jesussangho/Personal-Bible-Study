@@ -260,7 +260,7 @@ window.EXODUS_17_DATA = {
       askHtml: '모세의 손을 붙들었던 아론과 훌처럼, 지금 내가 붙들어 줄 수 있는 사람이나 붙듦이 필요한 자리가 있다면 무엇인가요?',
       reflectPlaceholder: '답을 적어보세요...',
       refsChips: ['출 17:1-7','출 17:8-13','출 17:14-16'],
-      nextChapter: null
+      nextChapter: { href:'exodus-18.html', label:'출애굽기 18장', title:'이드로의 조언' }
     }
   ],
 

@@ -15,6 +15,7 @@
     { id: '15', file: 'exodus-15.html', label: '출 15장', chapter: true },
     { id: '16', file: 'exodus-16.html', label: '출 16장', chapter: true },
     { id: '17', file: 'exodus-17.html', label: '출 17장', chapter: true },
+    { id: '18', file: 'exodus-18.html', label: '출 18장', chapter: true },
     { id: 'manual', file: 'manual.html', label: '📘 사용법', chapter: false }
   ];
 

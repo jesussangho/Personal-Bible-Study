@@ -287,6 +287,66 @@
     requestAnimationFrame(frame);
   }
 
+  /* ---------- leaf field: slow tumbling, rotating leaf shapes (counsel/wisdom theme) ----------
+     Falls like dew, but each mote rotates as an ellipse rather than staying
+     a plain dot — a calmer, shaded-under-a-tree feel for a chapter about
+     sitting down and taking wise counsel. */
+  function startLeafField(cv, opts){
+    opts = opts || {};
+    const density = opts.density || 22;
+    const colorRGB = opts.colorRGB || '165,180,120';
+    let ctx = resizeCanvas(cv);
+    let leaves = [];
+    function seed(){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      leaves = Array.from({length: density}, ()=>({
+        x: Math.random()*w, y: Math.random()*h - h,
+        rw: 3 + Math.random()*3, rh: 1.4 + Math.random()*1.6,
+        vy: 0.14 + Math.random()*0.22,
+        rot: Math.random()*Math.PI*2,
+        vr: (Math.random()-0.5)*0.02,
+        swayAmp: 8 + Math.random()*16,
+        swaySpeed: 0.3 + Math.random()*0.5,
+        phase: Math.random()*Math.PI*2,
+        baseX: 0
+      }));
+      leaves.forEach(l=> l.baseX = l.x);
+    }
+    seed();
+    window.addEventListener('resize', ()=>{ ctx = resizeCanvas(cv); seed(); });
+    if(REDUCED){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      leaves.forEach(l=>{
+        ctx.save(); ctx.translate(l.x,l.y); ctx.rotate(l.rot);
+        ctx.beginPath(); ctx.ellipse(0,0,l.rw,l.rh,0,0,Math.PI*2);
+        ctx.fillStyle = `rgba(${colorRGB},0.45)`; ctx.fill(); ctx.restore();
+      });
+      return;
+    }
+    let t = 0;
+    function frame(){
+      t += 0.016;
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      leaves.forEach(l=>{
+        l.y += l.vy; l.rot += l.vr;
+        l.x = l.baseX + Math.sin(t*l.swaySpeed + l.phase) * l.swayAmp;
+        if(l.y > h + 6){ l.y = -6; l.baseX = Math.random()*w; }
+        const tw = 0.45 + 0.4*Math.abs(Math.sin(t*0.7 + l.phase));
+        ctx.save();
+        ctx.translate(l.x, l.y); ctx.rotate(l.rot);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, l.rw, l.rh, 0, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${colorRGB},${tw*0.7})`;
+        ctx.fill();
+        ctx.restore();
+      });
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
   /* ---------- fire & cloud pillar: rising particles, day/night blend ---------- */
   function startPillar(cv, opts){
     opts = opts || {};
@@ -545,6 +605,7 @@
   window.PBS_startEmberField = startEmberField;
   window.PBS_startDewField = startDewField;
   window.PBS_startDustField = startDustField;
+  window.PBS_startLeafField = startLeafField;
   window.PBS_startPillar = startPillar;
   window.PBS_burstConfetti = burstConfetti;
   window.PBS_sparkleBurst = sparkleBurst;
