@@ -282,7 +282,7 @@ window.EXODUS_18_DATA = {
       askHtml: '이드로처럼, 나에게 "네가 하는 것이 옳지 못하다"고 솔직하게 말해준 사람이 있었나요? 혹은 내가 붙들고 있던 무게를 누군가와 나누어야 할 자리가 지금 있다면 무엇인가요?',
       reflectPlaceholder: '답을 적어보세요...',
       refsChips: ['출 18:1-12','출 18:13-16','출 18:17-23','출 18:24-27'],
-      nextChapter: null
+      nextChapter: { href:'exodus-19.html', label:'출애굽기 19장', title:'시내산 언약' }
     }
   ],
 

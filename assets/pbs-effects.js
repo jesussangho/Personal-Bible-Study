@@ -347,6 +347,61 @@
     requestAnimationFrame(frame);
   }
 
+  /* ---------- storm field: drifting thunderheads + occasional lightning flash (Sinai theophany theme) ----------
+     Deliberately different rhythm from every other ambience — mostly still,
+     with a sudden bright flash across the whole canvas every few seconds,
+     rather than continuous rise/fall/drift. */
+  function startStormField(cv, opts){
+    opts = opts || {};
+    const density = opts.density || 6;
+    const cloudRGB = opts.cloudRGB || '120,110,180';
+    const flashRGB = opts.flashRGB || '220,215,255';
+    let ctx = resizeCanvas(cv);
+    let clouds = [];
+    function seed(){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      clouds = Array.from({length: density}, ()=>({
+        x: Math.random()*w, y: Math.random()*h*0.5,
+        r: 40 + Math.random()*60,
+        vx: 0.05 + Math.random()*0.1,
+        opacity: 0.05 + Math.random()*0.05
+      }));
+    }
+    seed();
+    window.addEventListener('resize', ()=>{ ctx = resizeCanvas(cv); seed(); });
+    if(REDUCED){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      clouds.forEach(c=>{ ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fillStyle = `rgba(${cloudRGB},${c.opacity})`; ctx.fill(); });
+      return;
+    }
+    let flash = 0;
+    let nextFlashAt = performance.now() + 2000 + Math.random()*3000;
+    function frame(now){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      clouds.forEach(c=>{
+        c.x += c.vx;
+        if(c.x - c.r > w) c.x = -c.r;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${cloudRGB},${c.opacity})`;
+        ctx.fill();
+      });
+      if(now >= nextFlashAt){
+        flash = 1;
+        nextFlashAt = now + 3000 + Math.random()*4000;
+      }
+      if(flash > 0){
+        ctx.fillStyle = `rgba(${flashRGB},${flash*0.3})`;
+        ctx.fillRect(0, 0, w, h);
+        flash = Math.max(0, flash - 0.04);
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
   /* ---------- fire & cloud pillar: rising particles, day/night blend ---------- */
   function startPillar(cv, opts){
     opts = opts || {};
@@ -606,6 +661,7 @@
   window.PBS_startDewField = startDewField;
   window.PBS_startDustField = startDustField;
   window.PBS_startLeafField = startLeafField;
+  window.PBS_startStormField = startStormField;
   window.PBS_startPillar = startPillar;
   window.PBS_burstConfetti = burstConfetti;
   window.PBS_sparkleBurst = sparkleBurst;

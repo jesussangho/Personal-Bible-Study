@@ -17,7 +17,7 @@
 }
 
 /* ---------- per-chapter ambience themes ----------
-   Each chapter opts in via PBSStudy.init({theme:'night'|'gold'|'sea'|'victory'|'dawn'|'battle'|'counsel'}),
+   Each chapter opts in via PBSStudy.init({theme:'night'|'gold'|'sea'|'victory'|'dawn'|'battle'|'counsel'|'sinai'}),
    which adds body.theme-* — only the background/lamp glow (and starfield tint,
    set in JS) change; --gold/--blood stay put so quiz-correct/wrong colors and
    buttons stay consistent everywhere. */
@@ -48,6 +48,10 @@ body.theme-battle{
 body.theme-counsel{
   --bg-top:#232c1e; --bg-mid:#151b11; --bg-bottom:#080a06;
   --lamp-color: rgba(165,180,120,0.20); --lamp-color2: rgba(165,180,120,0.05);
+}
+body.theme-sinai{
+  --bg-top:#241a3a; --bg-mid:#160f26; --bg-bottom:#08050f;
+  --lamp-color: rgba(150,130,220,0.22); --lamp-color2: rgba(150,130,220,0.06);
 }
 
 /* ---------- fixed canvas backdrop (starfield / effects) ---------- */
