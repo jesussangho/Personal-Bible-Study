@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PBS — Personal Bible Study</title>
-<meta name="description" content="출애굽기를 재미있게, 초등학생도 이해할 수 있게 공부하는 인터랙티브 성경 공부 노트.">
+<meta name="description" content="출애굽기와 시편을 재미있게, 초등학생도 이해할 수 있게 공부하는 인터랙티브 성경 공부 노트.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/pbs-theme.css">
@@ -73,6 +73,17 @@
   .pc-progress .trophy-badge.locked{ border-color:var(--line); background:rgba(255,255,255,0.02); opacity:0.45; filter:grayscale(1); }
   footer.pbs-foot a, .pm-more a{ color:var(--gold-soft); }
   .pm-more{ margin-top:16px; padding-top:14px; border-top:1px dashed var(--line-strong); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  .book-section{ position:relative; z-index:1; }
+  .book-section + .book-section{ margin-top:14px; padding-top:38px; border-top:1px solid var(--line); }
+  .book-heading{
+    max-width:920px; margin:0 auto; padding:0 22px; display:flex; align-items:baseline; gap:10px;
+    font-family:'Noto Serif KR', serif; font-weight:700; font-size:20px; color:var(--gold-soft);
+  }
+  .book-heading .book-heading-sub{
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:500; letter-spacing:0.06em;
+    text-transform:uppercase; font-size:13px; color:var(--muted);
+  }
 </style>
 </head>
 <body>
@@ -95,6 +106,10 @@
 
 <div class="divider-line"></div>
 
+<main>
+<section class="book-section" data-book="exodus">
+<h2 class="book-heading">📖 출애굽기 <span class="book-heading-sub">Exodus</span></h2>
+
 <div class="journey-strip" aria-label="출애굽기 진행 지도">
   <div class="journey-node done"><span class="jn-dot"></span>출 1–10<br>이전 재앙들</div>
   <div class="journey-line done"></div>
@@ -112,12 +127,12 @@
   <div class="journey-line done"></div>
   <div class="journey-node done"><span class="jn-dot"></span>출 18<br>이드로의 조언</div>
   <div class="journey-line done"></div>
-  <div class="journey-node next"><span class="jn-dot"></span>출 19<br>시내산 언약</div>
-  <div class="journey-line"></div>
-  <div class="journey-node"><span class="jn-dot"></span>출 20<br>십계명</div>
+  <div class="journey-node done"><span class="jn-dot"></span>출 19<br>시내산 언약</div>
+  <div class="journey-line done"></div>
+  <div class="journey-node done"><span class="jn-dot"></span>출 20<br>십계명</div>
 </div>
 
-<main class="pbs-cards">
+<div class="pbs-cards">
   <a class="pbs-card" href="chapters/exodus-11-12.html" data-storage-id="exodusGame" data-badges="perfect_score,fast_finish,devoted,perfect_door">
     <div class="pc-eyebrow">Chapter · 11–12</div>
     <div class="pc-title">그날 밤, 문설주에</div>
@@ -230,12 +245,41 @@
     <div class="pc-cta">공부 시작하기 <span class="arrow">→</span></div>
   </a>
 
-  <div class="pbs-card soon">
+  <a class="pbs-card" href="chapters/exodus-20.html" data-storage-id="exodus20" data-badges="perfect_score,fast_finish,devoted">
     <div class="pc-eyebrow">Chapter · 20</div>
     <div class="pc-title">십계명</div>
-    <p class="pc-desc">시내산에서 주어진 열 가지 말씀. 다음 본문은 아직 준비 중입니다.</p>
+    <p class="pc-desc">흑암과 연기 가운데서 하나님은 친히 열 가지 말씀을 선포하십니다.
+    하나님을 향한 네 계명과 이웃을 향한 여섯 계명, 그리고 그 앞에서 떨며 멀리 섰던 백성의 이야기까지 살펴봅니다.</p>
+    <div class="pc-meta">
+      <span class="pc-chip">출 20:1–26</span>
+      <span class="pc-chip">거리 비교 이펙트</span>
+      <span class="pc-chip">쉬운말 모드</span>
+    </div>
+    <div class="pc-progress" data-progress></div>
+    <div class="pc-cta">공부 시작하기 <span class="arrow">→</span></div>
+  </a>
+
+  <div class="pbs-card soon">
+    <div class="pc-eyebrow">Chapter · 21</div>
+    <div class="pc-title">언약의 세부 법규</div>
+    <p class="pc-desc">종의 규례부터 손해배상까지, 일상에 적용된 언약의 법. 다음 본문은 아직 준비 중입니다.</p>
     <div class="pc-meta"><span class="pc-chip">준비 중</span></div>
   </div>
+</div>
+</section>
+
+<section class="book-section" data-book="psalms">
+<h2 class="book-heading">📜 시편 <span class="book-heading-sub">Psalms</span></h2>
+
+<div class="pbs-cards">
+  <div class="pbs-card soon">
+    <div class="pc-eyebrow">Psalm · 84</div>
+    <div class="pc-title">주의 장막을 사모함</div>
+    <p class="pc-desc">"주의 장막이 어찌 그리 사랑스러운지요" — 예배자의 간절한 사모함을 노래하는 시. 다음 본문은 아직 준비 중입니다.</p>
+    <div class="pc-meta"><span class="pc-chip">준비 중</span></div>
+  </div>
+</div>
+</section>
 </main>
 
 <section class="pbs-method">

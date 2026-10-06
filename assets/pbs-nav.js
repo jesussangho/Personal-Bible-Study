@@ -6,17 +6,22 @@
    Chapter pages live in /chapters/, index.html and manual.html live at
    the site root — this file is loaded by both, so every link is built
    relative to whichever one is currently running (detected from the
-   page's own URL) rather than hard-coded. */
+   page's own URL) rather than hard-coded.
+
+   Pages are grouped by `book` (e.g. 'exodus', 'psalms') so the nav bar
+   stays legible as more books are added — entries from a new book get
+   a thin divider before them rather than blending into one long list. */
 (function(){
   const PAGES = [
-    { id: '11-12', file: 'exodus-11-12.html', label: '출 11–12장', chapter: true },
-    { id: '13', file: 'exodus-13.html', label: '출 13장', chapter: true },
-    { id: '14', file: 'exodus-14.html', label: '출 14장', chapter: true },
-    { id: '15', file: 'exodus-15.html', label: '출 15장', chapter: true },
-    { id: '16', file: 'exodus-16.html', label: '출 16장', chapter: true },
-    { id: '17', file: 'exodus-17.html', label: '출 17장', chapter: true },
-    { id: '18', file: 'exodus-18.html', label: '출 18장', chapter: true },
-    { id: '19', file: 'exodus-19.html', label: '출 19장', chapter: true },
+    { id: '11-12', file: 'exodus-11-12.html', label: '출 11–12장', chapter: true, book: 'exodus' },
+    { id: '13', file: 'exodus-13.html', label: '출 13장', chapter: true, book: 'exodus' },
+    { id: '14', file: 'exodus-14.html', label: '출 14장', chapter: true, book: 'exodus' },
+    { id: '15', file: 'exodus-15.html', label: '출 15장', chapter: true, book: 'exodus' },
+    { id: '16', file: 'exodus-16.html', label: '출 16장', chapter: true, book: 'exodus' },
+    { id: '17', file: 'exodus-17.html', label: '출 17장', chapter: true, book: 'exodus' },
+    { id: '18', file: 'exodus-18.html', label: '출 18장', chapter: true, book: 'exodus' },
+    { id: '19', file: 'exodus-19.html', label: '출 19장', chapter: true, book: 'exodus' },
+    { id: '20', file: 'exodus-20.html', label: '출 20장', chapter: true, book: 'exodus' },
     { id: 'manual', file: 'manual.html', label: '📘 사용법', chapter: false }
   ];
 
@@ -27,10 +32,16 @@
     const toRoot = inChapter ? '../' : '';
     const toChapters = inChapter ? '' : 'chapters/';
     const homeHref = current === 'index' ? null : toRoot + 'index.html';
+    let lastBook = null;
     const links = PAGES.map(p=>{
       const isCurrent = p.id === current;
       const href = (p.chapter ? toChapters : toRoot) + p.file;
-      return `<a class="pbs-nav-link${isCurrent ? ' current' : ''}" href="${href}"${isCurrent ? ' aria-current="page"' : ''}>${p.label}</a>`;
+      let divider = '';
+      if(p.chapter && p.book && p.book !== lastBook){
+        if(lastBook !== null) divider = '<span class="pbs-nav-divider" aria-hidden="true"></span>';
+        lastBook = p.book;
+      }
+      return divider + `<a class="pbs-nav-link${isCurrent ? ' current' : ''}" href="${href}"${isCurrent ? ' aria-current="page"' : ''}>${p.label}</a>`;
     }).join('');
 
     root.innerHTML = `

@@ -402,6 +402,65 @@
     requestAnimationFrame(frame);
   }
 
+  /* ---------- glyph field: chisel marks fading in/holding/fading out (law/stone-tablet theme) ----------
+     Static line marks (no drift, no fall, no rise) that each fade in, hold,
+     then fade out and respawn elsewhere — like letters being etched into
+     stone one at a time, a deliberately different rhythm from every other
+     ambience here. */
+  function startGlyphField(cv, opts){
+    opts = opts || {};
+    const density = opts.density || 14;
+    const colorRGB = opts.colorRGB || '225,210,180';
+    let ctx = resizeCanvas(cv);
+    let marks = [];
+    function spawnMark(w, h){
+      const vertical = Math.random() < 0.5;
+      return {
+        x: Math.random()*w, y: Math.random()*h*0.8,
+        len: 8 + Math.random()*14,
+        angle: vertical ? Math.PI/2 + (Math.random()-0.5)*0.3 : (Math.random()-0.5)*0.3,
+        life: 0, maxLife: 120 + Math.random()*120
+      };
+    }
+    function seed(){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      marks = Array.from({length: density}, ()=>{
+        const m = spawnMark(w, h);
+        m.life = Math.random()*m.maxLife;
+        return m;
+      });
+    }
+    seed();
+    window.addEventListener('resize', ()=>{ ctx = resizeCanvas(cv); seed(); });
+    function drawMark(m, opacity){
+      ctx.save();
+      ctx.translate(m.x, m.y); ctx.rotate(m.angle);
+      ctx.strokeStyle = `rgba(${colorRGB},${Math.max(0, opacity)*0.3})`;
+      ctx.lineWidth = 2; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-m.len/2, 0); ctx.lineTo(m.len/2, 0); ctx.stroke();
+      ctx.restore();
+    }
+    if(REDUCED){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      marks.forEach(m=> drawMark(m, 0.7));
+      return;
+    }
+    function frame(){
+      const w = cv.clientWidth, h = cv.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      marks.forEach(m=>{
+        m.life++;
+        if(m.life > m.maxLife) Object.assign(m, spawnMark(w, h));
+        const t = m.life / m.maxLife;
+        const opacity = t < 0.15 ? t/0.15 : (t > 0.75 ? (1-t)/0.25 : 1);
+        drawMark(m, opacity);
+      });
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
   /* ---------- fire & cloud pillar: rising particles, day/night blend ---------- */
   function startPillar(cv, opts){
     opts = opts || {};
@@ -662,6 +721,7 @@
   window.PBS_startDustField = startDustField;
   window.PBS_startLeafField = startLeafField;
   window.PBS_startStormField = startStormField;
+  window.PBS_startGlyphField = startGlyphField;
   window.PBS_startPillar = startPillar;
   window.PBS_burstConfetti = burstConfetti;
   window.PBS_sparkleBurst = sparkleBurst;

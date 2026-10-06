@@ -1314,6 +1314,7 @@
     else if(cfg.theme==='battle' && window.PBS_startDustField) PBS_startDustField(starCv, {});
     else if(cfg.theme==='counsel' && window.PBS_startLeafField) PBS_startLeafField(starCv, {});
     else if(cfg.theme==='sinai' && window.PBS_startStormField) PBS_startStormField(starCv, {});
+    else if(cfg.theme==='law' && window.PBS_startGlyphField) PBS_startGlyphField(starCv, {});
     else if(window.PBS_startStarfield) PBS_startStarfield(starCv, { density: 70, colorRGB: THEME_STAR_COLORS[cfg.theme] });
     if(window.PBS_initGlossary) PBS_initGlossary(document);
     if(window.PBS_Debug){ PBS_Debug.log('init('+cfg.storageId+')'); PBS_Debug.update(debugSnapshot()); }
